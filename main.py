@@ -2,7 +2,6 @@ from Picture import Picture
 import cv2 as cv
 from time import time, sleep
 from windowcapture import WindowCapture
-import pyautogui
 from threading import Thread
 import pydirectinput
 
@@ -20,9 +19,6 @@ def bot_action(target):
     pydirectinput.moveTo(target[0] + 50, target[1])
     pydirectinput.mouseUp()
     sleep(5)
-    # pydirectinput.moveTo(target[0] + 100, target[1])
-    # pydirectinput.mouseUp()
-    # pyautogui.click()
     global is_bot_in_action
     is_bot_in_action = False
 
@@ -32,21 +28,21 @@ while True:
     screenshot = wincap.get_screenshot()
 
     duck = Picture('duck', (0, 255, 255), screenshot)
-    '''    Picture('chip', (0, 0, 255), screenshot)
+    Picture('chip', (0, 0, 255), screenshot)
     Picture('ball', (0, 255, 0), screenshot)
     Picture('backpack', (255, 0, 0), screenshot)
     Picture('spruce', (0, 128, 0), screenshot)
-    Picture('egg', (255, 0, 139), screenshot)'''
+    Picture('egg', (255, 0, 139), screenshot)
 
     cv.imshow('Map', screenshot)
 
     targets = duck.points
-    if len(targets) > 0:
+    '''if len(targets) > 0:
         target_click = wincap.get_screen_position(targets[0])
         if not is_bot_in_action:
             is_bot_in_action = True
-            t = Thread(bot_action(target_click))
-            t.start()
+            t = Thread(target=bot_action, args=(target_click,))
+            t.start()'''
 
     print('FPS {}'.format(1 / (time() - loop_time)))
     loop_time = time()

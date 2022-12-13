@@ -23,7 +23,7 @@ class Picture:
 
         rectangles, weights = cv.groupRectangles(rectangles, 1, 0.2)
 
-        for (x, y, w_chip, h_chip) in rectangles:
+        for (x, y, w, h) in rectangles:
             cv.rectangle(self.screenshot, (x, y), (x + w, y + h), color, 1)
             cv.putText(self.screenshot, name, (x, y), cv.FONT_HERSHEY_SIMPLEX, .5, color)
 
