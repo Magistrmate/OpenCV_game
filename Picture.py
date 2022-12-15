@@ -34,3 +34,4 @@ class Picture:
             points.append((center_x, center_y))
 
         self.points = points
+        # print(f'{name}\n{points}')

@@ -34,17 +34,22 @@ while True:
     Picture('spruce', (0, 128, 0), screenshot)
     Picture('egg', (255, 0, 139), screenshot)
 
+    for x in range(63, 375, 51):
+        for y in range(189, 795, 50):
+            # print(x, y)
+            cv.drawMarker(screenshot, (x, y), (0, 255, 0), cv.MARKER_CROSS, 20, 1, cv.LINE_4)
+
     cv.imshow('Map', screenshot)
 
-    targets = duck.points
-    '''if len(targets) > 0:
+    '''    targets = duck.points
+    if len(targets) > 0:
         target_click = wincap.get_screen_position(targets[0])
         if not is_bot_in_action:
             is_bot_in_action = True
             t = Thread(target=bot_action, args=(target_click,))
             t.start()'''
 
-    print('FPS {}'.format(1 / (time() - loop_time)))
+    # print('FPS {}'.format(1 / (time() - loop_time)))
     loop_time = time()
     key = cv.waitKey(1)
     if key == ord('q'):
