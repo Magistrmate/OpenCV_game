@@ -34,10 +34,10 @@ while True:
     Picture('spruce', (0, 128, 0), screenshot)
     Picture('egg', (255, 0, 139), screenshot)
 
-    for x in range(63, 375, 51):
-        for y in range(189, 795, 50):
-            # print(x, y)
-            cv.drawMarker(screenshot, (x, y), (0, 255, 0), cv.MARKER_CROSS, 20, 1, cv.LINE_4)
+    # for x in range(63, 375, 51):
+    #     for y in range(189, 795, 50):
+    #         # print(x, y)
+    #         cv.drawMarker(screenshot, (x, y), (0, 255, 0), cv.MARKER_CROSS, 20, 1, cv.LINE_4)
 
     cv.imshow('Map', screenshot)
 
@@ -50,7 +50,6 @@ while True:
             t.start()'''
 
     # print('FPS {}'.format(1 / (time() - loop_time)))
-    loop_time = time()
     key = cv.waitKey(1)
     if key == ord('q'):
         cv.destroyAllWindows()

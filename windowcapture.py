@@ -28,9 +28,11 @@ class WindowCapture:
 
         border_pixels = 8
         # titlebar_pixels = 30
-        titlebar_pixels = 550
-        self.w = self.w - (border_pixels * 2)
-        self.h = self.h - titlebar_pixels - border_pixels
+        titlebar_pixels = 300
+        self.w = self.w - (border_pixels * 2) - 200
+        # self.w = self.w - (border_pixels * 2)
+        # self.h = self.h - titlebar_pixels - border_pixels
+        self.h = self.h - titlebar_pixels - border_pixels - 300
         self.cropped_x = border_pixels
         self.cropped_y = titlebar_pixels
 
