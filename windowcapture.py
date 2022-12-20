@@ -74,3 +74,6 @@ class WindowCapture:
 
     def get_screen_position(self, pos):
         return pos[0] + self.offset_x, pos[1] + self.offset_y
+
+    # def get_screen_position(self, pos1, pos2):
+    #     return pos1 + self.offset_x, pos2 + self.offset_y
