@@ -27,4 +27,3 @@ class Picture:
             center_x = x + int(w / 2)
             center_y = y + int(h / 2)
             points.append([center_x, center_y, name, color])
-            # print(name, center_x, center_y)
