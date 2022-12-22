@@ -26,4 +26,4 @@ class Picture:
             cv.rectangle(self.screenshot, (x, y), (x + w, y + h), color, 1)
             center_x = x + int(w / 2)
             center_y = y + int(h / 2)
-            points.append([center_x, center_y, name, color])
+            points.append([(center_x, center_y), name, color])

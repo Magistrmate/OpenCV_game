@@ -38,21 +38,22 @@ while True:
         Picture(name, color, screenshot, points)
     if len(points) > 0:
         # first_point = min(points, key=lambda i: i[4])
-        first_point_for_x, _, _, _ = min(points, key=lambda n: n[0])
-        last_point_for_x, _, _, _ = max(points, key=lambda n: n[0])
-        _, first_point_for_y, _, _ = min(points, key=lambda n: n[1])
-        _, last_point_for_y, _, _ = max(points, key=lambda n: n[1])
+        (first_point_for_x, _), _, _ = min(points, key=lambda n: n[0][0])
+        (last_point_for_x, _), _, _ = max(points, key=lambda n: n[0][0])
+        (_, first_point_for_y), _, _ = min(points, key=lambda n: n[0][1])
+        (_, last_point_for_y), _, _ = max(points, key=lambda n: n[0][1])
         # print(f'points\n{points}')
-        for (point, i) in zip(points, range(0, len(points))):
-            x = point[0]
-            y = point[1]
-            name = point[2]
-            color = point[3]
+        # for (point, i) in zip(points, range(0, len(points))):
+        for (index, point) in enumerate(points):
+            x = point[0][0]
+            y = point[0][1]
+            name = point[1]
+            color = point[2]
             for (x0, column) in zip(range(first_point_for_x - 5, last_point_for_x + 5, 51), range(1, 9)):
                 if x0 <= x <= (x0 + 11):
                     for (y0, row) in zip(range(first_point_for_y - 5, last_point_for_y + 5, 51), range(1, 11)):
                         if y0 <= y <= (y0 + 11):
-                            points[i].append((column, row))
+                            points[index].append((column, row))
                             cv.putText(screenshot, str(column) + " " + str(row) + " " + name, (x - 20, y - 20),
                                        cv.FONT_HERSHEY_SIMPLEX, .4, color)
                             # cv.drawMarker(screenshot, (point[0], point[1]), point[3], cv.MARKER_CROSS, 5, 5,
@@ -104,25 +105,36 @@ while True:
         # print(f'maxRow {maxRow}')
         # _, _, _, _, (_, minRow) = min(points, key=lambda n: n[4][1])
         # print(f'minRow {minRow}')
-        # [[142, 361, 'duck', (0, 191, 255), (3, 3)], [397, 362, 'duck', (0, 191, 255), (8, 3)], [295, 413, 'duck', (0, 191, 255), (6, 4)], [396, 463, 'duck', (0, 191, 255), (8, 5)], [92, 565, 'duck', (0, 191, 255), (2, 7)], [193, 565, 'duck', (0, 191, 255), (4, 7)], [244, 565, 'duck', (0, 191, 255), (5, 7)], [346, 565, 'duck', (0, 191, 255), (7, 7)], [142, 667, 'duck', (0, 191, 255), (3, 9)], [142, 717, 'duck', (0, 191, 255), (3, 10)], [38, 260, 'chip', (0, 0, 255), (1, 1)], [89, 311, 'chip', (0, 0, 255), (2, 2)], [191, 311, 'chip', (0, 0, 255), (4, 2)], [394, 311, 'chip', (0, 0, 255), (8, 2)], [191, 362, 'chip', (0, 0, 255), (4, 3)], [343, 413, 'chip', (0, 0, 255), (7, 4)], [394, 413, 'chip', (0, 0, 255), (8, 4)], [191, 464, 'chip', (0, 0, 255), (4, 5)], [394, 514, 'chip', (0, 0, 255), (8, 6)], [242, 616, 'chip', (0, 0, 255), (5, 8)], [394, 616, 'chip', (0, 0, 255), (8, 8)], [38, 667, 'chip', (0, 0, 255), (1, 9)], [89, 667, 'chip', (0, 0, 255), (2, 9)], [242, 667, 'chip', (0, 0, 255), (5, 9)], [293, 667, 'chip', (0, 0, 255), (6, 9)], [89, 260, 'ball', (0, 255, 0), (2, 1)], [292, 260, 'ball', (0, 255, 0), (6, 1)], [89, 362, 'ball', (0, 255, 0), (2, 3)], [343, 362, 'ball', (0, 255, 0), (7, 3)], [190, 412, 'ball', (0, 255, 0), (4, 4)], [292, 463, 'ball', (0, 255, 0), (6, 5)], [191, 514, 'ball', (0, 255, 0), (4, 6)], [241, 514, 'ball', (0, 255, 0), (5, 6)], [191, 616, 'ball', (0, 255, 0), (4, 8)], [241, 717, 'ball', (0, 255, 0), (5, 10)], [38, 362, 'backpack', (255, 0, 0), (1, 3)], [292, 362, 'backpack', (255, 0, 0), (6, 3)], [241, 412, 'backpack', (255, 0, 0), (5, 4)], [343, 514, 'backpack', (255, 0, 0), (7, 6)], [140, 514, 'backpack', (255, 0, 0), (3, 6)], [394, 565, 'backpack', (255, 0, 0), (8, 7)], [190, 667, 'backpack', (255, 0, 0), (4, 9)], [89, 718, 'backpack', (255, 0, 0), (2, 10)], [190, 718, 'backpack', (255, 0, 0), (4, 10)], [393, 264, 'spruce', (0, 128, 0), (8, 1)], [37, 315, 'spruce', (0, 128, 0), (1, 2)], [291, 315, 'spruce', (0, 128, 0), (6, 2)], [241, 366, 'spruce', (0, 128, 0), (5, 3)], [241, 467, 'spruce', (0, 128, 0), (5, 5)], [343, 467, 'spruce', (0, 128, 0), (7, 5)], [291, 519, 'spruce', (0, 128, 0), (6, 6)], [37, 620, 'spruce', (0, 128, 0), (1, 8)], [139, 620, 'spruce', (0, 128, 0), (3, 8)], [291, 722, 'spruce', (0, 128, 0), (6, 10)], [139, 262, 'egg', (255, 0, 139), (3, 1)], [190, 261, 'egg', (255, 0, 139), (4, 1)], [139, 312, 'egg', (255, 0, 139), (3, 2)], [241, 312, 'egg', (255, 0, 139), (5, 2)], [343, 312, 'egg', (255, 0, 139), (7, 2)], [89, 618, 'egg', (255, 0, 139), (2, 8)], [292, 617, 'egg', (255, 0, 139), (6, 8)], [343, 618, 'egg', (255, 0, 139), (7, 8)], [38, 719, 'egg', (255, 0, 139), (1, 10)]]
-        for (index, point) in enumerate(points):
-            print(f'point{point}')
-            columnPoint = point[4][0]
-            rowPoint = point[4][1]
-            namePoint = point[2]
-            for pointNext in points[index:]:
-                columnPointNext = pointNext[4][0]
-                rowPointNext = pointNext[4][1]
-                namePointNext = pointNext[2]
-                # for column in range(maxColumn):
-                    # for row in range(maxRow):
-                        # if column == columnPoint + 1 and row == rowPoint:
-                if columnPointNext == columnPoint + 1 and rowPointNext == rowPoint:
-                    pointMoveRight = pointNext
-                    print(f'pointMoveRight{pointMoveRight}')
-                    break
-                else:
-                    print('empty')
+        # for column in range(maxColumn):
+        # for row in range(maxRow):
+        # if column == pointColumn + 1 and row == pointRow:
+        # for (index, point) in enumerate(points):
+        #     pointRight1 = 0
+        #     print(f'point{point}')
+        #     pointColumn = point[4][0]
+        #     pointRow = point[4][1]
+        #     pointName = point[2]
+        #     for pointFind in points[index:]:
+        #         pointColumnFind = pointFind[4][0]
+        #         pointRowFind = pointFind[4][1]
+        #         pointNameFind = pointFind[2]
+        #         if pointRowFind == pointRow:
+        #             if pointColumnFind == pointColumn + 1:
+        #                 pointRight1 = pointFind
+        #                 print(f'pointRight1{pointRight1}')
+        #                 point.append(('right1', pointNameFind))
+        #             if pointColumnFind == pointColumn + 2:
+        #                 pointRight2 = pointFind
+        #                 print(f'pointRight2{pointRight2}')
+        #                 if point[5]
+        #                 point.append(('right2', pointNameFind))
+        #             if pointColumnFind == pointColumn + 3:
+        #                 pointRight3 = pointFind
+        #                 print(f'pointRight3{pointRight3}')
+        #                 point.append(('right3', pointNameFind))
+        #     if pointRight1 == 0:
+        #         print(f'pointRight1 empty')
+        #     print(points)
 
     cv.imshow('Map', screenshot)
 
