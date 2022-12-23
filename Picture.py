@@ -3,7 +3,7 @@ import numpy as np
 
 
 class Picture:
-    threshold = .9
+    threshold = .88
 
     def __init__(self, name, color, screenshot, points):
         self.name = name
