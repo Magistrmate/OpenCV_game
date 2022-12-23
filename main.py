@@ -56,7 +56,8 @@ while True:
                                        cv.FONT_HERSHEY_SIMPLEX, .4, color)
         # print(f'points\n{points}')
         for (index, point) in enumerate(points):
-            pointRight = 0
+            point.append(['right', 'empty', 'empty', 'empty'])
+            # print(point)
             # print('len')
             # print(len(point))
             # print(f'point{point}')
@@ -67,45 +68,47 @@ while True:
                 pointColumnFind = pointFind[3][0]
                 pointRowFind = pointFind[3][1]
                 pointNameFind = pointFind[1]
-                if pointRowFind == pointRow and pointColumnFind == pointColumn + 1:
-                    point.insert(4, ('right1', pointNameFind))
-                    continue
-                if pointRowFind == pointRow and pointColumnFind == pointColumn + 2:
-                    point.insert(5, ('right2', pointNameFind))
-                    break
-            if len(point) == 4:
-                point.insert(4, ('right1', 'empty'))
-            if len(point) == 6:
-                point.insert(5, ('right2', 'empty'))
-            #     if pointRowFind == pointRow:
-            #         # for i in range(1, 4):
-            #         #     if pointColumnFind == pointColumn + i:
-            #         #         pointRight = pointFind
-            #         #         point.insert(i+3, ('right' + str(i), pointNameFind))
-            #         if pointColumnFind == pointColumn + 1:
-            #             pointRight1 = pointFind
-            #             # if len(point) == 4:
-            #             point.insert(4, ('right1', pointNameFind))
-            #             continue
-            #         if pointColumnFind == pointColumn + 2:
-            #             pointRight2 = pointFind
-            #             if len(point) == 5:
-            #                 if point[4][0] != 'right1':
-            #                     point.insert(4, ('right1', 'empty'))
-            #             elif len(point) == 6:
-            #
-            #             point.insert(5, ('right2', pointNameFind))
-            #             continue
-            #             # print(f'exist{point[4]}')
-            #             # point.append(('right2', pointNameFind))
-            #         if pointColumnFind == pointColumn + 3:
-            #             pointRight3 = pointFind
-            #             point.insert(6, ('right3', pointNameFind))
-            #             continue
-            #             # print(f'pointRight3{pointRight3}')
-            #             # point.append(('right3', pointNameFind))
-            # if pointRight == 0:
-            #     p = 'ok'
+                if pointRowFind == pointRow:
+                    for i in range(1, 4):
+                        if pointColumnFind == pointColumn + i:
+                            point[4][i] = pointNameFind
+                            continue
+                    # if pointColumnFind == pointColumn + 1:
+                    #     # if len(point) == 4:
+                    #     point[4][1] = pointNameFind
+                    #     # point.insert(4, ('right1', pointNameFind))
+                    #     continue
+                    # if pointColumnFind == pointColumn + 2:
+                    #     # if len(point) == 5:
+                    #     #     point.insert(5, ('right2', pointNameFind))
+                    #     # else:
+                    #     point[4][2] = pointNameFind
+                    #     # point.insert(5, ('right2', pointNameFind))
+                    #     continue
+                    #     # print(f'exist{point[4]}')
+                    # if pointColumnFind == pointColumn + 3:
+                    #     point[4][3] = pointNameFind
+                    #     # point.insert(6, ('right3', pointNameFind))
+                    #     continue
+                        # print(f'pointRight3{pointRight3}')
+                        # point.append(('right3', pointNameFind))
+            # if len(point) == 4:
+            #     point.insert(4, ('right1', 'empty'))
+            #     point.insert(5, ('right2', 'empty'))
+            #     point.insert(6, ('right3', 'empty'))
+            # elif len(point) == 5:
+            #     if point[4][0] == 'right2':
+            #         point.insert(4, ('right1', 'empty'))
+            #     else:
+            #         point.insert(5, ('right2', 'empty'))
+            #     point.insert(6, ('right3', 'empty'))
+            # elif len(point) == 6:
+            #     if point[4][0] == 'right2':
+            #         point.insert(4, ('right1', 'empty'))
+            #     elif point[5][0] == 'right3':
+            #         point.insert(5, ('right2', 'empty'))
+            #     else:
+            #         point.insert(6, ('right3', 'empty'))
                 # print(f'pointRight empty')
         # print(random.randint(1, len(points)))
         # print(points[random.randint(1, len(points))])
