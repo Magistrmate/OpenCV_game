@@ -18,8 +18,8 @@ for p in psutil.process_iter():
         flag = 0
         print('Find')
 if flag == 1:
-    subprocess.Popen([r"C:\Users\\retro\Downloads\scrcpy-win64-v1.24\scrcpy.exe", "-d", "-S", "-w", "--window-x=1485",
-                      "--window-y=90"])
+    subprocess.Popen([r'C:\Users\\retro\Downloads\scrcpy-win64-v1.24\scrcpy.exe', '-S', '-w', '--window-x=1485',
+                      '--window-y=90'])
     sleep(5)
 
 wincap = WindowCapture('MI 9')
@@ -61,11 +61,12 @@ while True:
                     for (y0, row) in zip(range(first_point_for_y - 10, last_point_for_y + 5, 51), range(1, 11)):
                         if y0 <= y <= (y0 + 50):
                             points[index].append((column, row))
-                            cv.putText(screenshot, str(column) + " " + str(row) + " " + name, (x - 20, y - 20),
-                                       cv.FONT_HERSHEY_SIMPLEX, .4, color)
+                            # cv.putText(screenshot, str(column) + " " + str(row) + " " + name, (x - 20, y - 20),
+                            #           cv.FONT_HERSHEY_SIMPLEX, .4, color)
         for (index, point) in enumerate(points):
             try:
-                point.append(['right', 'empty', 'empty', 'empty'])
+                point.append(['right', 'empty', 'empty', 'empty', 'rightUp', 'empty', 'empty', 'rightDown', 'empty',
+                              'empty'])
                 pointColumn = point[3][0]
                 pointRow = point[3][1]
                 pointName = point[1]
@@ -78,12 +79,17 @@ while True:
                             if pointColumnFind == pointColumn + i:
                                 point[4][i] = pointNameFind
                                 break
+                    elif pointColumnFind == pointColumn + 1:
+                        for n in range(1, 3):
+                            if pointRowFind == pointRow - n:
+                                point[4][n + 4] = pointNameFind
+                                break
             except IndexError or TypeError:
                 cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
                            screenshot)
                 print('error')
                 break
-
+        pointsCheck = []
         for point in points:
             try:
                 pointName = point[1]
@@ -91,13 +97,14 @@ while True:
                 right2 = point[4][2]
                 right3 = point[4][3]
                 if pointName == right2 == right3 and right1 != 'empty':
-                    print(point)
-                    print('move')
-                    target_click = wincap.get_screen_position(point[0])
-                    if not is_bot_in_action:
-                        is_bot_in_action = True
-                        t = Thread(target=bot_action, args=(target_click,))
-                        t.start()
+                    pointsCheck.append(point)
+                    # print(point)
+                    # print('move')
+                    # target_click = wincap.get_screen_position(point[0])
+                    # if not is_bot_in_action:
+                    #     is_bot_in_action = True
+                    #     t = Thread(target=bot_action, args=(target_click,))
+                    #     t.start()
             except IndexError or TypeError:
                 cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
                            screenshot)
@@ -105,12 +112,16 @@ while True:
                 break
     # print('FPS {}'.format(1 / (time() - loop_time)))
     loop_time = time()
-    # sleep(10)
-    # pointCheck = points[random.randint(1, len(points))]
-    # print(pointCheck)
-    # cv.putText(screenshot, pointCheck[1] + " " + pointCheck[4][1] + " " + pointCheck[4][2] + " " + pointCheck[4][3],
-    #            (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    pointCheck = points[random.randint(1, len(points))]
+    print(pointCheck)
+    cv.putText(screenshot, pointCheck[4][6], (pointCheck[0][0] + 50, pointCheck[0][1] - 100),
+               cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    cv.putText(screenshot, pointCheck[4][5], (pointCheck[0][0] + 50, pointCheck[0][1] - 50),
+               cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    cv.putText(screenshot, pointCheck[1] + " " + pointCheck[4][1] + " " + pointCheck[4][2] + " " + pointCheck[4][3],
+               (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
     cv.imshow('Map', screenshot)
+    sleep(5)
     key = cv.waitKey(1)
     if key == ord('q'):
         cv.destroyAllWindows()

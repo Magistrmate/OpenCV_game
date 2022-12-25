@@ -25,7 +25,7 @@ class Picture:
             rectangles, weights = cv.groupRectangles(rectangles, 1, 0.2)
 
             for (x, y, w, h) in rectangles:
-                cv.rectangle(self.screenshot, (x, y), (x + w, y + h), color, 1)
+                # cv.rectangle(self.screenshot, (x, y), (x + w, y + h), color, 1)
                 center_x = x + int(w / 2)
                 center_y = y + int(h / 2)
                 points.append([(center_x, center_y), name, color])
