@@ -10,9 +10,18 @@ from threading import Thread
 import pydirectinput
 import subprocess
 from random import randint
+import psutil
 
-# subprocess.Popen([r"C:\Users\\retro\Downloads\scrcpy-win64-v1.24\scrcpy.exe", "-S", "-w"])
-# sleep(2)
+flag = 1
+for p in psutil.process_iter():
+    if p.name() == "scrcpy.exe":
+        flag = 0
+        print('Find')
+if flag == 1:
+    subprocess.Popen([r"C:\Users\\retro\Downloads\scrcpy-win64-v1.24\scrcpy.exe", "-d", "-S", "-w", "--window-x=1485",
+                      "--window-y=90"])
+    sleep(5)
+
 wincap = WindowCapture('MI 9')
 
 is_bot_in_action = False
@@ -32,7 +41,7 @@ def bot_action(target):
 
 while True:
     screenshot = wincap.get_screenshot()
-    points = list()
+    points = []
     namesColors = [('duck', (0, 191, 255)), ('chip', (0, 0, 255)), ('ball', (0, 255, 0)), ('backpack', (255, 0, 0)),
                    ('spruce', (0, 128, 0)), ('egg', (255, 0, 139))]
     for (name, color) in namesColors:
@@ -48,85 +57,63 @@ while True:
             name = point[1]
             color = point[2]
             for (x0, column) in zip(range(first_point_for_x - 5, last_point_for_x + 5, 51), range(1, 9)):
-                if x0 <= x <= (x0 + 11):
-                    for (y0, row) in zip(range(first_point_for_y - 5, last_point_for_y + 5, 51), range(1, 11)):
-                        if y0 <= y <= (y0 + 11):
+                if x0 <= x <= (x0 + 50):
+                    for (y0, row) in zip(range(first_point_for_y - 10, last_point_for_y + 5, 51), range(1, 11)):
+                        if y0 <= y <= (y0 + 50):
                             points[index].append((column, row))
                             cv.putText(screenshot, str(column) + " " + str(row) + " " + name, (x - 20, y - 20),
                                        cv.FONT_HERSHEY_SIMPLEX, .4, color)
-        # print(f'points\n{points}')
         for (index, point) in enumerate(points):
-            point.append(['right', 'empty', 'empty', 'empty'])
-            # print(point)
-            # print('len')
-            # print(len(point))
-            # print(f'point{point}')
-            pointColumn = point[3][0]
-            pointRow = point[3][1]
-            pointName = point[1]
-            for pointFind in points:
-                pointColumnFind = pointFind[3][0]
-                pointRowFind = pointFind[3][1]
-                pointNameFind = pointFind[1]
-                if pointRowFind == pointRow:
-                    for i in range(1, 4):
-                        if pointColumnFind == pointColumn + i:
-                            point[4][i] = pointNameFind
-                            continue
-                    # if pointColumnFind == pointColumn + 1:
-                    #     # if len(point) == 4:
-                    #     point[4][1] = pointNameFind
-                    #     # point.insert(4, ('right1', pointNameFind))
-                    #     continue
-                    # if pointColumnFind == pointColumn + 2:
-                    #     # if len(point) == 5:
-                    #     #     point.insert(5, ('right2', pointNameFind))
-                    #     # else:
-                    #     point[4][2] = pointNameFind
-                    #     # point.insert(5, ('right2', pointNameFind))
-                    #     continue
-                    #     # print(f'exist{point[4]}')
-                    # if pointColumnFind == pointColumn + 3:
-                    #     point[4][3] = pointNameFind
-                    #     # point.insert(6, ('right3', pointNameFind))
-                    #     continue
-                        # print(f'pointRight3{pointRight3}')
-                        # point.append(('right3', pointNameFind))
-            # if len(point) == 4:
-            #     point.insert(4, ('right1', 'empty'))
-            #     point.insert(5, ('right2', 'empty'))
-            #     point.insert(6, ('right3', 'empty'))
-            # elif len(point) == 5:
-            #     if point[4][0] == 'right2':
-            #         point.insert(4, ('right1', 'empty'))
-            #     else:
-            #         point.insert(5, ('right2', 'empty'))
-            #     point.insert(6, ('right3', 'empty'))
-            # elif len(point) == 6:
-            #     if point[4][0] == 'right2':
-            #         point.insert(4, ('right1', 'empty'))
-            #     elif point[5][0] == 'right3':
-            #         point.insert(5, ('right2', 'empty'))
-            #     else:
-            #         point.insert(6, ('right3', 'empty'))
-                # print(f'pointRight empty')
-        # print(random.randint(1, len(points)))
-        # print(points[random.randint(1, len(points))])
-        print(points)
-    cv.imshow('Map', screenshot)
+            try:
+                point.append(['right', 'empty', 'empty', 'empty'])
+                pointColumn = point[3][0]
+                pointRow = point[3][1]
+                pointName = point[1]
+                for pointFind in points:
+                    pointColumnFind = pointFind[3][0]
+                    pointRowFind = pointFind[3][1]
+                    pointNameFind = pointFind[1]
+                    if pointRowFind == pointRow:
+                        for i in range(1, 4):
+                            if pointColumnFind == pointColumn + i:
+                                point[4][i] = pointNameFind
+                                break
+            except IndexError or TypeError:
+                cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
+                           screenshot)
+                print('error')
+                break
 
-    targets = points
-    # if len(targets) > 0:
-    #     target_click = wincap.get_screen_position(targets[0])
-    #     if not is_bot_in_action:
-    #         is_bot_in_action = True
-    #         t = Thread(target=bot_action, args=(target_click,))
-    #         t.start()
-
+        for point in points:
+            try:
+                pointName = point[1]
+                right1 = point[4][1]
+                right2 = point[4][2]
+                right3 = point[4][3]
+                if pointName == right2 == right3 and right1 != 'empty':
+                    print(point)
+                    print('move')
+                    target_click = wincap.get_screen_position(point[0])
+                    if not is_bot_in_action:
+                        is_bot_in_action = True
+                        t = Thread(target=bot_action, args=(target_click,))
+                        t.start()
+            except IndexError or TypeError:
+                cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
+                           screenshot)
+                print('error')
+                break
     # print('FPS {}'.format(1 / (time() - loop_time)))
-    # loop_time = time()
-
+    loop_time = time()
+    # sleep(10)
+    # pointCheck = points[random.randint(1, len(points))]
+    # print(pointCheck)
+    # cv.putText(screenshot, pointCheck[1] + " " + pointCheck[4][1] + " " + pointCheck[4][2] + " " + pointCheck[4][3],
+    #            (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    cv.imshow('Map', screenshot)
     key = cv.waitKey(1)
     if key == ord('q'):
         cv.destroyAllWindows()
         break
+    # elif key == ord('f'):
+    # cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time), screenshot)
