@@ -65,8 +65,7 @@ while True:
                             #           cv.FONT_HERSHEY_SIMPLEX, .4, color)
         for (index, point) in enumerate(points):
             try:
-                point.append(['right', 'empty', 'empty', 'empty', 'rightUp', 'empty', 'empty', 'rightDown', 'empty',
-                              'empty'])
+                point.append(['right', 'empty', 'empty', 'rightUpDown', 'empty', 'empty', 'empty', 'empty', 'empty'])
                 pointColumn = point[3][0]
                 pointRow = point[3][1]
                 pointName = point[1]
@@ -74,37 +73,56 @@ while True:
                     pointColumnFind = pointFind[3][0]
                     pointRowFind = pointFind[3][1]
                     pointNameFind = pointFind[1]
-                    if pointRowFind == pointRow:
-                        for i in range(1, 4):
+                    if pointRowFind == pointRow and pointColumnFind != pointColumn + 1:
+                        for i in range(2, 4):
                             if pointColumnFind == pointColumn + i:
-                                point[4][i] = pointNameFind
+                                point[4][i - 1] = pointNameFind
                                 break
-                    elif pointColumnFind == pointColumn + 1:
-                        for n in range(1, 3):
+                    elif -2 <= abs(pointRowFind - pointRow) <= 2 and pointColumnFind == pointColumn + 1:
+                        for n in range(2, -3, -1):
                             if pointRowFind == pointRow - n:
-                                point[4][n + 4] = pointNameFind
+                                point[4][n + 6] = pointNameFind
                                 break
             except IndexError or TypeError:
                 cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
                            screenshot)
                 print('error')
                 break
-        pointsCheck = []
+        pointsChance = []
         for point in points:
             try:
                 pointName = point[1]
-                right1 = point[4][1]
-                right2 = point[4][2]
-                right3 = point[4][3]
-                if pointName == right2 == right3 and right1 != 'empty':
-                    pointsCheck.append(point)
-                    # print(point)
-                    # print('move')
-                    # target_click = wincap.get_screen_position(point[0])
-                    # if not is_bot_in_action:
-                    #     is_bot_in_action = True
-                    #     t = Thread(target=bot_action, args=(target_click,))
-                    #     t.start()
+                right2 = point[4][1]
+                right3 = point[4][2]
+                rightUp2 = point[4][8]
+                rightUp1 = point[4][7]
+                right1 = point[4][6]
+                rightDown1 = point[4][5]
+                rightDown2 = point[4][4]
+                if right1 != 'empty':
+                    if pointName == right2 == right3:
+                        pointsChance.append(point)
+                        cv.putText(screenshot, point[1], (point[0][0], point[0][1]),
+                                   cv.FONT_HERSHEY_SIMPLEX, .4, point[2])
+                        # print(point)
+                        # print('move')
+                        # target_click = wincap.get_screen_position(point[0])
+                        # if not is_bot_in_action:
+                        #     is_bot_in_action = True
+                        #     t = Thread(target=bot_action, args=(target_click,))
+                        #     t.start()
+                    if pointName == rightUp2 == rightUp1:
+                        pointsChance.append(point)
+                        cv.putText(screenshot, point[1], (point[0][0], point[0][1]),
+                                   cv.FONT_HERSHEY_SIMPLEX, .4, point[2])
+                    if pointName == rightDown2 == rightDown1:
+                        pointsChance.append(point)
+                        cv.putText(screenshot, point[1], (point[0][0], point[0][1]),
+                                   cv.FONT_HERSHEY_SIMPLEX, .4, point[2])
+                    if pointName == rightUp1 == rightDown1:
+                        pointsChance.append(point)
+                        cv.putText(screenshot, point[1], (point[0][0], point[0][1]),
+                                   cv.FONT_HERSHEY_SIMPLEX, .4, point[2])
             except IndexError or TypeError:
                 cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
                            screenshot)
@@ -112,16 +130,22 @@ while True:
                 break
     # print('FPS {}'.format(1 / (time() - loop_time)))
     loop_time = time()
-    pointCheck = points[random.randint(1, len(points))]
-    print(pointCheck)
-    cv.putText(screenshot, pointCheck[4][6], (pointCheck[0][0] + 50, pointCheck[0][1] - 100),
-               cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-    cv.putText(screenshot, pointCheck[4][5], (pointCheck[0][0] + 50, pointCheck[0][1] - 50),
-               cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-    cv.putText(screenshot, pointCheck[1] + " " + pointCheck[4][1] + " " + pointCheck[4][2] + " " + pointCheck[4][3],
-               (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    # pointCheck = points[random.randint(1, len(points))]
+    # print(pointCheck)
+    # cv.putText(screenshot, pointCheck[4][8], (pointCheck[0][0] + 50, pointCheck[0][1] - 100),
+    #            cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    # cv.putText(screenshot, pointCheck[4][7], (pointCheck[0][0] + 50, pointCheck[0][1] - 50),
+    #            cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    # cv.putText(screenshot, pointCheck[1] + "           " + pointCheck[4][1] + " " + pointCheck[4][2],
+    #            (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    # cv.putText(screenshot, pointCheck[4][6], (pointCheck[0][0] + 50, pointCheck[0][1]),
+    #            cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    # cv.putText(screenshot, pointCheck[4][5], (pointCheck[0][0] + 50, pointCheck[0][1] + 50),
+    #            cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    # cv.putText(screenshot, pointCheck[4][4], (pointCheck[0][0] + 50, pointCheck[0][1] + 100),
+    #            cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
     cv.imshow('Map', screenshot)
-    sleep(5)
+    # sleep(10)
     key = cv.waitKey(1)
     if key == ord('q'):
         cv.destroyAllWindows()

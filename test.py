@@ -5,8 +5,8 @@
 #
 # print(points)
 
-for i in range(1, 4):
+for i in range(2, -3, -1):
     print(f'i {i}')
-    for n in range(3 - i, -1, -1):
-        print(f'n {n}')
+    # for n in range(3 - i, -1, -1):
+    #     print(f'n {n}')
 
