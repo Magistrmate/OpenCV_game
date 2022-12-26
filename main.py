@@ -67,7 +67,7 @@ while True:
             try:
                 #    [4]         0      1     2      3           4    5    6    7    8      9       10   11  12   13
                 point.append(['right', 'X', 'X', 'rightUpDown', 'X', 'X', 'X', 'X', 'X', 'UpDown', 'X', 'X', 'X', 'X',
-                              # 14   15
+                              # 14  15
                               'X', 'X'])
                 pointColumn = point[3][0]
                 pointRow = point[3][1]
@@ -86,11 +86,29 @@ while True:
                             if pointRowFind == pointRow - i:
                                 point[4][i + 6] = pointNameFind
                                 break
-                    elif -3 <= abs(pointRowFind - pointRow) <= 3 and pointColumnFind == pointColumn:
-                        for i in range(3, -4, -1):
-                            if pointRowFind == pointRow - i:
-                                point[4][i + 12] = pointNameFind
-                                break
+                    # elif -3 <= abs(pointRowFind - pointRow) <= 3 and pointColumnFind == pointColumn:
+                    #     for (i, n) in zip(range(3, -4, -1), range(3, -3, -1)):
+                    #         if pointRowFind == pointRow + i:
+                    #             point[4][n + 12] = pointNameFind
+                    #             break
+                    elif pointRowFind == pointRow + 3 and pointColumnFind == pointColumn:
+                        point[4][15] = pointNameFind
+                        continue
+                    elif pointRowFind == pointRow + 2 and pointColumnFind == pointColumn:
+                        point[4][14] = pointNameFind
+                        continue
+                    elif pointRowFind == pointRow + 1 and pointColumnFind == pointColumn:
+                        point[4][13] = pointNameFind
+                        continue
+                    elif pointRowFind == pointRow - 1 and pointColumnFind == pointColumn:
+                        point[4][12] = pointNameFind
+                        continue
+                    elif pointRowFind == pointRow - 2 and pointColumnFind == pointColumn:
+                        point[4][11] = pointNameFind
+                        continue
+                    elif pointRowFind == pointRow - 3 and pointColumnFind == pointColumn:
+                        point[4][10] = pointNameFind
+                        continue
             except IndexError or TypeError:
                 cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
                            screenshot)
@@ -153,9 +171,21 @@ while True:
     loop_time = time()
     pointCheck = points[random.randint(1, len(points))]
     print(pointCheck)
-    for (k, l) in zip(range(8, 3, -1), range(-100, 101, 50)):
-        cv.putText(screenshot, pointCheck[4][k], (pointCheck[0][0] + 50, pointCheck[0][1] + l),
+    for (i, n) in zip(range(8, 3, -1), range(-100, 101, 50)):
+        cv.putText(screenshot, pointCheck[4][i], (pointCheck[0][0] + 50, pointCheck[0][1] + n),
                    cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    for (i, n) in zip(range(15, 12, -1), range(150, 49, -50)):
+        cv.putText(screenshot, pointCheck[4][i], (pointCheck[0][0], pointCheck[0][1] + n),
+                   cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    for (i, n) in zip(range(12, 9, -1), range(-50, -151, -50)):
+        cv.putText(screenshot, pointCheck[4][i], (pointCheck[0][0], pointCheck[0][1] + n),
+                   cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    # cv.putText(screenshot, pointCheck[4][15], (pointCheck[0][0], pointCheck[0][1] + 150),
+    #            cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    # cv.putText(screenshot, pointCheck[4][14], (pointCheck[0][0], pointCheck[0][1] + 100),
+    #            cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    # cv.putText(screenshot, pointCheck[4][13], (pointCheck[0][0], pointCheck[0][1] + 50),
+    #            cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
     cv.putText(screenshot, pointCheck[1] + "           " + pointCheck[4][1] + " " + pointCheck[4][2],
                (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
     cv.imshow('Map', screenshot)
