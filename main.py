@@ -39,6 +39,18 @@ def bot_action(target):
     is_bot_in_action = False
 
 
+def before_bot_action(point_target):
+    global is_bot_in_action
+    pointsChance.append(point_target)
+    cv.putText(screenshot, point_target[1], (point_target[0][0], point_target[0][1]),
+               cv.FONT_HERSHEY_SIMPLEX, .4, point_target[2])
+    target_click = wincap.get_screen_position(point_target[0])
+    if not is_bot_in_action:
+        is_bot_in_action = True
+        t = Thread(target=bot_action, args=(target_click,))
+        t.start()
+
+
 while True:
     screenshot = wincap.get_screenshot()
     points = []
@@ -47,10 +59,10 @@ while True:
     for (name, color) in namesColors:
         Picture(name, color, screenshot, points)
     if len(points) > 0:
-        (first_point_for_x, _), _, _ = min(points, key=lambda n: n[0][0])
-        (last_point_for_x, _), _, _ = max(points, key=lambda n: n[0][0])
-        (_, first_point_for_y), _, _ = min(points, key=lambda n: n[0][1])
-        (_, last_point_for_y), _, _ = max(points, key=lambda n: n[0][1])
+        (first_point_for_x, _), _, _ = min(points, key=lambda k: k[0][0])
+        (last_point_for_x, _), _, _ = max(points, key=lambda k: k[0][0])
+        (_, first_point_for_y), _, _ = min(points, key=lambda k: k[0][1])
+        (_, last_point_for_y), _, _ = max(points, key=lambda k: k[0][1])
         for (index, point) in enumerate(points):
             x = point[0][0]
             y = point[0][1]
@@ -65,10 +77,10 @@ while True:
                             #           cv.FONT_HERSHEY_SIMPLEX, .4, color)
         for (index, point) in enumerate(points):
             try:
-                #    [4]         0      1     2      3           4    5    6    7    8      9       10   11  12   13
-                point.append(['right', 'X', 'X', 'rightUpDown', 'X', 'X', 'X', 'X', 'X', 'UpDown', 'X', 'X', 'X', 'X',
-                              # 14  15
-                              'X', 'X'])
+                #    [4]         0      1          2        3    4    5    6    7    8    9   10       11     12   13
+                point.append(['right', 'X', 'rightUpDown', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'UpDown', 'X', 'X',
+                              # 14  15   16   17
+                              'X', 'X', 'X', 'X', 'left', ])
                 pointColumn = point[3][0]
                 pointRow = point[3][1]
                 pointName = point[1]
@@ -76,39 +88,40 @@ while True:
                     pointColumnFind = pointFind[3][0]
                     pointRowFind = pointFind[3][1]
                     pointNameFind = pointFind[1]
-                    if pointRowFind == pointRow and pointColumnFind != pointColumn + 1:
-                        for i in range(2, 4):
-                            if pointColumnFind == pointColumn + i:
-                                point[4][i - 1] = pointNameFind
-                                break
-                    elif -2 <= abs(pointRowFind - pointRow) <= 2 and pointColumnFind == pointColumn + 1:
-                        for i in range(2, -3, -1):
-                            if pointRowFind == pointRow - i:
-                                point[4][i + 6] = pointNameFind
-                                break
-                    # elif -3 <= abs(pointRowFind - pointRow) <= 3 and pointColumnFind == pointColumn:
-                    #     for (i, n) in zip(range(3, -4, -1), range(3, -3, -1)):
-                    #         if pointRowFind == pointRow + i:
-                    #             point[4][n + 12] = pointNameFind
+                    if pointRowFind == pointRow and pointColumnFind == pointColumn + 3:
+                        point[4][1] = pointNameFind
+                    # if pointRowFind == pointRow and pointColumnFind != pointColumn + 1:
+                    #     for i in range(2, 4):
+                    #         if pointColumnFind == pointColumn + i:
+                    #             point[4][i - 1] = pointNameFind
                     #             break
-                    elif pointRowFind == pointRow + 3 and pointColumnFind == pointColumn:
-                        point[4][15] = pointNameFind
-                        continue
-                    elif pointRowFind == pointRow + 2 and pointColumnFind == pointColumn:
-                        point[4][14] = pointNameFind
-                        continue
-                    elif pointRowFind == pointRow + 1 and pointColumnFind == pointColumn:
-                        point[4][13] = pointNameFind
-                        continue
-                    elif pointRowFind == pointRow - 1 and pointColumnFind == pointColumn:
-                        point[4][12] = pointNameFind
-                        continue
-                    elif pointRowFind == pointRow - 2 and pointColumnFind == pointColumn:
-                        point[4][11] = pointNameFind
-                        continue
-                    elif pointRowFind == pointRow - 3 and pointColumnFind == pointColumn:
-                        point[4][10] = pointNameFind
-                        continue
+                    elif -2 <= abs(pointRowFind - pointRow) <= 2 and (pointColumnFind == pointColumn + 1 or
+                                                                      pointColumnFind == pointColumn + 2):
+                        if pointColumnFind == pointColumn + 1:
+                            for i in range(2, -3, -1):
+                                if pointRowFind == pointRow - i:
+                                    point[4][i + 5] = pointNameFind
+                                    break
+                        elif pointColumnFind == pointColumn + 2:
+                            for i in range(1, -2, -1):
+                                if pointRowFind == pointRow - i:
+                                    point[4][9 + i] = pointNameFind
+                                    break
+                            # if pointRowFind == pointRow - 1:
+                            #     point[4][10] = pointNameFind
+                            # elif pointRowFind == pointRow + 1:
+                            #     point[4][9] = pointNameFind
+                    elif 0 < abs(pointRowFind - pointRow) <= 3 and pointColumnFind == pointColumn:
+                        if -3 <= pointRowFind - pointRow < 0:
+                            for i in range(1, 4):
+                                if pointRowFind == pointRow - i:
+                                    point[4][14 + i] = pointNameFind
+                                    break
+                        else:
+                            for i in range(1, 4):
+                                if pointRowFind == pointRow + i:
+                                    point[4][15 - i] = pointNameFind
+                                    break
             except IndexError or TypeError:
                 cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
                            screenshot)
@@ -127,41 +140,13 @@ while True:
         #         rightDown2 = point[4][4]
         #         if right1 != 'X':
         #             if pointName == right2 == right3:
-        #                 pointsChance.append(point)
-        #                 cv.putText(screenshot, point[1], (point[0][0], point[0][1]),
-        #                            cv.FONT_HERSHEY_SIMPLEX, .4, point[2])
-        #                 target_click = wincap.get_screen_position(point[0])
-        #                 if not is_bot_in_action:
-        #                     is_bot_in_action = True
-        #                     t = Thread(target=bot_action, args=(target_click,))
-        #                     t.start()
+        #                 before_bot_action(point)
         #             if pointName == rightUp2 == rightUp1:
-        #                 pointsChance.append(point)
-        #                 cv.putText(screenshot, point[1], (point[0][0], point[0][1]),
-        #                            cv.FONT_HERSHEY_SIMPLEX, .4, point[2])
-        #                 target_click = wincap.get_screen_position(point[0])
-        #                 if not is_bot_in_action:
-        #                     is_bot_in_action = True
-        #                     t = Thread(target=bot_action, args=(target_click,))
-        #                     t.start()
+        #                 before_bot_action(point)
         #             if pointName == rightDown2 == rightDown1:
-        #                 pointsChance.append(point)
-        #                 cv.putText(screenshot, point[1], (point[0][0], point[0][1]),
-        #                            cv.FONT_HERSHEY_SIMPLEX, .4, point[2])
-        #                 target_click = wincap.get_screen_position(point[0])
-        #                 if not is_bot_in_action:
-        #                     is_bot_in_action = True
-        #                     t = Thread(target=bot_action, args=(target_click,))
-        #                     t.start()
+        #                 before_bot_action(point)
         #             if pointName == rightUp1 == rightDown1:
-        #                 pointsChance.append(point)
-        #                 cv.putText(screenshot, point[1], (point[0][0], point[0][1]),
-        #                            cv.FONT_HERSHEY_SIMPLEX, .4, point[2])
-        #                 target_click = wincap.get_screen_position(point[0])
-        #                 if not is_bot_in_action:
-        #                     is_bot_in_action = True
-        #                     t = Thread(target=bot_action, args=(target_click,))
-        #                     t.start()
+        #                 before_bot_action(point)
         #     except IndexError or TypeError:
         #         cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
         #                    screenshot)
@@ -169,25 +154,24 @@ while True:
         #         break
     # print('FPS {}'.format(1 / (time() - loop_time)))
     loop_time = time()
-    pointCheck = points[random.randint(1, len(points))]
+    pointCheck = points[random.randint(0, len(points))]
     print(pointCheck)
-    for (i, n) in zip(range(8, 3, -1), range(-100, 101, 50)):
+    cv.putText(screenshot, pointCheck[1], (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_SIMPLEX,
+               .8, pointCheck[2])
+    cv.putText(screenshot, pointCheck[4][1], (pointCheck[0][0] + 150, pointCheck[0][1]), cv.FONT_HERSHEY_SIMPLEX,
+               .4, pointCheck[2])
+    for (i, n) in zip(range(7, 2, -1), range(-100, 101, 50)):
         cv.putText(screenshot, pointCheck[4][i], (pointCheck[0][0] + 50, pointCheck[0][1] + n),
                    cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-    for (i, n) in zip(range(15, 12, -1), range(150, 49, -50)):
+    for (i, n) in zip(range(10, 7, -1), range(-50, 51, 50)):
+        cv.putText(screenshot, pointCheck[4][i], (pointCheck[0][0] + 100, pointCheck[0][1] + n),
+                   cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    for (i, n) in zip(range(17, 14, -1), range(-150, -49, 50)):
         cv.putText(screenshot, pointCheck[4][i], (pointCheck[0][0], pointCheck[0][1] + n),
                    cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-    for (i, n) in zip(range(12, 9, -1), range(-50, -151, -50)):
+    for (i, n) in zip(range(14, 11, -1), range(50, 151, 50)):
         cv.putText(screenshot, pointCheck[4][i], (pointCheck[0][0], pointCheck[0][1] + n),
                    cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-    # cv.putText(screenshot, pointCheck[4][15], (pointCheck[0][0], pointCheck[0][1] + 150),
-    #            cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-    # cv.putText(screenshot, pointCheck[4][14], (pointCheck[0][0], pointCheck[0][1] + 100),
-    #            cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-    # cv.putText(screenshot, pointCheck[4][13], (pointCheck[0][0], pointCheck[0][1] + 50),
-    #            cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-    cv.putText(screenshot, pointCheck[1] + "           " + pointCheck[4][1] + " " + pointCheck[4][2],
-               (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
     cv.imshow('Map', screenshot)
     sleep(10)
     key = cv.waitKey(1)

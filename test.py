@@ -10,5 +10,6 @@
 #     # for n in range(3 - i, -1, -1):
 #     #     print(f'n {n}')
 
-for (i, n) in zip(range(8, 3, -1), range(-100, 101, 50)):
-    print(i, n)
+for i in range(1, -2, -1):
+    print(i)
+    print(9 + i)
