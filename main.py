@@ -59,10 +59,10 @@ while True:
     for (name, color) in namesColors:
         Picture(name, color, screenshot, points)
     if len(points) > 0:
-        (first_point_for_x, _), _, _ = min(points, key=lambda k: k[0][0])
-        (last_point_for_x, _), _, _ = max(points, key=lambda k: k[0][0])
-        (_, first_point_for_y), _, _ = min(points, key=lambda k: k[0][1])
-        (_, last_point_for_y), _, _ = max(points, key=lambda k: k[0][1])
+        (first_point_for_x, _), _, _ = min(points, key=lambda l: l[0][0])
+        (last_point_for_x, _), _, _ = max(points, key=lambda l: l[0][0])
+        (_, first_point_for_y), _, _ = min(points, key=lambda l: l[0][1])
+        (_, last_point_for_y), _, _ = max(points, key=lambda l: l[0][1])
         for (index, point) in enumerate(points):
             x = point[0][0]
             y = point[0][1]
@@ -79,8 +79,8 @@ while True:
             try:
                 #    [4]         0      1          2        3    4    5    6    7    8    9   10       11     12   13
                 point.append(['right', 'X', 'rightUpDown', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'UpDown', 'X', 'X',
-                              # 14  15   16   17
-                              'X', 'X', 'X', 'X', 'left', ])
+                              # 14  15   16   17    18     19     20          21   22   23   24   25   26   27   28
+                              'X', 'X', 'X', 'X', 'left', 'X', 'leftUpDown', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'])
                 pointColumn = point[3][0]
                 pointRow = point[3][1]
                 pointName = point[1]
@@ -88,30 +88,25 @@ while True:
                     pointColumnFind = pointFind[3][0]
                     pointRowFind = pointFind[3][1]
                     pointNameFind = pointFind[1]
-                    if pointRowFind == pointRow and pointColumnFind == pointColumn + 3:
-                        point[4][1] = pointNameFind
-                    # if pointRowFind == pointRow and pointColumnFind != pointColumn + 1:
-                    #     for i in range(2, 4):
-                    #         if pointColumnFind == pointColumn + i:
-                    #             point[4][i - 1] = pointNameFind
-                    #             break
-                    elif -2 <= abs(pointRowFind - pointRow) <= 2 and (pointColumnFind == pointColumn + 1 or
-                                                                      pointColumnFind == pointColumn + 2):
-                        if pointColumnFind == pointColumn + 1:
-                            for i in range(2, -3, -1):
-                                if pointRowFind == pointRow - i:
-                                    point[4][i + 5] = pointNameFind
-                                    break
-                        elif pointColumnFind == pointColumn + 2:
-                            for i in range(1, -2, -1):
-                                if pointRowFind == pointRow - i:
-                                    point[4][9 + i] = pointNameFind
-                                    break
-                            # if pointRowFind == pointRow - 1:
-                            #     point[4][10] = pointNameFind
-                            # elif pointRowFind == pointRow + 1:
-                            #     point[4][9] = pointNameFind
-                    elif 0 < abs(pointRowFind - pointRow) <= 3 and pointColumnFind == pointColumn:
+                    for (r, o, c, k) in zip((1, -1), (1, 19), (5, 23), (9, 27)):
+                        if pointRowFind == pointRow and pointColumnFind == pointColumn + 3 * r:
+                            point[4][o] = pointNameFind
+                            break
+                        elif -2 <= abs(pointRowFind - pointRow) <= 2 and (pointColumnFind == pointColumn + 1 * r or
+                                                                          pointColumnFind == pointColumn + 2 * r):
+                            if pointColumnFind == pointColumn + 1 * r:
+                                for i in range(2, -3, -1):
+                                    if pointRowFind == pointRow - i:
+                                        point[4][i + c] = pointNameFind
+                                        break
+                                break
+                            elif pointColumnFind == pointColumn + 2 * r:
+                                for i in range(1, -2, -1):
+                                    if pointRowFind == pointRow - i:
+                                        point[4][i + k] = pointNameFind
+                                        break
+                                break
+                    if 0 < abs(pointRowFind - pointRow) <= 3 and pointColumnFind == pointColumn:
                         if -3 <= pointRowFind - pointRow < 0:
                             for i in range(1, 4):
                                 if pointRowFind == pointRow - i:
@@ -158,14 +153,17 @@ while True:
     print(pointCheck)
     cv.putText(screenshot, pointCheck[1], (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_SIMPLEX,
                .8, pointCheck[2])
-    cv.putText(screenshot, pointCheck[4][1], (pointCheck[0][0] + 150, pointCheck[0][1]), cv.FONT_HERSHEY_SIMPLEX,
-               .4, pointCheck[2])
-    for (i, n) in zip(range(7, 2, -1), range(-100, 101, 50)):
-        cv.putText(screenshot, pointCheck[4][i], (pointCheck[0][0] + 50, pointCheck[0][1] + n),
-                   cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-    for (i, n) in zip(range(10, 7, -1), range(-50, 51, 50)):
-        cv.putText(screenshot, pointCheck[4][i], (pointCheck[0][0] + 100, pointCheck[0][1] + n),
-                   cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    for (r, o) in zip((1, -1), (1, 19)):
+        cv.putText(screenshot, pointCheck[4][o], (pointCheck[0][0] + 150 * r, pointCheck[0][1]),
+                   cv.FONT_HERSHEY_SIMPLEX,
+                   .4, pointCheck[2])
+    for (c, k) in zip((1, -1), (0, 18)):
+        for (i, n) in zip(range(7, 2, -1), range(-100, 101, 50)):
+            cv.putText(screenshot, pointCheck[4][i + k], (pointCheck[0][0] + 50 * c, pointCheck[0][1] + n),
+                       cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+        for (i, n) in zip(range(10, 7, -1), range(-50, 51, 50)):
+            cv.putText(screenshot, pointCheck[4][i + k], (pointCheck[0][0] + 100 * c, pointCheck[0][1] + n),
+                       cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
     for (i, n) in zip(range(17, 14, -1), range(-150, -49, 50)):
         cv.putText(screenshot, pointCheck[4][i], (pointCheck[0][0], pointCheck[0][1] + n),
                    cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
