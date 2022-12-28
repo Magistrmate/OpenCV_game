@@ -29,25 +29,37 @@ is_bot_in_action = False
 loop_time = time()
 
 
-def bot_action(target):
-    pydirectinput.moveTo(target[0])
+def bot_action(target, a, b):
+    pydirectinput.moveTo(target[0], target[1])
     pydirectinput.mouseDown()
-    pydirectinput.moveTo(target[0] + 50, target[1])
+    pydirectinput.moveTo(target[0] + 50 * a, target[1] + 50 * b)
     pydirectinput.mouseUp()
     sleep(5)
     global is_bot_in_action
     is_bot_in_action = False
 
 
-def before_bot_action(point_target):
+def before_bot_action(point_target, direction, a=0, b=0):
+    if direction == 'right':
+        a = 1
+        b = 0
+    elif direction == 'left':
+        a = -1
+        b = 0
+    elif direction == 'up':
+        a = 0
+        b = -1
+    elif direction == 'down':
+        a = 0
+        b = 1
     global is_bot_in_action
-    pointsChance.append(point_target)
-    cv.putText(screenshot, point_target[1], (point_target[0][0], point_target[0][1]),
+    # pointsChance.append(point_target)
+    cv.putText(screenshot, direction, (point_target[0][0], point_target[0][1]),
                cv.FONT_HERSHEY_SIMPLEX, .4, point_target[2])
     target_click = wincap.get_screen_position(point_target[0])
     if not is_bot_in_action:
         is_bot_in_action = True
-        t = Thread(target=bot_action, args=(target_click,))
+        t = Thread(target=bot_action, args=(target_click, a, b))
         t.start()
 
 
@@ -122,59 +134,101 @@ while True:
                            screenshot)
                 print('error')
                 break
-        # pointsChance = []
-        # for point in points:
-        #     try:
-        #         pointName = point[1]
-        #         right2 = point[4][1]
-        #         right3 = point[4][2]
-        #         rightUp2 = point[4][8]
-        #         rightUp1 = point[4][7]
-        #         right1 = point[4][6]
-        #         rightDown1 = point[4][5]
-        #         rightDown2 = point[4][4]
-        #         if right1 != 'X':
-        #             if pointName == right2 == right3:
-        #                 before_bot_action(point)
-        #             if pointName == rightUp2 == rightUp1:
-        #                 before_bot_action(point)
-        #             if pointName == rightDown2 == rightDown1:
-        #                 before_bot_action(point)
-        #             if pointName == rightUp1 == rightDown1:
-        #                 before_bot_action(point)
-        #     except IndexError or TypeError:
-        #         cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
-        #                    screenshot)
-        #         print('error')
-        #         break
     # print('FPS {}'.format(1 / (time() - loop_time)))
     loop_time = time()
-    pointCheck = points[random.randint(0, len(points))]
-    print(pointCheck)
-    cv.putText(screenshot, pointCheck[1], (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_SIMPLEX,
-               .8, pointCheck[2])
-    for (r, o) in zip((1, -1), (1, 19)):
-        cv.putText(screenshot, pointCheck[4][o], (pointCheck[0][0] + 150 * r, pointCheck[0][1]),
-                   cv.FONT_HERSHEY_SIMPLEX,
-                   .4, pointCheck[2])
-    for (c, k) in zip((1, -1), (0, 18)):
-        for (i, n) in zip(range(7, 2, -1), range(-100, 101, 50)):
-            cv.putText(screenshot, pointCheck[4][i + k], (pointCheck[0][0] + 50 * c, pointCheck[0][1] + n),
-                       cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-        for (i, n) in zip(range(10, 7, -1), range(-50, 51, 50)):
-            cv.putText(screenshot, pointCheck[4][i + k], (pointCheck[0][0] + 100 * c, pointCheck[0][1] + n),
-                       cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-    for (i, n) in zip(range(17, 14, -1), range(-150, -49, 50)):
-        cv.putText(screenshot, pointCheck[4][i], (pointCheck[0][0], pointCheck[0][1] + n),
-                   cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-    for (i, n) in zip(range(14, 11, -1), range(50, 151, 50)):
-        cv.putText(screenshot, pointCheck[4][i], (pointCheck[0][0], pointCheck[0][1] + n),
-                   cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    # pointCheck = points[random.randint(0, len(points))]
+    # print(pointCheck)
+    # cv.putText(screenshot, pointCheck[1], (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_SIMPLEX,
+    #            .8, pointCheck[2])
+    # for (r, o) in zip((1, -1), (1, 19)):
+    #     cv.putText(screenshot, pointCheck[4][o], (pointCheck[0][0] + 150 * r, pointCheck[0][1]),
+    #                cv.FONT_HERSHEY_SIMPLEX,
+    #                .4, pointCheck[2])
+    # for (c, k) in zip((1, -1), (0, 18)):
+    #     for (i, n) in zip(range(7, 2, -1), range(-100, 101, 50)):
+    #         cv.putText(screenshot, pointCheck[4][i + k], (pointCheck[0][0] + 50 * c, pointCheck[0][1] + n),
+    #                    cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    #     for (i, n) in zip(range(10, 7, -1), range(-50, 51, 50)):
+    #         cv.putText(screenshot, pointCheck[4][i + k], (pointCheck[0][0] + 100 * c, pointCheck[0][1] + n),
+    #                    cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    # for (i, n) in zip(range(17, 14, -1), range(-150, -49, 50)):
+    #     cv.putText(screenshot, pointCheck[4][i], (pointCheck[0][0], pointCheck[0][1] + n),
+    #                cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    # for (i, n) in zip(range(14, 11, -1), range(50, 151, 50)):
+    #     cv.putText(screenshot, pointCheck[4][i], (pointCheck[0][0], pointCheck[0][1] + n),
+    #                cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    # sleep(10)
+    for point in points:
+        try:
+            pointName = point[1]
+            right1 = point[4][5]
+            right2 = point[4][9]
+            right3 = point[4][1]
+            rightUp1 = point[4][7]
+            rightUp2 = point[4][6]
+            rightUp3 = point[4][10]
+            rightDown1 = point[4][4]
+            rightDown2 = point[4][3]
+            rightDown3 = point[4][8]
+            up1 = point[4][17]
+            up2 = point[4][16]
+            up3 = point[4][15]
+            down1 = point[4][14]
+            down2 = point[4][13]
+            down3 = point[4][12]
+            left1 = point[4][23]
+            left2 = point[4][27]
+            left3 = point[4][19]
+            leftUp1 = point[4][25]
+            leftUp2 = point[4][24]
+            leftUp3 = point[4][28]
+            leftDown1 = point[4][22]
+            leftDown2 = point[4][21]
+            leftDown3 = point[4][26]
+            if right1 != 'X':
+                if pointName == right2 == right3:
+                    before_bot_action(point, 'right')
+                if pointName == rightUp1 == rightUp2:
+                    before_bot_action(point, 'right')
+                if pointName == rightDown1 == rightDown2:
+                    before_bot_action(point, 'right')
+                if pointName == rightUp2 == rightDown1:
+                    before_bot_action(point, 'right')
+            if left1 != 'X':
+                if pointName == left2 == left3:
+                    before_bot_action(point, 'left')
+                if pointName == leftUp1 == leftUp2:
+                    before_bot_action(point, 'left')
+                if pointName == leftDown1 == leftDown2:
+                    before_bot_action(point, 'left')
+                if pointName == leftUp2 == leftDown1:
+                    before_bot_action(point, 'left')
+            if up3 != 'X':
+                if pointName == up1 == up2:
+                    before_bot_action(point, 'up')
+                if pointName == rightUp2 == rightUp3:
+                    before_bot_action(point, 'up')
+                if pointName == leftUp2 == leftUp3:
+                    before_bot_action(point, 'up')
+                if pointName == rightUp2 == leftUp2:
+                    before_bot_action(point, 'up')
+            if down1 != 'X':
+                if pointName == down2 == down3:
+                    before_bot_action(point, 'down')
+                if pointName == rightDown1 == rightDown3:
+                    before_bot_action(point, 'down')
+                if pointName == leftDown1 == leftDown3:
+                    before_bot_action(point, 'down')
+                if pointName == rightDown1 == leftDown1:
+                    before_bot_action(point, 'down')
+        except IndexError or TypeError:
+            cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
+                       screenshot)
+            print('error')
+            break
     cv.imshow('Map', screenshot)
-    sleep(10)
     key = cv.waitKey(1)
     if key == ord('q'):
         cv.destroyAllWindows()
         break
-    # elif key == ord('f'):
     # cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time), screenshot)
