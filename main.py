@@ -39,19 +39,19 @@ def bot_action(target, a, b):
     is_bot_in_action = False
 
 
-def before_bot_action(point_target, direction, a=0, b=0):
-    if direction == 'right':
-        a = 1
-        b = 0
-    elif direction == 'left':
-        a = -1
-        b = 0
-    elif direction == 'up':
-        a = 0
-        b = -1
-    elif direction == 'down':
-        a = 0
-        b = 1
+def before_bot_action(point_target, direction, a, b):
+    # if direction == 'right1':
+    #     a = 1
+    #     b = 0
+    # elif direction == 'left1':
+    #     a = -1
+    #     b = 0
+    # elif direction == 'up1':
+    #     a = 0
+    #     b = -1
+    # elif direction == 'down1':
+    #     a = 0
+    #     b = 1
     global is_bot_in_action
     # pointsChance.append(point_target)
     cv.putText(screenshot, direction, (point_target[0][0], point_target[0][1]),
@@ -185,42 +185,59 @@ while True:
             leftDown1 = point[4][22]
             leftDown2 = point[4][21]
             leftDown3 = point[4][26]
-            if right1 != 'X':
-                if pointName == right2 == right3:
-                    before_bot_action(point, 'right')
-                if pointName == rightUp1 == rightUp2:
-                    before_bot_action(point, 'right')
-                if pointName == rightDown1 == rightDown2:
-                    before_bot_action(point, 'right')
-                if pointName == rightUp2 == rightDown1:
-                    before_bot_action(point, 'right')
-            if left1 != 'X':
-                if pointName == left2 == left3:
-                    before_bot_action(point, 'left')
-                if pointName == leftUp1 == leftUp2:
-                    before_bot_action(point, 'left')
-                if pointName == leftDown1 == leftDown2:
-                    before_bot_action(point, 'left')
-                if pointName == leftUp2 == leftDown1:
-                    before_bot_action(point, 'left')
-            if up3 != 'X':
-                if pointName == up1 == up2:
-                    before_bot_action(point, 'up')
-                if pointName == rightUp2 == rightUp3:
-                    before_bot_action(point, 'up')
-                if pointName == leftUp2 == leftUp3:
-                    before_bot_action(point, 'up')
-                if pointName == rightUp2 == leftUp2:
-                    before_bot_action(point, 'up')
-            if down1 != 'X':
-                if pointName == down2 == down3:
-                    before_bot_action(point, 'down')
-                if pointName == rightDown1 == rightDown3:
-                    before_bot_action(point, 'down')
-                if pointName == leftDown1 == leftDown3:
-                    before_bot_action(point, 'down')
-                if pointName == rightDown1 == leftDown1:
-                    before_bot_action(point, 'down')
+            #                 0        1        2       3          4        5            6      7  8    9
+            pointAround = [(right1, right2, right3, rightUp1, rightUp2, rightDown1, rightDown2, 1, 0, 'right'),
+                           (left1, left2, left3, leftUp1, leftUp2, leftDown1, leftDown2, -1, 0, 'left'),
+                           # 0    1    2     3         4           5       6
+                           (up3, up1, up2, rightUp3, rightUp2, leftUp2, leftUp3, 0, -1, 'up'),
+                           # 0       1      2         3          4           5          6
+                           (down1, down2, down3, rightDown3, rightDown1, leftDown1, leftDown3, 0, 1, 'down')]
+            for pointCheck in pointAround:
+                if pointCheck[0] != 'X':
+                    if pointName == pointCheck[1] == pointCheck[2]:
+                        before_bot_action(point, pointCheck[9], pointCheck[7], pointCheck[8])
+                    if pointName == pointCheck[3] == pointCheck[4]:
+                        before_bot_action(point, pointCheck[9], pointCheck[7], pointCheck[8])
+                    if pointName == pointCheck[5] == pointCheck[6]:
+                        before_bot_action(point, pointCheck[9], pointCheck[7], pointCheck[8])
+                    if pointName == pointCheck[4] == pointCheck[5]:
+                        before_bot_action(point, pointCheck[9], pointCheck[7], pointCheck[8])
+            # if right1 != 'X':
+            #     if pointName == right2 == right3:
+            #         before_bot_action(point, 'right')
+            #     if pointName == rightUp1 == rightUp2:
+            #         before_bot_action(point, 'right')
+            #     if pointName == rightDown1 == rightDown2:
+            #         before_bot_action(point, 'right')
+            #     if pointName == rightUp2 == rightDown1:
+            #         before_bot_action(point, 'right')
+            # if left1 != 'X':
+            #     if pointName == left2 == left3:
+            #         before_bot_action(point, 'left')
+            #     if pointName == leftUp1 == leftUp2:
+            #         before_bot_action(point, 'left')
+            #     if pointName == leftDown1 == leftDown2:
+            #         before_bot_action(point, 'left')
+            #     if pointName == leftUp2 == leftDown1:
+            #         before_bot_action(point, 'left')
+            # if up3 != 'X':
+            #     if pointName == up1 == up2:
+            #         before_bot_action(point, 'up')
+            #     if pointName == rightUp2 == rightUp3:
+            #         before_bot_action(point, 'up')
+            #     if pointName == leftUp2 == leftUp3:
+            #         before_bot_action(point, 'up')
+            #     if pointName == rightUp2 == leftUp2:
+            #         before_bot_action(point, 'up')
+            # if down1 != 'X':
+            #     if pointName == down2 == down3:
+            #         before_bot_action(point, 'down')
+            #     if pointName == rightDown1 == rightDown3:
+            #         before_bot_action(point, 'down')
+            #     if pointName == leftDown1 == leftDown3:
+            #         before_bot_action(point, 'down')
+            #     if pointName == rightDown1 == leftDown1:
+            #         before_bot_action(point, 'down')
         except IndexError or TypeError:
             cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
                        screenshot)

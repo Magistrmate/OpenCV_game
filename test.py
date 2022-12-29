@@ -10,6 +10,11 @@
 #     # for n in range(3 - i, -1, -1):
 #     #     print(f'n {n}')
 
-for i in range(1, -2, -1):
-    print(i)
-    print(9 + i)
+# for i in range(1, -2, -1):
+#     print(i)
+#     print(9 + i)
+
+pointChance = [('right1', 'right2'), 'left1', 'up3', 'down1']
+for r in pointChance:
+    print(r[0])
+    print(r[1])
