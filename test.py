@@ -14,7 +14,23 @@
 #     print(i)
 #     print(9 + i)
 
-pointChance = [('right1', 'right2'), 'left1', 'up3', 'down1']
-for r in pointChance:
-    print(r[0])
-    print(r[1])
+pointChance = [('right1', 'right2'), ('left1', 'left2'), (-1, 0, 1)]
+for (r, i) in zip(pointChance, enumerate(pointChance[2])):
+    print(r)
+    print(i[0])
+    # 0
+    # 1 0
+    #
+    print(i[2], i[3])
+    # 1
+    # -1 0
+    # 1 - 2
+    print(i[0], i[1])
+    # 2
+    # 0 -1
+    # 2 - 2
+    print(i[1], i[0])
+    # 3 0
+    # 1
+    # 3 - 3
+    print(i[1], i[2])
