@@ -14,23 +14,29 @@
 #     print(i)
 #     print(9 + i)
 
-pointChance = [('right1', 'right2'), ('left1', 'left2'), (-1, 0, 1)]
-for (r, i) in zip(pointChance, enumerate(pointChance[2])):
-    print(r)
-    print(i[0])
-    # 0
-    # 1 0
-    #
-    print(i[2], i[3])
-    # 1
-    # -1 0
-    # 1 - 2
-    print(i[0], i[1])
-    # 2
-    # 0 -1
-    # 2 - 2
-    print(i[1], i[0])
-    # 3 0
-    # 1
-    # 3 - 3
-    print(i[1], i[2])
+# pointChance = [('right1', 'right2'), ('left1', 'left2'), (-1, 0, 1)]
+# for (r, i) in zip(pointChance, enumerate(pointChance[2])):
+#     print(r)
+#     print(i[0])
+#     # 0
+#     # 1 0
+#     #
+#     print(i[2], i[3])
+#     # 1
+#     # -1 0
+#     # 1 - 2
+#     print(i[0], i[1])
+#     # 2
+#     # 0 -1
+#     # 2 - 2
+#     print(i[1], i[0])
+#     # 3 0
+#     # 1
+#     # 3 - 3
+#     print(i[1], i[2])
+
+for (m, d) in zip((1, -1), (0, 7)):  # 2 4
+    for (c, n) in zip(range(-4 * m, m, m), range(5 + d, 12 + d * 2, (3 - m))):
+        print('\n')
+        for r in range(-1, 2, 1):
+            print(f'{m} + {c} + {r} = {m + c + r} + {n} = {m + c + r + n}')
