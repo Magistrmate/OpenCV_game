@@ -35,8 +35,8 @@
 #     # 3 - 3
 #     print(i[1], i[2])
 
-for (m, d) in zip((1, -1), (0, 7)):  # 2 4
-    for (c, n) in zip(range(-4 * m, m, m), range(5 + d, 12 + d * 2, (3 - m))):
+for (m, d) in zip((1, -1), (0, 10)):  # 2 4
+    for (c, n) in zip(range(-7 * m, 0, m), range(8 + d, 21 + d * 3, (3 - m))):
         print('\n')
         for r in range(-1, 2, 1):
             print(f'{m} + {c} + {r} = {m + c + r} + {n} = {m + c + r + n}')
