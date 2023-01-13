@@ -174,6 +174,51 @@ while True:
                                         # -1 +  1 +  1 =  1 + 24 = 25
                                         point[4][m + x + y + n] = pointNameFind
                                         break
+                    if -1 <= x <= 1 and (-12 <= y <= -2 or 2 <= y <= 12):
+                        for (m, d) in zip((-1, 1), (0, 56)):
+                            for (r, n) in zip(range(-12 * m, -1 * m, m), range(39 + d, 93 + d * 3, (3 - m))):
+                                if r == y:
+                                    # for r in range(-1, 2, 1):
+
+                                    #  m  r(x) c(y)        n
+                                    # -1 + -1 + 12 = 10 + 39 = 49
+                                    #  1 + -12 +  0 = -11 + 61 = 50
+                                    #  1 + -12 +  1 = -10 + 61 = 51
+
+                                    #  1 + -11 + -1 = -11 + 63  = 52
+                                    #  1 + -4 +  0 = -3 + 5  = 2
+                                    #  1 + -4 +  1 = -2 + 5  = 3
+
+                                    #  1 + -3 + -1 = -3 + 7  = 4
+                                    #  1 + -3 +  0 = -2 + 7  = 5
+                                    #  1 + -3 +  1 = -1 + 7  = 6
+
+                                    #  1 + -2 + -1 = -2 + 9  = 7
+                                    #  1 + -2 +  0 = -1 + 9  = 8
+                                    #  1 + -2 +  1 =  0 + 9  = 9
+
+                                    #  1 + -1 + -1 = -1 + 11 = 10
+                                    #  1 + -1 +  0 =  0 + 11 = 11
+                                    #  1 + -1 +  1 =  1 + 11 = 12
+                                    #                        = 13
+
+                                    # -1 +  4 + -1 =  2 + 12 = 14
+                                    # -1 +  4 +  0 =  3 + 12 = 15
+                                    # -1 +  4 +  1 =  4 + 12 = 16
+
+                                    # -1 +  3 + -1 =  1 + 16 = 17
+                                    # -1 +  3 +  0 =  2 + 16 = 18
+                                    # -1 +  3 +  1 =  3 + 16 = 19
+
+                                    # -1 +  2 + -1 =  0 + 20 = 20
+                                    # -1 +  2 +  0 =  1 + 20 = 21
+                                    # -1 +  2 +  1 =  2 + 20 = 22
+
+                                    # -1 +  1 + -1 = -1 + 24 = 23
+                                    # -1 +  1 +  0 =  0 + 24 = 24
+                                    # -1 +  1 +  1 =  1 + 24 = 25
+                                    point[4][m + x + y + n] = pointNameFind
+                                    break
             except IndexError or TypeError:
                 cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
                            screenshot)
@@ -197,6 +242,12 @@ while True:
             for r in range(-1, 2, 1):
                 cv.putText(screenshot, pointCheck[4][m + c + r + n], (pointCheck[0][0] + c * 50,
                                                                       pointCheck[0][1] + r * 50),
+                           cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    for (m, d) in zip((-1, 1), (0, 56)):
+        for (c, n) in zip(range(-12 * m, -1 * m, m), range(39 + d, 93 + d * 2, (3 - m))):
+            for r in range(-1, 2, 1):
+                cv.putText(screenshot, pointCheck[4][m + c + r + n], (pointCheck[0][0] + r * 50,
+                                                                      pointCheck[0][1] + c * 50),
                            cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
     sleep(10)
     '''for point in points:
