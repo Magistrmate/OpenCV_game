@@ -92,17 +92,31 @@ while True:
                               # 23 24   25   26   27   28   29   30   31   32   33   34   35   36   37   38   39   40
                               #  1  2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18
                               'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X',
-                              #  1  1    1
-                              # -1  0    1
-                              # 41 42   43
-                              # 19 20   21
-                              'X', 'X', 'X', 'Up0', 'X', 'Down0', 'X',
-                              # 30 31(1)|32(2)|33(3)|34(4)|35(5)|36(6)|37(7)|38(8)|39(9)|40(10)|41(11)|42(12)|43(13)
-                              #                                                                        44(14)|45(15)
-                              'Up', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X',
-                              # 46 47(1)|48(2)|49(3)|50(4)|51(5)|52(6)|53(7)|54(8)|55(9)|56(10)|57(11)|58(12)|59(13)
-                              #                                                                        60(14)|61(15)
-                              'Down', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'])
+                              #  1  1    1           0            -1
+                              # -1  0    1          -1             0
+                              # 41 42   43    44    45     46     47    48
+                              # 19 20   21     1     2      1      2     1
+                              'X', 'X', 'X', 'Up0', 'X', 'Down0', 'X', 'Up',
+                              #  -1   0   1  -1    0    1   -1    0    1   -1    0    1   -1    0    1   -1    0    1
+                              #  12  12  12  11   11   11   10   10   10    9    9    9    8    8    8    7    7    7
+                              #  49  50  51  52   53   54   55   56   57   58   59   60   61   62   63   64   65   66
+                              #   1   2   3   4    5    6    7    8    9   10   11   12   13   14   15   16   17   18
+                              'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X',
+                              #  -1   0   1  -1    0    1   -1    0    1   -1    0    1   -1    0    1
+                              #   6   6   6   5    5    5    4    4    4    3    3    3    2    2    2
+                              #  67  68  69  70   71   72   73   74   75   76   77   78   79   80   81     82
+                              #  19  20  21  22   23   24   25   26   27   28   29   30   31   32   33      1
+                              'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'Down',
+                              #  -1  0   1   -1    0    1   -1    0    1   -1    0    1   -1    0    1   -1    0    1
+                              #  -2 -2  -2   -3   -3   -3   -4   -4   -4   -5   -5   -5   -6   -6   -6   -7   -7   -7
+                              #  83 84  85   86   87   88   89   90   91   92   93   94   95   96   97   98   99  100
+                              #   1  2   3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18
+                              'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X',
+                              #  -1   0   1  -1    0    1   -1    0    1   -1    0    1   -1    0    1
+                              #  -8  -8  -8  -9   -9   -9  -10  -10  -10  -11  -11  -11  -12  -12  -12
+                              # 101 102 103 104  105  106  107  108  109  110  111  112  113   114 115
+                              #  19  20  21  22   23   24   25   26   27   28   29   30   31   32   33
+                              'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'])
                 pointColumn = point[3][0]
                 pointRow = point[3][1]
                 pointName = point[1]
@@ -110,57 +124,56 @@ while True:
                     pointColumnFind = pointFind[3][0]
                     pointRowFind = pointFind[3][1]
                     pointNameFind = pointFind[1]
-                    #                          4
                     x = pointColumnFind - pointColumn
                     y = pointRowFind - pointRow
-
                     if -7 <= x <= 7 and -1 <= y <= 1:
-                        # if -4 <= x <= 4 and -1 <= y <= 1:
-                        for (m, d) in zip((1, -1), (0, 10)):
-                            for (c, n) in zip(range(-7 * m, 0, m), range(8 + d, 21 + d * 3, (3 - m))):
-                                # for (c, n) in zip(range(-4 * m, m, m), range(5 + d, 12 + d * 2, (3 - m))):
-                                if c == x:
-                                    # for r in range(-1, 2, 1):
+                        if x == 0 and y != 0:
+                            point[4][46 + y] = pointNameFind
+                        else:
+                            for (m, d) in zip((1, -1), (0, 10)):
+                                for (c, n) in zip(range(-7 * m, 0, m), range(8 + d, 21 + d * 3, (3 - m))):
+                                    if c == x:
+                                        # for r in range(-1, 2, 1):
 
-                                    #  m   c(x) r(y)      n
-                                    #  1 + -7 + -1 = -7 + 8  = 1
-                                    #  1 + -7 +  0 = -6 + 8  = 2
-                                    #  1 + -7 +  1 = -
+                                        #  m   c(x) r(y)      n
+                                        #  1 + -7 + -1 = -7 + 8  = 1
+                                        #  1 + -7 +  0 = -6 + 8  = 2
+                                        #  1 + -7 +  1 = -
 
-                                    #  1 + -4 + -1 = -4 + 5  = 1
-                                    #  1 + -4 +  0 = -3 + 5  = 2
-                                    #  1 + -4 +  1 = -2 + 5  = 3
+                                        #  1 + -4 + -1 = -4 + 5  = 1
+                                        #  1 + -4 +  0 = -3 + 5  = 2
+                                        #  1 + -4 +  1 = -2 + 5  = 3
 
-                                    #  1 + -3 + -1 = -3 + 7  = 4
-                                    #  1 + -3 +  0 = -2 + 7  = 5
-                                    #  1 + -3 +  1 = -1 + 7  = 6
+                                        #  1 + -3 + -1 = -3 + 7  = 4
+                                        #  1 + -3 +  0 = -2 + 7  = 5
+                                        #  1 + -3 +  1 = -1 + 7  = 6
 
-                                    #  1 + -2 + -1 = -2 + 9  = 7
-                                    #  1 + -2 +  0 = -1 + 9  = 8
-                                    #  1 + -2 +  1 =  0 + 9  = 9
+                                        #  1 + -2 + -1 = -2 + 9  = 7
+                                        #  1 + -2 +  0 = -1 + 9  = 8
+                                        #  1 + -2 +  1 =  0 + 9  = 9
 
-                                    #  1 + -1 + -1 = -1 + 11 = 10
-                                    #  1 + -1 +  0 =  0 + 11 = 11
-                                    #  1 + -1 +  1 =  1 + 11 = 12
-                                    #                        = 13
+                                        #  1 + -1 + -1 = -1 + 11 = 10
+                                        #  1 + -1 +  0 =  0 + 11 = 11
+                                        #  1 + -1 +  1 =  1 + 11 = 12
+                                        #                        = 13
 
-                                    # -1 +  4 + -1 =  2 + 12 = 14
-                                    # -1 +  4 +  0 =  3 + 12 = 15
-                                    # -1 +  4 +  1 =  4 + 12 = 16
+                                        # -1 +  4 + -1 =  2 + 12 = 14
+                                        # -1 +  4 +  0 =  3 + 12 = 15
+                                        # -1 +  4 +  1 =  4 + 12 = 16
 
-                                    # -1 +  3 + -1 =  1 + 16 = 17
-                                    # -1 +  3 +  0 =  2 + 16 = 18
-                                    # -1 +  3 +  1 =  3 + 16 = 19
+                                        # -1 +  3 + -1 =  1 + 16 = 17
+                                        # -1 +  3 +  0 =  2 + 16 = 18
+                                        # -1 +  3 +  1 =  3 + 16 = 19
 
-                                    # -1 +  2 + -1 =  0 + 20 = 20
-                                    # -1 +  2 +  0 =  1 + 20 = 21
-                                    # -1 +  2 +  1 =  2 + 20 = 22
+                                        # -1 +  2 + -1 =  0 + 20 = 20
+                                        # -1 +  2 +  0 =  1 + 20 = 21
+                                        # -1 +  2 +  1 =  2 + 20 = 22
 
-                                    # -1 +  1 + -1 = -1 + 24 = 23
-                                    # -1 +  1 +  0 =  0 + 24 = 24
-                                    # -1 +  1 +  1 =  1 + 24 = 25
-                                    point[4][m + x + y + n] = pointNameFind
-                                    break
+                                        # -1 +  1 + -1 = -1 + 24 = 23
+                                        # -1 +  1 +  0 =  0 + 24 = 24
+                                        # -1 +  1 +  1 =  1 + 24 = 25
+                                        point[4][m + x + y + n] = pointNameFind
+                                        break
             except IndexError or TypeError:
                 cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
                            screenshot)
@@ -170,12 +183,17 @@ while True:
     loop_time = time()
     pointCheck = points[random.randint(0, len(points))]
     print(pointCheck)
-    cv.putText(screenshot, pointCheck[1], (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_SIMPLEX,
-               .8, pointCheck[2])
+    # for (a, b) in zip(range(-1, 2, 1), (1, 45, 47)):
+    #     cv.putText(screenshot, pointCheck[b], (pointCheck[0][0], pointCheck[0][1] + a * 50), cv.FONT_HERSHEY_DUPLEX,
+    #                .4, pointCheck[2])
+    cv.putText(screenshot, pointCheck[1], (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_DUPLEX,
+               .6, pointCheck[2])
+    cv.putText(screenshot, pointCheck[4][45], (pointCheck[0][0], pointCheck[0][1] - 50), cv.FONT_HERSHEY_SIMPLEX,
+               .4, pointCheck[2])
+    cv.putText(screenshot, pointCheck[4][47], (pointCheck[0][0], pointCheck[0][1] + 50), cv.FONT_HERSHEY_SIMPLEX,
+               .4, pointCheck[2])
     for (m, d) in zip((1, -1), (0, 10)):
-        # for (m, d) in zip((1, -1), (0, 7)):
         for (c, n) in zip(range(-7 * m, 0, m), range(8 + d, 21 + d * 3, (3 - m))):
-            # for (c, n) in zip(range(-4 * m, m, m), range(5 + d, 12 + d * 2, (3 - m))):
             for r in range(-1, 2, 1):
                 cv.putText(screenshot, pointCheck[4][m + c + r + n], (pointCheck[0][0] + c * 50,
                                                                       pointCheck[0][1] + r * 50),
