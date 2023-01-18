@@ -74,7 +74,7 @@ while True:
                         if y0 <= y <= (y0 + 50):
                             points[index].append((column, row))
                             # cv.putText(screenshot, str(column) + " " + str(row) + " " + name, (x - 20, y - 20),
-                            #           cv.FONT_HERSHEY_SIMPLEX, .4, color)
+                            #            cv.FONT_HERSHEY_SIMPLEX, .4, color)
         for (index, point) in enumerate(points):
             try:
                 # [4]           0
@@ -127,7 +127,7 @@ while True:
                     x = pointColumnFind - pointColumn
                     y = pointRowFind - pointRow
                     if -7 <= x <= 7 and -12 <= y <= 12:
-                        if x == 0 and y != 0:
+                        if x == 0 and (y == 1 or y == -1):
                             point[4][46 + y] = pointNameFind
                         if (-7 <= x <= -1 or 1 <= x <= 7) and -1 <= y <= 1:
                             for (m, d) in zip((1, -1), (0, 10)):
@@ -227,10 +227,9 @@ while True:
     # print('FPS {}'.format(1 / (time() - loop_time)))
     loop_time = time()
     # pointCheck = points[random.randint(0, len(points))]
+    # pointCheck = points[random.randint(32, 33)]
+    # pointCheck = points[32]
     # print(pointCheck)
-    # # for (a, b) in zip(range(-1, 2, 1), (1, 45, 47)):
-    # #     cv.putText(screenshot, pointCheck[b], (pointCheck[0][0], pointCheck[0][1] + a * 50), cv.FONT_HERSHEY_DUPLEX,
-    # #                .4, pointCheck[2])
     # cv.putText(screenshot, pointCheck[1], (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_DUPLEX,
     #            .6, pointCheck[2])
     # cv.putText(screenshot, pointCheck[4][45], (pointCheck[0][0], pointCheck[0][1] - 50), cv.FONT_HERSHEY_SIMPLEX,
@@ -249,7 +248,7 @@ while True:
     #             cv.putText(screenshot, pointCheck[4][m + c + r + n], (pointCheck[0][0] + r * 50,
     #                                                                   pointCheck[0][1] + c * 50),
     #                        cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-    # sleep(10)
+    sleep(1)
     for point in points:
         try:
             pointName = point[1]
@@ -258,66 +257,76 @@ while True:
             # print(point)
             i = 0
             if point[4][45] != 'X':
-                # if point[4][19] == point[4][16] == pointName:
+                # if point[4][1] == point[4][4] == point[4][7] == point[4][10] == point[4][13] == point[4][16] == \
+                #         point[4][19] == pointName or \
+                #         point[4][4] == point[4][7] == point[4][10] == point[4][13] == point[4][16] == point[4][19] == \
+                #         pointName == point[4][41] or \
+                #         point[4][7] == point[4][10] == point[4][13] == point[4][16] == point[4][19] == pointName == \
+                #         point[4][41] == point[4][38] or \
+                #         point[4][10] == point[4][13] == point[4][16] == point[4][19] == pointName == point[4][41] == \
+                #         point[4][38] == point[4][35] or \
+                #         point[4][13] == point[4][16] == point[4][19] == pointName == point[4][41] == point[4][38] == \
+                #         point[4][35] == point[4][32] or \
+                #         point[4][16] == point[4][19] == pointName == point[4][41] == point[4][38] == point[4][35] == \
+                #         point[4][32] == point[4][29] or \
+                #         point[4][19] == pointName == point[4][41] == point[4][38] == point[4][35] == point[4][32] == \
+                #         point[4][29] == point[4][26] or \
+                #         pointName == point[4][41] == point[4][38] == point[4][35] == point[4][32] == point[4][29] == \
+                #         point[4][26] == point[4][23]:
+                #     i = 8
+                # elif point[4][4] == point[4][7] == point[4][10] == point[4][13] == point[4][16] == point[4][19] == \
+                #         pointName or \
+                #         point[4][7] == point[4][10] == point[4][13] == point[4][16] == point[4][19] == pointName == \
+                #         point[4][41] or \
+                #         point[4][10] == point[4][13] == point[4][16] == point[4][19] == pointName == point[4][41] == \
+                #         point[4][38] or \
+                #         point[4][13] == point[4][16] == point[4][19] == pointName == point[4][41] == point[4][38] == \
+                #         point[4][35] or \
+                #         point[4][16] == point[4][19] == pointName == point[4][41] == point[4][38] == point[4][35] == \
+                #         point[4][32] or \
+                #         point[4][19] == pointName == point[4][41] == point[4][38] == point[4][35] == point[4][32] == \
+                #         point[4][29] or \
+                #         pointName == point[4][41] == point[4][38] == point[4][35] == point[4][32] == point[4][29] == \
+                #         point[4][26]:
+                #     i = 7
+                # elif point[4][7] == point[4][10] == point[4][13] == point[4][16] == point[4][19] == pointName or \
+                #         point[4][10] == point[4][13] == point[4][16] == point[4][19] == pointName == point[4][41] or \
+                #         point[4][13] == point[4][16] == point[4][19] == pointName == point[4][41] == point[4][38] or \
+                #         point[4][16] == point[4][19] == pointName == point[4][41] == point[4][38] == point[4][35] or \
+                #         point[4][19] == pointName == point[4][41] == point[4][38] == point[4][35] == point[4][32] or \
+                #         pointName == point[4][41] == point[4][38] == point[4][35] == point[4][32] == point[4][29]:
+                #     i = 6
+                # elif point[4][10] == point[4][13] == point[4][16] == point[4][19] == pointName or \
+                #         point[4][13] == point[4][16] == point[4][19] == pointName == point[4][41] or \
+                #         point[4][16] == point[4][19] == pointName == point[4][41] == point[4][38] or \
+                #         point[4][19] == pointName == point[4][41] == point[4][38] == point[4][35] or \
+                #         pointName == point[4][41] == point[4][38] == point[4][35] == point[4][32]:
+                #     i = 5
+                # elif point[4][13] == point[4][16] == point[4][19] == pointName or \
+                #         point[4][16] == point[4][19] == pointName == point[4][41] or \
+                #         point[4][19] == pointName == point[4][41] == point[4][38] or \
+                #         pointName == point[4][41] == point[4][38] == point[4][35]:
+                #     i = 4
+                # elif point[4][16] == point[4][19] == pointName or point[4][19] == pointName == point[4][41] or \
+                #         pointName == point[4][41] == point[4][38]:
                 #     i = 3
-                #     point[5][5] = i
-                #     print(point)
-                #     if point[4][13] == pointName:
-                #         i = 4
-                #         if point[4][10] == pointName:
-                #             i = 5
-                for (o, p) in zip(range(19, 1, -3), range(3, 7)):
-                    if point[4][o] == point[4][o - 3] == pointName:
-                        point[5][5] = p
-                        print(point)
-                        cv.putText(screenshot, str(point[5][5]), (point[0][0], point[0][1]),
-                                   cv.FONT_HERSHEY_SIMPLEX, .4, point[2])
+                left = 0
+                right = 0
+                for (a, b) in zip(range(19, 0, -3), range(1, 8)):
+                    #                    19, 16, 13, 10, 7            1, 2, 3, 4, 5
+                    if point[4][a] == pointName or point[4][a + 22] == pointName:
+                        if point[4][a] == pointName and left == b - 1:
+                            left = b
+                        if point[4][a + 22] == pointName and right == b - 1:
+                            right = b
+                    else:
                         break
-            # point[5][5] = i
+                point[5][5] = left + right + 1
+                # print(point)
+                # if point[5][5] >= 3:
+                cv.putText(screenshot, str(point[5][5]), (point[0][0], point[0][1]),
+                           cv.FONT_HERSHEY_SIMPLEX, .6, point[2])
             # before_bot_action(point, str(point[5][5]), 0, -1)
-            # right1 = point[4][5]
-            # right2 = point[4][9]
-            # right3 = point[4][1]
-            # rightUp1 = point[4][7]
-            # rightUp2 = point[4][6]
-            # rightUp3 = point[4][10]
-            # rightDown1 = point[4][4]
-            # rightDown2 = point[4][3]
-            # rightDown3 = point[4][8]
-            # up1 = point[4][17]
-            # up2 = point[4][16]
-            # up3 = point[4][15]
-            # down1 = point[4][14]
-            # down2 = point[4][13]
-            # down3 = point[4][12]
-            # left1 = point[4][23]
-            # left2 = point[4][27]
-            # left3 = point[4][19]
-            # leftUp1 = point[4][25]
-            # leftUp2 = point[4][24]
-            # leftUp3 = point[4][28]
-            # leftDown1 = point[4][22]
-            # leftDown2 = point[4][21]
-            # leftDown3 = point[4][26]
-            # #                 0        1        2       3          4        5            6      7  8    9
-            # pointAround = [(right1, right2, right3, rightUp1, rightUp2, rightDown1, rightDown2, 1, 0, 'right'),
-            #                # 0       1      2        3       4        5           6
-            #                (left1, left2, left3, leftUp1, leftUp2, leftDown1, leftDown2, -1, 0, 'left'),
-            #                # 0    1    2     3         4           5       6
-            #                (up3, up1, up2, rightUp3, rightUp2, leftUp2, leftUp3, 0, -1, 'up'),
-            #                # 0       1      2         3          4           5          6
-            #                (down1, down2, down3, rightDown3, rightDown1, leftDown1, leftDown3, 0, 1, 'down')]
-            # for pointCheck in pointAround:
-            #     if pointCheck[0] != 'X':
-            #         # if pointName ==
-            #         if pointName == pointCheck[1] == pointCheck[2]:
-            #             before_bot_action(point, pointCheck[9], pointCheck[7], pointCheck[8])
-            #         if pointName == pointCheck[3] == pointCheck[4]:
-            #             before_bot_action(point, pointCheck[9], pointCheck[7], pointCheck[8])
-            #         if pointName == pointCheck[5] == pointCheck[6]:
-            #             before_bot_action(point, pointCheck[9], pointCheck[7], pointCheck[8])
-            #         if pointName == pointCheck[4] == pointCheck[5]:
-            #             before_bot_action(point, pointCheck[9], pointCheck[7], pointCheck[8])
         except IndexError or TypeError:
             cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
                        screenshot)
