@@ -35,13 +35,13 @@
 #     # 3 - 3
 #     print(i[1], i[2])
 
-for (m, d) in zip((1, -1), (0, 10)):  # 2 4
-    for (c, n) in zip(range(-7 * m, 0, m), range(8 + d, 21 + d * 3, (3 - m))):
-        print('\n')
-        for r in range(-1, 2, 1):
-            print(f'{m} + {c} + {r} = {m + c + r} + {n} = {m + c + r + n}')
-# for (m, d) in zip((-1, 1), (0, 56)):
-#     for (c, n) in zip(range(-12 * m, -1 * m, m), range(39 + d, 93 + d * 2, (3 - m))):
+# for (m, d) in zip((1, -1), (0, 10)):  # 2 4
+#     for (c, n) in zip(range(-7 * m, 0, m), range(8 + d, 21 + d * 3, (3 - m))):
 #         print('\n')
 #         for r in range(-1, 2, 1):
-#             print(f'{m} + {r} + {c} = {m + r + c} + {n} = {m + r + c + n}')
+#             print(f'{m} + {c} + {r} = {m + c + r} + {n} = {m + c + r + n}')
+for (m, d) in zip((1, -1), (0, 12)):
+    for (c, n) in zip(range(-12 * m, -1 * m, m), range(61 + d, 91 + d * 2, (3 - m))):
+        print('\n')
+        for r in range(-1, 2, 1):
+            print(f'{m} + {r} + {c} = {m + r + c} + {n} = {m + r + c + n}')

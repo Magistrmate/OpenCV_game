@@ -98,22 +98,22 @@ while True:
                               # 19 20   21     1     2      1      2     1
                               'X', 'X', 'X', 'up0', 'X', 'down0', 'X', 'up',
                               #  -1   0   1  -1    0    1   -1    0    1   -1    0    1   -1    0    1   -1    0    1
-                              #  12  12  12  11   11   11   10   10   10    9    9    9    8    8    8    7    7    7
+                              # -12 -12 -12 -11  -11  -11  -10  -10  -10   -9   -9   -9   -8   -8   -8   -7   -7   -7
                               #  49  50  51  52   53   54   55   56   57   58   59   60   61   62   63   64   65   66
                               #   1   2   3   4    5    6    7    8    9   10   11   12   13   14   15   16   17   18
                               'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X',
                               #  -1   0   1  -1    0    1   -1    0    1   -1    0    1   -1    0    1
-                              #   6   6   6   5    5    5    4    4    4    3    3    3    2    2    2
+                              #  -6  -6  -6  -5   -5   -5   -4   -4   -4   -3   -3   -3   -2   -2   -2
                               #  67  68  69  70   71   72   73   74   75   76   77   78   79   80   81     82
                               #  19  20  21  22   23   24   25   26   27   28   29   30   31   32   33      1
                               'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'down',
                               #  -1  0   1   -1    0    1   -1    0    1   -1    0    1   -1    0    1   -1    0    1
-                              #  -2 -2  -2   -3   -3   -3   -4   -4   -4   -5   -5   -5   -6   -6   -6   -7   -7   -7
+                              #   2  2   2    3    3    3    4    4    4    5    5    5    6    6    6    7    7    7
                               #  83 84  85   86   87   88   89   90   91   92   93   94   95   96   97   98   99  100
                               #   1  2   3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18
                               'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X',
                               #  -1   0   1  -1    0    1   -1    0    1   -1    0    1   -1    0    1
-                              #  -8  -8  -8  -9   -9   -9  -10  -10  -10  -11  -11  -11  -12  -12  -12
+                              #   8   8   8   9    9    9   10   10   10   11   11   11   12   12   12
                               # 101 102 103 104  105  106  107  108  109  110  111  112  113   114 115
                               #  19  20  21  22   23   24   25   26   27   28   29   30   31   32   33
                               'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'])
@@ -175,13 +175,13 @@ while True:
                                         point[4][m + x + y + n] = pointNameFind
                                         break
                         if -1 <= x <= 1 and (-12 <= y <= -2 or 2 <= y <= 12):
-                            for (m, d) in zip((-1, 1), (0, 56)):
-                                for (r, n) in zip(range(-12 * m, -1 * m, m), range(39 + d, 93 + d * 3, (3 - m))):
+                            for (m, d) in zip((1, -1), (0, 12)):
+                                for (r, n) in zip(range(-12 * m, -1 * m, m), range(61 + d, 91 + d * 2, (3 - m))):
                                     if r == y:
                                         # for r in range(-1, 2, 1):
 
                                         #  m  r(x) c(y)        n
-                                        # -1 + -1 + 12 = 10 + 39 = 49
+                                        #  1 + -1 + -12 = -12 + 39 = 49
                                         #  1 + -12 +  0 = -11 + 61 = 50
                                         #  1 + -12 +  1 = -10 + 61 = 51
 
@@ -227,29 +227,30 @@ while True:
     # print('FPS {}'.format(1 / (time() - loop_time)))
     loop_time = time()
     # pointCheck = points[random.randint(0, len(points))]
-    # pointCheck = points[random.randint(32, 33)]
-    # pointCheck = points[32]
-    # print(pointCheck)
-    # cv.putText(screenshot, pointCheck[1], (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_DUPLEX,
-    #            .6, pointCheck[2])
-    # cv.putText(screenshot, pointCheck[4][45], (pointCheck[0][0], pointCheck[0][1] - 50), cv.FONT_HERSHEY_SIMPLEX,
-    #            .4, pointCheck[2])
-    # cv.putText(screenshot, pointCheck[4][47], (pointCheck[0][0], pointCheck[0][1] + 50), cv.FONT_HERSHEY_SIMPLEX,
-    #            .4, pointCheck[2])
-    # for (m, d) in zip((1, -1), (0, 10)):
-    #     for (c, n) in zip(range(-7 * m, 0, m), range(8 + d, 21 + d * 3, (3 - m))):
-    #         for r in range(-1, 2, 1):
-    #             cv.putText(screenshot, pointCheck[4][m + c + r + n], (pointCheck[0][0] + c * 50,
-    #                                                                   pointCheck[0][1] + r * 50),
-    #                        cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-    # for (m, d) in zip((-1, 1), (0, 56)):
-    #     for (c, n) in zip(range(-12 * m, -1 * m, m), range(39 + d, 93 + d * 2, (3 - m))):
-    #         for r in range(-1, 2, 1):
-    #             cv.putText(screenshot, pointCheck[4][m + c + r + n], (pointCheck[0][0] + r * 50,
-    #                                                                   pointCheck[0][1] + c * 50),
-    #                        cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-    sleep(1)
-    for point in points:
+    # pointCheck = points[random.randint(0, 20)]
+    pointCheck = points[11]
+    print(pointCheck)
+    cv.putText(screenshot, pointCheck[1], (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_DUPLEX,
+               .6, pointCheck[2])
+    cv.putText(screenshot, pointCheck[4][45], (pointCheck[0][0], pointCheck[0][1] - 50), cv.FONT_HERSHEY_SIMPLEX,
+               .4, pointCheck[2])
+    cv.putText(screenshot, pointCheck[4][47], (pointCheck[0][0], pointCheck[0][1] + 50), cv.FONT_HERSHEY_SIMPLEX,
+               .4, pointCheck[2])
+    for (m, d) in zip((1, -1), (0, 10)):
+        for (c, n) in zip(range(-7 * m, 0, m), range(8 + d, 21 + d * 3, (3 - m))):
+            for r in range(-1, 2, 1):
+                cv.putText(screenshot, pointCheck[4][m + c + r + n], (pointCheck[0][0] + c * 50,
+                                                                      pointCheck[0][1] + r * 50),
+                           cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    for (m, d) in zip((1, -1), (0, 12)):
+        for (c, n) in zip(range(-12 * m, -1 * m, m), range(61 + d, 91 + d * 2, (3 - m))):
+            for r in range(-1, 2, 1):
+                cv.putText(screenshot, pointCheck[4][m + c + r + n], (pointCheck[0][0] + r * 50,
+                                                                      pointCheck[0][1] + c * 50),
+                           cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    # sleep(10)
+    for (index, point) in enumerate(points):
+
         try:
             pointName = point[1]
             # [5]           0     1     2     3    4   5    6     7
@@ -257,61 +258,9 @@ while True:
             # print(point)
             i = 0
             if point[4][45] != 'X':
-                # if point[4][1] == point[4][4] == point[4][7] == point[4][10] == point[4][13] == point[4][16] == \
-                #         point[4][19] == pointName or \
-                #         point[4][4] == point[4][7] == point[4][10] == point[4][13] == point[4][16] == point[4][19] == \
-                #         pointName == point[4][41] or \
-                #         point[4][7] == point[4][10] == point[4][13] == point[4][16] == point[4][19] == pointName == \
-                #         point[4][41] == point[4][38] or \
-                #         point[4][10] == point[4][13] == point[4][16] == point[4][19] == pointName == point[4][41] == \
-                #         point[4][38] == point[4][35] or \
-                #         point[4][13] == point[4][16] == point[4][19] == pointName == point[4][41] == point[4][38] == \
-                #         point[4][35] == point[4][32] or \
-                #         point[4][16] == point[4][19] == pointName == point[4][41] == point[4][38] == point[4][35] == \
-                #         point[4][32] == point[4][29] or \
-                #         point[4][19] == pointName == point[4][41] == point[4][38] == point[4][35] == point[4][32] == \
-                #         point[4][29] == point[4][26] or \
-                #         pointName == point[4][41] == point[4][38] == point[4][35] == point[4][32] == point[4][29] == \
-                #         point[4][26] == point[4][23]:
-                #     i = 8
-                # elif point[4][4] == point[4][7] == point[4][10] == point[4][13] == point[4][16] == point[4][19] == \
-                #         pointName or \
-                #         point[4][7] == point[4][10] == point[4][13] == point[4][16] == point[4][19] == pointName == \
-                #         point[4][41] or \
-                #         point[4][10] == point[4][13] == point[4][16] == point[4][19] == pointName == point[4][41] == \
-                #         point[4][38] or \
-                #         point[4][13] == point[4][16] == point[4][19] == pointName == point[4][41] == point[4][38] == \
-                #         point[4][35] or \
-                #         point[4][16] == point[4][19] == pointName == point[4][41] == point[4][38] == point[4][35] == \
-                #         point[4][32] or \
-                #         point[4][19] == pointName == point[4][41] == point[4][38] == point[4][35] == point[4][32] == \
-                #         point[4][29] or \
-                #         pointName == point[4][41] == point[4][38] == point[4][35] == point[4][32] == point[4][29] == \
-                #         point[4][26]:
-                #     i = 7
-                # elif point[4][7] == point[4][10] == point[4][13] == point[4][16] == point[4][19] == pointName or \
-                #         point[4][10] == point[4][13] == point[4][16] == point[4][19] == pointName == point[4][41] or \
-                #         point[4][13] == point[4][16] == point[4][19] == pointName == point[4][41] == point[4][38] or \
-                #         point[4][16] == point[4][19] == pointName == point[4][41] == point[4][38] == point[4][35] or \
-                #         point[4][19] == pointName == point[4][41] == point[4][38] == point[4][35] == point[4][32] or \
-                #         pointName == point[4][41] == point[4][38] == point[4][35] == point[4][32] == point[4][29]:
-                #     i = 6
-                # elif point[4][10] == point[4][13] == point[4][16] == point[4][19] == pointName or \
-                #         point[4][13] == point[4][16] == point[4][19] == pointName == point[4][41] or \
-                #         point[4][16] == point[4][19] == pointName == point[4][41] == point[4][38] or \
-                #         point[4][19] == pointName == point[4][41] == point[4][38] == point[4][35] or \
-                #         pointName == point[4][41] == point[4][38] == point[4][35] == point[4][32]:
-                #     i = 5
-                # elif point[4][13] == point[4][16] == point[4][19] == pointName or \
-                #         point[4][16] == point[4][19] == pointName == point[4][41] or \
-                #         point[4][19] == pointName == point[4][41] == point[4][38] or \
-                #         pointName == point[4][41] == point[4][38] == point[4][35]:
-                #     i = 4
-                # elif point[4][16] == point[4][19] == pointName or point[4][19] == pointName == point[4][41] or \
-                #         pointName == point[4][41] == point[4][38]:
-                #     i = 3
                 left = 0
                 right = 0
+                up = 0
                 for (a, b) in zip(range(19, 0, -3), range(1, 8)):
                     #                    19, 16, 13, 10, 7            1, 2, 3, 4, 5
                     if point[4][a] == pointName or point[4][a + 22] == pointName:
@@ -319,19 +268,25 @@ while True:
                             left = b
                         if point[4][a + 22] == pointName and right == b - 1:
                             right = b
+                    elif point[4][a + 80] == pointName and up == b - 1:
+                        up = b
                     else:
                         break
-                point[5][5] = left + right + 1
+                if left + right >= up:
+                    point[5][5] = left + right + 1
+                else:
+                    point[5][5] = up + 1
                 # print(point)
                 # if point[5][5] >= 3:
-                cv.putText(screenshot, str(point[5][5]), (point[0][0], point[0][1]),
-                           cv.FONT_HERSHEY_SIMPLEX, .6, point[2])
+                # cv.putText(screenshot, str(point[5][5]), (point[0][0], point[0][1]),
+                #            cv.FONT_HERSHEY_SIMPLEX, .6, point[2])
             # before_bot_action(point, str(point[5][5]), 0, -1)
         except IndexError or TypeError:
             cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
                        screenshot)
             print('error')
             break
+        # print(index, point)
     cv.imshow('Map', screenshot)
     key = cv.waitKey(1)
     if key == ord('q'):
