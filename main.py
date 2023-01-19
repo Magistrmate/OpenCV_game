@@ -29,17 +29,17 @@ is_bot_in_action = False
 loop_time = time()
 
 
-def bot_action(target, a, b):
-    # pydirectinput.moveTo(target[0], target[1])
-    # pydirectinput.mouseDown()
-    # pydirectinput.moveTo(target[0] + 50 * a, target[1] + 50 * b)
-    # pydirectinput.mouseUp()
-    # sleep(1)
+def bot_action(target, one, two):
+    pydirectinput.moveTo(target[0], target[1])
+    pydirectinput.mouseDown()
+    pydirectinput.moveTo(target[0] + 50 * one, target[1] + 50 * two)
+    pydirectinput.mouseUp()
+    sleep(1)
     global is_bot_in_action
     is_bot_in_action = False
 
 
-def before_bot_action(point_target, text, a, b):
+def before_bot_action(point_target, text, one, two):
     global is_bot_in_action
     cv.putText(screenshot, text, (point_target[0][0], point_target[0][1]),
                cv.FONT_HERSHEY_SIMPLEX, .4, point_target[2])
@@ -47,7 +47,7 @@ def before_bot_action(point_target, text, a, b):
     target_click = wincap.get_screen_position(point_target[0])
     if not is_bot_in_action:
         is_bot_in_action = True
-        t = Thread(target=bot_action, args=(target_click, a, b))
+        t = Thread(target=bot_action, args=(target_click, one, two))
         t.start()
 
 
@@ -228,29 +228,28 @@ while True:
     loop_time = time()
     # pointCheck = points[random.randint(0, len(points))]
     # pointCheck = points[random.randint(0, 20)]
-    pointCheck = points[11]
-    print(pointCheck)
-    cv.putText(screenshot, pointCheck[1], (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_DUPLEX,
-               .6, pointCheck[2])
-    cv.putText(screenshot, pointCheck[4][45], (pointCheck[0][0], pointCheck[0][1] - 50), cv.FONT_HERSHEY_SIMPLEX,
-               .4, pointCheck[2])
-    cv.putText(screenshot, pointCheck[4][47], (pointCheck[0][0], pointCheck[0][1] + 50), cv.FONT_HERSHEY_SIMPLEX,
-               .4, pointCheck[2])
-    for (m, d) in zip((1, -1), (0, 10)):
-        for (c, n) in zip(range(-7 * m, 0, m), range(8 + d, 21 + d * 3, (3 - m))):
-            for r in range(-1, 2, 1):
-                cv.putText(screenshot, pointCheck[4][m + c + r + n], (pointCheck[0][0] + c * 50,
-                                                                      pointCheck[0][1] + r * 50),
-                           cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-    for (m, d) in zip((1, -1), (0, 12)):
-        for (c, n) in zip(range(-12 * m, -1 * m, m), range(61 + d, 91 + d * 2, (3 - m))):
-            for r in range(-1, 2, 1):
-                cv.putText(screenshot, pointCheck[4][m + c + r + n], (pointCheck[0][0] + r * 50,
-                                                                      pointCheck[0][1] + c * 50),
-                           cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    # pointCheck = points[10]
+    # print(pointCheck)
+    # cv.putText(screenshot, pointCheck[1], (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_DUPLEX,
+    #            .6, pointCheck[2])
+    # cv.putText(screenshot, pointCheck[4][45], (pointCheck[0][0], pointCheck[0][1] - 50), cv.FONT_HERSHEY_SIMPLEX,
+    #            .4, pointCheck[2])
+    # cv.putText(screenshot, pointCheck[4][47], (pointCheck[0][0], pointCheck[0][1] + 50), cv.FONT_HERSHEY_SIMPLEX,
+    #            .4, pointCheck[2])
+    # for (m, d) in zip((1, -1), (0, 10)):
+    #     for (c, n) in zip(range(-7 * m, 0, m), range(8 + d, 21 + d * 3, (3 - m))):
+    #         for r in range(-1, 2, 1):
+    #             cv.putText(screenshot, pointCheck[4][m + c + r + n], (pointCheck[0][0] + c * 50,
+    #                                                                   pointCheck[0][1] + r * 50),
+    #                        cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
+    # for (m, d) in zip((1, -1), (0, 12)):
+    #     for (c, n) in zip(range(-12 * m, -1 * m, m), range(61 + d, 91 + d * 2, (3 - m))):
+    #         for r in range(-1, 2, 1):
+    #             cv.putText(screenshot, pointCheck[4][m + c + r + n], (pointCheck[0][0] + r * 50,
+    #                                                                   pointCheck[0][1] + c * 50),
+    #                        cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
     # sleep(10)
     for (index, point) in enumerate(points):
-
         try:
             pointName = point[1]
             # [5]           0     1     2     3    4   5    6     7
@@ -263,13 +262,13 @@ while True:
                 up = 0
                 for (a, b) in zip(range(19, 0, -3), range(1, 8)):
                     #                    19, 16, 13, 10, 7            1, 2, 3, 4, 5
-                    if point[4][a] == pointName or point[4][a + 22] == pointName:
+                    if point[4][a] == pointName or point[4][a + 22] == pointName or point[4][a + 61] == pointName:
                         if point[4][a] == pointName and left == b - 1:
                             left = b
                         if point[4][a + 22] == pointName and right == b - 1:
                             right = b
-                    elif point[4][a + 80] == pointName and up == b - 1:
-                        up = b
+                        if point[4][a + 61] == pointName and up == b - 1:
+                            up = b
                     else:
                         break
                 if left + right >= up:
@@ -277,10 +276,10 @@ while True:
                 else:
                     point[5][5] = up + 1
                 # print(point)
-                # if point[5][5] >= 3:
-                # cv.putText(screenshot, str(point[5][5]), (point[0][0], point[0][1]),
-                #            cv.FONT_HERSHEY_SIMPLEX, .6, point[2])
-            # before_bot_action(point, str(point[5][5]), 0, -1)
+                if point[5][5] >= 3:
+                    cv.putText(screenshot, str(point[5][5]), (point[0][0], point[0][1]),
+                               cv.FONT_HERSHEY_SIMPLEX, .6, (0, 0, 0))
+                    before_bot_action(point, str(point[5][5]), 0, -1)
         except IndexError or TypeError:
             cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
                        screenshot)
