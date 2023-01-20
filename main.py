@@ -276,45 +276,41 @@ while True:
                     cv.putText(screenshot, point[5][4] + str(point[5][5]), (point[0][0], point[0][1] - 10),
                                cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
                     # before_bot_action(point, str(point[5][5]), 0, -1)
-            for (side, see) in ((17, 113), (39, 115)):
+            for (side, see) in ((17, 79), (39, 81)):
+                #             20(42)
                 if point[4][side + 3] != 'X':
                     left_right = 0
                     up = 0
                     down = 0
-                    # for (a, b) in zip(range(17, 1, -3), range(1, 8)):
                     for (a, b) in zip(range(side, side - 16, -3), range(1, 8)):
                         if point[4][a] == pointName and left_right == b - 1:
                             left_right = b
-                            point[5][see - 112] = left_right + 1
                         else:
                             break
-                    # if point[4][19] == pointName:
                     if point[4][side + 2] == pointName:
                         up = 1
-                        # for (a, b) in zip(range(113, 82, -3), range(2, 8)):
-                        #                         115, 85
+                        #                     79(81) 49(51)
                         for (a, b) in zip(range(see, see - 31, -3), range(2, 8)):
                             if point[4][a] == pointName and up == b - 1:
                                 up = b
                             else:
                                 break
-                    # if point[4][21] == pointName:
+                    #            21(43)
                     if point[4][side + 4] == pointName:
                         down = 1
-                        # for (a, b) in zip(range(113, 82, -3), range(2, 8)):
-                        for (a, b) in zip(range(see + 2, see + 38, -3), range(2, 8)):
+                        #                       113(115)     84(86)
+                        for (a, b) in zip(range(see + 34, see + 5, -3), range(2, 8)):
                             if point[4][a] == pointName and down == b - 1:
                                 down = b
                             else:
                                 break
                     if up + down >= left_right:
-                        # point[5][1] = up + down + 1
-                        point[5][see - 112] = up + down + 1
+                        point[5][see - 78] = up + down + 1
                     else:
-                        point[5][see - 112] = left_right + 1
-                    if point[5][see - 112] >= 3:
-                        cv.putText(screenshot, point[5][see - 113] + str(point[5][see - 112]), (point[0][0], point[0][1]
-                                                                                                + side//2),
+                        point[5][see - 78] = left_right + 1
+                    if point[5][see - 78] >= 3:
+                        cv.putText(screenshot, point[5][see - 79] + str(point[5][see - 78]), (point[0][0], point[0][1] +
+                                                                                              side//2),
                                    cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
         except IndexError or TypeError:
             cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
