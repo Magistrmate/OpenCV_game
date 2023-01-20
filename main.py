@@ -108,12 +108,12 @@ while True:
                               #  19  20  21  22   23   24   25   26   27   28   29   30   31   32   33      1
                               'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'down',
                               #  -1  0   1   -1    0    1   -1    0    1   -1    0    1   -1    0    1   -1    0    1
-                              #   2  2   2    3    3    3    4    4    4    5    5    5    6    6    6    7    7    7
+                              #  12 12  12   11   11   11   10   10   10    9    9    9    8    8    8    7    7    7
                               #  83 84  85   86   87   88   89   90   91   92   93   94   95   96   97   98   99  100
                               #   1  2   3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18
                               'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X',
                               #  -1   0   1  -1    0    1   -1    0    1   -1    0    1   -1    0    1
-                              #   8   8   8   9    9    9   10   10   10   11   11   11   12   12   12
+                              #   6   6   6   5    5    5    4    4    4    3    3    3    2    2    2
                               # 101 102 103 104  105  106  107  108  109  110  111  112  113   114 115
                               #  19  20  21  22   23   24   25   26   27   28   29   30   31   32   33
                               'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'])
@@ -181,7 +181,7 @@ while True:
                                         # for r in range(-1, 2, 1):
 
                                         #  m  r(x) c(y)        n
-                                        #  1 + -1 + -12 = -12 + 39 = 49
+                                        #  1 + -1 + -12 = -12 + 61 = 49
                                         #  1 + -12 +  0 = -11 + 61 = 50
                                         #  1 + -12 +  1 = -10 + 61 = 51
 
@@ -227,8 +227,7 @@ while True:
     # print('FPS {}'.format(1 / (time() - loop_time)))
     loop_time = time()
     # pointCheck = points[random.randint(0, len(points))]
-    # pointCheck = points[random.randint(0, 20)]
-    # pointCheck = points[10]
+    # pointCheck = points[75]
     # print(pointCheck)
     # cv.putText(screenshot, pointCheck[1], (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_DUPLEX,
     #            .6, pointCheck[2])
@@ -252,9 +251,8 @@ while True:
     for (index, point) in enumerate(points):
         try:
             pointName = point[1]
-            # [5]           0     1     2     3    4   5    6     7
-            point.append(['left', 0, 'right', 0, 'up', 0, 'down', 0])
-            # print(point)
+            # [5]          0   1   2   3   4   5   6   7
+            point.append(['l', 0, 'r', 0, 'u', 0, 'd', 0])
             i = 0
             if point[4][45] != 'X':
                 left = 0
@@ -278,43 +276,51 @@ while True:
                     cv.putText(screenshot, point[5][4] + str(point[5][5]), (point[0][0], point[0][1] - 10),
                                cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
                     # before_bot_action(point, str(point[5][5]), 0, -1)
-            if point[4][20] != 'X':
-                left = 0
-                up = 0
-                down = 0
-                for (a, b) in zip(range(17, 1, -3), range(1, 8)):
-                    if point[4][a] == pointName and left == b - 1:
-                        left = b
-                        point[5][1] = left + 1
+            for (side, see) in ((17, 113), (39, 115)):
+                if point[4][side + 3] != 'X':
+                    left_right = 0
+                    up = 0
+                    down = 0
+                    # for (a, b) in zip(range(17, 1, -3), range(1, 8)):
+                    for (a, b) in zip(range(side, side - 16, -3), range(1, 8)):
+                        if point[4][a] == pointName and left_right == b - 1:
+                            left_right = b
+                            point[5][see - 112] = left_right + 1
+                        else:
+                            break
+                    # if point[4][19] == pointName:
+                    if point[4][side + 2] == pointName:
+                        up = 1
+                        # for (a, b) in zip(range(113, 82, -3), range(2, 8)):
+                        #                         115, 85
+                        for (a, b) in zip(range(see, see - 31, -3), range(2, 8)):
+                            if point[4][a] == pointName and up == b - 1:
+                                up = b
+                            else:
+                                break
+                    # if point[4][21] == pointName:
+                    if point[4][side + 4] == pointName:
+                        down = 1
+                        # for (a, b) in zip(range(113, 82, -3), range(2, 8)):
+                        for (a, b) in zip(range(see + 2, see + 38, -3), range(2, 8)):
+                            if point[4][a] == pointName and down == b - 1:
+                                down = b
+                            else:
+                                break
+                    if up + down >= left_right:
+                        # point[5][1] = up + down + 1
+                        point[5][see - 112] = up + down + 1
                     else:
-                        break
-                if point[4][19] == pointName:
-                    up = 1
-                    for (a, b) in zip(range(79, 48, -3), range(2, 8)):
-                        if point[4][a] == pointName and up == b - 1:
-                            up = b
-                        else:
-                            break
-                if point[4][21] == pointName:
-                    down = 1
-                    for (a, b) in zip(range(83, 114, 3), range(2, 8)):
-                        if point[4][a] == pointName and down == b - 1:
-                            down = b
-                        else:
-                            break
-                if up + down >= left:
-                    point[5][1] = up + down + 1
-                else:
-                    point[5][1] = left + 1
-                if point[5][1] >= 3:
-                    cv.putText(screenshot, point[5][0] + str(point[5][1]), (point[0][0], point[0][1]),
-                               cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
+                        point[5][see - 112] = left_right + 1
+                    if point[5][see - 112] >= 3:
+                        cv.putText(screenshot, point[5][see - 113] + str(point[5][see - 112]), (point[0][0], point[0][1]
+                                                                                                + side//2),
+                                   cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
         except IndexError or TypeError:
             cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
                        screenshot)
             print('error')
             break
-        # print(index, point)
     cv.imshow('Map', screenshot)
     key = cv.waitKey(1)
     if key == ord('q'):
