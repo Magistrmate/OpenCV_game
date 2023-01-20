@@ -261,8 +261,7 @@ while True:
                 right = 0
                 up = 0
                 for (a, b) in zip(range(19, 0, -3), range(1, 8)):
-                    #                    19, 16, 13, 10, 7            1, 2, 3, 4, 5
-                    if point[4][a] == pointName or point[4][a + 22] == pointName or point[4][a + 61] == pointName:
+                    if point[4][a] or point[4][a + 22] or point[4][a + 61] == pointName:
                         if point[4][a] == pointName and left == b - 1:
                             left = b
                         if point[4][a + 22] == pointName and right == b - 1:
@@ -275,11 +274,41 @@ while True:
                     point[5][5] = left + right + 1
                 else:
                     point[5][5] = up + 1
-                # print(point)
                 if point[5][5] >= 3:
-                    cv.putText(screenshot, str(point[5][5]), (point[0][0], point[0][1]),
-                               cv.FONT_HERSHEY_SIMPLEX, .6, (0, 0, 0))
-                    before_bot_action(point, str(point[5][5]), 0, -1)
+                    cv.putText(screenshot, point[5][4] + str(point[5][5]), (point[0][0], point[0][1] - 10),
+                               cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
+                    # before_bot_action(point, str(point[5][5]), 0, -1)
+            if point[4][20] != 'X':
+                left = 0
+                up = 0
+                down = 0
+                for (a, b) in zip(range(17, 1, -3), range(1, 8)):
+                    if point[4][a] == pointName and left == b - 1:
+                        left = b
+                        point[5][1] = left + 1
+                    else:
+                        break
+                if point[4][19] == pointName:
+                    up = 1
+                    for (a, b) in zip(range(79, 48, -3), range(2, 8)):
+                        if point[4][a] == pointName and up == b - 1:
+                            up = b
+                        else:
+                            break
+                if point[4][21] == pointName:
+                    down = 1
+                    for (a, b) in zip(range(83, 114, 3), range(2, 8)):
+                        if point[4][a] == pointName and down == b - 1:
+                            down = b
+                        else:
+                            break
+                if up + down >= left:
+                    point[5][1] = up + down + 1
+                else:
+                    point[5][1] = left + 1
+                if point[5][1] >= 3:
+                    cv.putText(screenshot, point[5][0] + str(point[5][1]), (point[0][0], point[0][1]),
+                               cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
         except IndexError or TypeError:
             cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
                        screenshot)
