@@ -253,14 +253,11 @@ while True:
             pointName = point[1]
             # [5]          0   1   2   3   4   5   6   7
             point.append(['l', 0, 'r', 0, 'u', 0, 'd', 0])
-            i = 0
             for (stage, floor) in ((45, 19), (47, 21)):
-                # if point[4][45] != 'X':
                 if point[4][stage] != 'X':
                     left = 0
                     right = 0
                     up_down = 0
-                    # for (a, b) in zip(range(19, 0, -3), range(1, 8)):
                     for (a, b) in zip(range(floor, floor - 19, -3), range(1, 8)):
                         if point[4][a] or point[4][a + 22] or point[4][a + 61] == pointName:
                             if point[4][a] == pointName and left == b - 1:
@@ -272,7 +269,6 @@ while True:
                         else:
                             break
                     if left + right >= up_down:
-                        #         45
                         point[5][stage - 40] = left + right + 1
                     else:
                         point[5][stage - 40] = up_down + 1
@@ -283,7 +279,6 @@ while True:
                                    cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
                     # before_bot_action(point, str(point[5][5]), 0, -1)
             for (side, see) in ((17, 79), (39, 81)):
-                #             20(42)
                 if point[4][side + 3] != 'X':
                     left_right = 0
                     up = 0
@@ -295,16 +290,13 @@ while True:
                             break
                     if point[4][side + 2] == pointName:
                         up = 1
-                        #                     79(81) 49(51)
                         for (a, b) in zip(range(see, see - 31, -3), range(2, 8)):
                             if point[4][a] == pointName and up == b - 1:
                                 up = b
                             else:
                                 break
-                    #            21(43)
                     if point[4][side + 4] == pointName:
                         down = 1
-                        #                       113(115)     84(86)
                         for (a, b) in zip(range(see + 34, see + 5, -3), range(2, 8)):
                             if point[4][a] == pointName and down == b - 1:
                                 down = b
@@ -323,6 +315,35 @@ while True:
                        screenshot)
             print('error')
             break
+    # print(points)
+    # points_sort = sorted(points, key=lambda k: (k[5][1], k[5][3], k[5][5], k[5][7]), reverse=True)
+    # for point in points_sort:
+    #     print(point)
+    try:
+        # chance_points = [] for position in range(1, 8, 2): xy, name, _, rc, _, [direction, number, _, _, _, _, _,
+        # _] = max(points, key=lambda l: (l[5][position], l[3][1])) chance_points.append([xy, name, rc, direction,
+        # number]) print(chance_points)
+        xy, name, _, rc, _, [_, number, _, _, _, _, _, _] = max(points, key=lambda l: (l[5][1], l[3][1]))
+        max_l_point = xy, name, rc, direction, number
+        xy, name, _, rc, _, [_, _, _, number, _, _, _, _] = max(points, key=lambda l: (l[5][3], l[3][1]))
+        max_r_point = xy, name, rc, direction, number
+        xy_u, _, _, rc_u, _, [_, _, _, _, _, max_u, _, _] = max(points, key=lambda l: (l[5][5], l[3][1]))
+        max_u_point = xy_u, rc_u, max_u
+        xy_d, _, _, rc_d, _, [_, _, _, _, _, _, _, max_d] = max(points, key=lambda l: (l[5][7], l[3][1]))
+        max_d_point = xy_d, rc_d, max_d
+        print(f' max_l_point {max_l_point} \n max_r_point {max_r_point} \n max_u_point {max_u_point} \n max_d_point '
+              f'{max_d_point}')
+        max_combo = max(max_l_point, max_r_point, max_u_point, max_d_point, key=lambda l: (l[2], l[1][1]))
+        for chance_point in chance_points:
+            print(f'{chance_point}')
+        print(chance_points)
+        max_combo = max(chance_points, key=lambda l: (l[4], l[1][2]))
+        print(f'max_combo {max_combo}')
+    except IndexError or TypeError:
+        cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
+                   screenshot)
+        print('error')
+        break
     cv.imshow('Map', screenshot)
     key = cv.waitKey(1)
     if key == ord('q'):
