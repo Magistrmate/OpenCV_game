@@ -254,27 +254,33 @@ while True:
             # [5]          0   1   2   3   4   5   6   7
             point.append(['l', 0, 'r', 0, 'u', 0, 'd', 0])
             i = 0
-            if point[4][45] != 'X':
-                left = 0
-                right = 0
-                up = 0
-                for (a, b) in zip(range(19, 0, -3), range(1, 8)):
-                    if point[4][a] or point[4][a + 22] or point[4][a + 61] == pointName:
-                        if point[4][a] == pointName and left == b - 1:
-                            left = b
-                        if point[4][a + 22] == pointName and right == b - 1:
-                            right = b
-                        if point[4][a + 61] == pointName and up == b - 1:
-                            up = b
+            for (stage, floor) in ((45, 19), (47, 21)):
+                # if point[4][45] != 'X':
+                if point[4][stage] != 'X':
+                    left = 0
+                    right = 0
+                    up_down = 0
+                    # for (a, b) in zip(range(19, 0, -3), range(1, 8)):
+                    for (a, b) in zip(range(floor, floor - 19, -3), range(1, 8)):
+                        if point[4][a] or point[4][a + 22] or point[4][a + 61] == pointName:
+                            if point[4][a] == pointName and left == b - 1:
+                                left = b
+                            if point[4][a + 22] == pointName and right == b - 1:
+                                right = b
+                            if point[4][a + 61] == pointName and up_down == b - 1:
+                                up_down = b
+                        else:
+                            break
+                    if left + right >= up_down:
+                        #         45
+                        point[5][stage - 40] = left + right + 1
                     else:
-                        break
-                if left + right >= up:
-                    point[5][5] = left + right + 1
-                else:
-                    point[5][5] = up + 1
-                if point[5][5] >= 3:
-                    cv.putText(screenshot, point[5][4] + str(point[5][5]), (point[0][0], point[0][1] - 10),
-                               cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
+                        point[5][stage - 40] = up_down + 1
+                    if point[5][stage - 40] >= 3:
+                        cv.putText(screenshot, point[5][stage - 41] + str(point[5][stage - 40]), (point[0][0],
+                                                                                                  point[0][1] -
+                                                                                                  10),
+                                   cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
                     # before_bot_action(point, str(point[5][5]), 0, -1)
             for (side, see) in ((17, 79), (39, 81)):
                 #             20(42)
@@ -310,7 +316,7 @@ while True:
                         point[5][see - 78] = left_right + 1
                     if point[5][see - 78] >= 3:
                         cv.putText(screenshot, point[5][see - 79] + str(point[5][see - 78]), (point[0][0], point[0][1] +
-                                                                                              side//2),
+                                                                                              side // 2),
                                    cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
         except IndexError or TypeError:
             cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
