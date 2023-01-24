@@ -319,31 +319,35 @@ while True:
     # points_sort = sorted(points, key=lambda k: (k[5][1], k[5][3], k[5][5], k[5][7]), reverse=True)
     # for point in points_sort:
     #     print(point)
-    try:
-        # chance_points = [] for position in range(1, 8, 2): xy, name, _, rc, _, [direction, number, _, _, _, _, _,
-        # _] = max(points, key=lambda l: (l[5][position], l[3][1])) chance_points.append([xy, name, rc, direction,
-        # number]) print(chance_points)
-        xy, name, _, rc, _, [_, number, _, _, _, _, _, _] = max(points, key=lambda l: (l[5][1], l[3][1]))
-        max_l_point = xy, name, rc, direction, number
-        xy, name, _, rc, _, [_, _, _, number, _, _, _, _] = max(points, key=lambda l: (l[5][3], l[3][1]))
-        max_r_point = xy, name, rc, direction, number
-        xy_u, _, _, rc_u, _, [_, _, _, _, _, max_u, _, _] = max(points, key=lambda l: (l[5][5], l[3][1]))
-        max_u_point = xy_u, rc_u, max_u
-        xy_d, _, _, rc_d, _, [_, _, _, _, _, _, _, max_d] = max(points, key=lambda l: (l[5][7], l[3][1]))
-        max_d_point = xy_d, rc_d, max_d
-        print(f' max_l_point {max_l_point} \n max_r_point {max_r_point} \n max_u_point {max_u_point} \n max_d_point '
-              f'{max_d_point}')
-        max_combo = max(max_l_point, max_r_point, max_u_point, max_d_point, key=lambda l: (l[2], l[1][1]))
-        for chance_point in chance_points:
-            print(f'{chance_point}')
-        print(chance_points)
-        max_combo = max(chance_points, key=lambda l: (l[4], l[1][2]))
-        print(f'max_combo {max_combo}')
-    except IndexError or TypeError:
-        cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
-                   screenshot)
-        print('error')
-        break
+    # try:
+    chance_points = []
+    for position in range(1, 8, 2):
+        xy, name, _, rc, _, _ = max(points, key=lambda l: (l[5][position], l[3][1]))
+        max_l_point = max(points, key=lambda l: (l[5][position], l[3][1]))
+        direction = max_l_point[5][-1 + position]
+        number = max_l_point[5][0 + position]
+        chance_points.append([xy, name, rc, direction, number])
+    # xy, name, _, rc, _, [direction, number, _, _, _, _, _, _] = max(points, key=lambda l: (l[5][1], l[3][1]))
+    # max_l_point = xy, name, rc, direction, number
+    # xy, name, _, rc, _, [_, _, direction, number, _, _, _, _] = max(points, key=lambda l: (l[5][3], l[3][1]))
+    # max_r_point = xy, name, rc, direction, number
+    # xy, _, _, rc, _, [_, _, _, _, direction, number, _, _] = max(points, key=lambda l: (l[5][5], l[3][1]))
+    # max_u_point = xy, name, rc, direction, number
+    # xy, _, _, rc, _, [_, _, _, _, _, _, direction, number] = max(points, key=lambda l: (l[5][7], l[3][1]))
+    # max_d_point = xy, name, rc, direction, number
+    # print(f' max_l_point {max_l_point} \n max_r_point {max_r_point} \n max_u_point {max_u_point} \n max_d_point '
+    #       f'{max_d_point}')
+    # max_combo = max(max_l_point, max_r_point, max_u_point, max_d_point, key=lambda l: (l[2], l[1][1]))
+    for chance_point in chance_points:
+        print(f'{chance_point}')
+    print(chance_points)
+    max_combo = max(chance_points, key=lambda l: (l[4], l[2][1]))
+    print(f'max_combo {max_combo}')
+    # except IndexError or TypeError:
+    #     cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
+    #                screenshot)
+    #     print('error')
+    #     break
     cv.imshow('Map', screenshot)
     key = cv.waitKey(1)
     if key == ord('q'):
