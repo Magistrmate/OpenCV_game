@@ -11,7 +11,7 @@ class Picture:
         self.screenshot = screenshot
         # images = [cv.imread(f' jpg/MatchThree/{name}_min.jpg', cv.IMREAD_UNCHANGED),
         #           cv.imread(f' jpg/MatchThree/{name}_big.jpg', cv.IMREAD_UNCHANGED)]
-        img = cv.imread(f'jpg/MatchThree/{name}_min.jpg', cv.IMREAD_UNCHANGED)
+        img = cv.imread(f'jpg/MatchThree/{name}.jpg', cv.IMREAD_UNCHANGED)
         # for img in images:
         w = img.shape[1]
         h = img.shape[0]
