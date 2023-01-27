@@ -326,7 +326,7 @@ while True:
                             cv.putText(screenshot, point[5][see - 79][0] + str(point[5][see - 78]),
                                        (point[0][0], point[0][1] + side // 2), cv.FONT_HERSHEY_SIMPLEX, .4,
                                        (0, 0, 0))
-            chance_points = []
+            chance_points = []#
             for position in range(1, 8, 2):
                 xy, name, _, rc, _, chances = max(points, key=lambda l: (l[5][position], l[3][1]))
                 direction = chances[-1 + position]
