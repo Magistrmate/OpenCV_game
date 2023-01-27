@@ -306,7 +306,7 @@ while True:
                                 else:
                                     point[5][see - 78] = left_right + 1
                             else:
-                                point[5][see - 78] = 3 # fd
+                                point[5][see - 78] = 3
                             if point[5][see - 78] >= 3:
                                 cv.putText(screenshot, point[5][see - 79][0] + str(point[5][see - 78]),
                                            (point[0][0], point[0][1] + side // 2), cv.FONT_HERSHEY_SIMPLEX, .4,
