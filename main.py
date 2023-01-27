@@ -54,7 +54,8 @@ while True:
     points = []
     namesColors = [('duck', (0, 191, 255)), ('chip', (0, 0, 255)), ('ball', (0, 255, 0)), ('backpack', (255, 0, 0)),
                    ('spruce', (0, 128, 0)), ('egg', (255, 0, 139)), ('canister', (106, 103, 99)),
-                   ('h_rocket', (214, 101, 145)), ('v_rocket', (214, 101, 145))]
+                   ('h_rocket', (214, 101, 145)), ('v_rocket', (214, 101, 145)), ('cube', (250, 138, 57)),
+                   ('envelope', (231, 90, 103))]
     for (name, color) in namesColors:
         Picture(name, color, screenshot, points)
     if len(points) > 0:
@@ -223,8 +224,8 @@ while True:
             # loop_time = time()
             # cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
             #            screenshot)
-            # pointCheck = points[random.randint(0, len(points))]
-            # pointCheck = points[75]
+            # pointCheck = points[3]
+            # # pointCheck = points[random.randint(0, len(points))]
             # print(pointCheck)
             # cv.putText(screenshot, pointCheck[1], (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_DUPLEX,
             #            .6, pointCheck[2])
@@ -250,35 +251,49 @@ while True:
                 # [5]               0       1        2      3        4       5        6      7
                 point.append([('l', -1, 0), 0, ('r', 1, 0), 0, ('u', 0, -1), 0, ('d', 0, 1), 0])
                 if pointName != 'canister':
-                    for (stage, floor) in ((45, 19), (47, 21)):
-                        if point[4][stage] != 'X':
-                            if 'rocket' not in pointName:
+                    # for (stage, floor) in ((80, 114), (19, 21)):
+                    for (stage, floor) in ((80, 19), (114, 21)):
+                        if point[4][floor + 26] != 'X':
+                            if ('rocket' or 'cube' or 'envelope') not in pointName:
                                 left = 0
                                 right = 0
                                 up_down = 0
-                                for (a, b) in zip(range(floor, floor - 19, -3), range(1, 8)):
-                                    if point[4][a] or point[4][a + 22] or point[4][a + 61] == pointName:
-                                        if point[4][a] == pointName and left == b - 1:
-                                            left = b
-                                        if point[4][a + 22] == pointName and right == b - 1:
-                                            right = b
-                                        if point[4][a + 61] == pointName and up_down == b - 1:
-                                            up_down = b
+                                for (a, b) in zip(range(stage, stage - 31, -3), range(1, 8)):
+                                    if point[4][a] == pointName and up_down == b - 1:
+                                        up_down = b
                                     else:
                                         break
+                                if point[4][floor] == pointName:
+                                    left = 1
+                                    for (a, b) in zip(range(floor - 3, floor - 19, -3), range(2, 8)):
+                                        if point[4][a] == pointName and left == b - 1:
+                                            left = b
+                                        else:
+                                            break
+                                if point[4][floor + 22] == pointName:
+                                    right = 1
+                                    for (a, b) in zip(range(floor + 19, floor + 3, -3), range(2, 8)):
+                                        if point[4][a] == pointName and right == b - 1:
+                                            right = b
+                                        else:
+                                            break
                                 if left + right >= up_down:
-                                    point[5][stage - 40] = left + right + 1
+                                    point[5][floor - 14] = left + right + 1
                                 else:
-                                    point[5][stage - 40] = up_down + 1
+                                    point[5][floor - 14] = up_down + 1
                             else:
-                                point[5][stage - 40] = 3
-                            if point[5][stage - 40] >= 3:
-                                cv.putText(screenshot, point[5][stage - 41][0] + str(point[5][stage - 40]),
-                                           (point[0][0], point[0][1] - 10),
-                                           cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
+                                point[5][floor - 14] = 3
+                            # if point[5][stage - 40] >= 3:
+                            if floor == 19:
+                                a = 5
+                            else:
+                                a = -15
+                            cv.putText(screenshot, point[5][floor - 15][0] + str(point[5][floor - 14]),
+                                       (point[0][0] + a, point[0][1] - 5), cv.FONT_HERSHEY_SIMPLEX, .4,
+                                       (0, 0, 0))
                     for (side, see) in ((17, 79), (39, 81)):
                         if point[4][side + 3] != 'X':
-                            if 'rocket' not in pointName:
+                            if ('rocket' or 'cube' or 'envelope') not in pointName:
                                 left_right = 0
                                 up = 0
                                 down = 0
@@ -307,10 +322,10 @@ while True:
                                     point[5][see - 78] = left_right + 1
                             else:
                                 point[5][see - 78] = 3
-                            if point[5][see - 78] >= 3:
-                                cv.putText(screenshot, point[5][see - 79][0] + str(point[5][see - 78]),
-                                           (point[0][0], point[0][1] + side // 2), cv.FONT_HERSHEY_SIMPLEX, .4,
-                                           (0, 0, 0))
+                            # if point[5][see - 78] >= 3:
+                            cv.putText(screenshot, point[5][see - 79][0] + str(point[5][see - 78]),
+                                       (point[0][0], point[0][1] + side // 2), cv.FONT_HERSHEY_SIMPLEX, .4,
+                                       (0, 0, 0))
             chance_points = []
             for position in range(1, 8, 2):
                 xy, name, _, rc, _, chances = max(points, key=lambda l: (l[5][position], l[3][1]))
