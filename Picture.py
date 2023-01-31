@@ -14,19 +14,8 @@ class Picture:
         for tape in range(0, 3):
             for carpet in range(0, 2):
                 for ground in range(0, 2):
-                    # img = cv.imread(f'img/MatchThree/t{tape}c{carpet}g{ground}{name}.jpg',
-                    #                 cv.IMREAD_UNCHANGED)
-                    # images = [cv.imread(f' jpg/MatchThree/Tape0Carpet0Ground0{name}.jpg', cv.IMREAD_UNCHANGED),
-                    #           cv.imread(f' jpg/MatchThree/OneTape{name}.jpg', cv.IMREAD_UNCHANGED),
-                    #           cv.imread(f' jpg/MatchThree/OneTapeCarpet{name}.jpg', cv.IMREAD_UNCHANGED),
-                    #           cv.imread(f' jpg/MatchThree/TwoTapeCarpet{name}.jpg', cv.IMREAD_UNCHANGED),
-                    #           cv.imread(f' jpg/MatchThree/TwoTape{name}.jpg', cv.IMREAD_UNCHANGED)]
-                    # for img in images:
-                    # print(f'img/MatchThree/t{tape}c{carpet}g{ground}{name}.jpg')
-                    # print(os.path.exists(f'img/MatchThree/t{tape}c{carpet}g{ground}{name}.jpg'))
                     if os.path.exists(f'img/MatchThree/{name}_t{tape}c{carpet}g{ground}.jpg'):
                         img = cv.imread(f'img/MatchThree/{name}_t{tape}c{carpet}g{ground}.jpg', cv.IMREAD_UNCHANGED)
-                        # print(os.path.exists(f'img/MatchThree/t{tape}c{carpet}g{ground}{name}.jpg'))
                         w = img.shape[1]
                         h = img.shape[0]
                         result = cv.matchTemplate(self.screenshot, img, cv.TM_CCOEFF_NORMED)
@@ -43,4 +32,4 @@ class Picture:
                             # cv.rectangle(self.screenshot, (x, y), (x + w, y + h), color, 1)
                             center_x = x + int(w / 2)
                             center_y = y + int(h / 2)
-                            points.append([(center_x, center_y), (name, f't{tape}c{carpet}g{ground}'), color])
+                            points.append([(center_x, center_y), (name, 't', tape, 'c', carpet, 'g', ground), color])
