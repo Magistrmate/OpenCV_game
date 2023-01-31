@@ -52,10 +52,12 @@ def before_bot_action(point_target, one, two):
 while True:
     screenshot = wincap.get_screenshot()
     points = []
-    namesColors = [('duck', (0, 191, 255)), ('chip', (0, 0, 255)), ('ball', (0, 255, 0)), ('backpack', (255, 0, 0)),
-                   ('spruce', (0, 128, 0)), ('egg', (255, 0, 139)), ('canister', (99, 103, 106)),
-                   ('h_rocket', (145, 101, 214)), ('v_rocket', (145, 101, 214)), ('cube', (57, 138, 250)),
-                   ('envelope', (103, 90, 231)), ('bomb', (169, 133, 247))]
+    namesColors = [('duck', (0, 191, 255)), ('chip', (0, 0, 255)), ('ball', (0, 255, 0)),
+                   ('backpack', (255, 0, 0)), ('backpack', (255, 0, 0)), ('spruce', (0, 128, 0)),
+                   ('egg', (255, 0, 139)), ('canister', (99, 103, 106)), ('h_rocket', (145, 101, 214)),
+                   ('v_rocket', (145, 101, 214)), ('cube', (57, 138, 250)), ('envelope', (103, 90, 231)),
+                   ('bomb', (169, 133, 247))]
+    # namesColors = [('chip', (0, 0, 255))]
     for (name, color) in namesColors:
         Picture(name, color, screenshot, points)
     if len(points) > 0:
@@ -66,15 +68,20 @@ while True:
         for (index, point) in enumerate(points):
             x = point[0][0]
             y = point[0][1]
-            name = point[1]
+            name = point[1][0]
+            properties = point[1][1]
             color = point[2]
             for (x0, column) in zip(range(first_point_for_x - 5, last_point_for_x + 5, 51), range(1, 9)):
                 if x0 <= x <= (x0 + 50):
                     for (y0, row) in zip(range(first_point_for_y - 10, last_point_for_y + 5, 51), range(1, 11)):
                         if y0 <= y <= (y0 + 50):
                             points[index].append((column, row))
-                            # cv.putText(screenshot, str(column) + " " + str(row) + " " + name, (x - 20, y - 20),
-                            #            cv.FONT_HERSHEY_SIMPLEX, .4, color)
+                            cv.putText(screenshot, str(column) + " " + str(row), (x - 20, y - 20),
+                                       cv.FONT_HERSHEY_SIMPLEX, .4, color)
+                            cv.putText(screenshot, name, (x - 20, y - 10),
+                                       cv.FONT_HERSHEY_SIMPLEX, .4, color)
+                            cv.putText(screenshot, properties, (x - 20, y),
+                                       cv.FONT_HERSHEY_SIMPLEX, .4, color)
         try:
             for point in points:
                 # [4]           0
@@ -142,7 +149,6 @@ while True:
                 point.append([('l', -1, 0), 0, ('r', 1, 0), 0, ('u', 0, -1), 0, ('d', 0, 1), 0])
                 if pointName != 'canister':
                     checkNames = ['cube', 'envelope', 'bomb', 'h_rocket', 'v_rocket']
-                    # for (stage, floor) in ((80, 114), (19, 21)):
                     for (stage, floor) in ((80, 19), (114, 21)):
                         if point[4][floor + 26] != 'X':
                             if pointName not in checkNames:
@@ -174,14 +180,14 @@ while True:
                                     point[5][floor - 14] = up_down + 1
                             else:
                                 point[5][floor - 14] = 3
-                            # if point[5][stage - 40] >= 3:
-                            if floor == 19:
-                                a = 5
-                            else:
-                                a = -15
-                            cv.putText(screenshot, point[5][floor - 15][0] + str(point[5][floor - 14]),
-                                       (point[0][0] + a, point[0][1] - 5), cv.FONT_HERSHEY_SIMPLEX, .4,
-                                       (0, 0, 0))
+                            # if point[5][floor - 14] >= 3:
+                            #     if floor == 19:
+                            #         a = 5
+                            #     else:
+                            #         a = -15
+                            #     cv.putText(screenshot, point[5][floor - 15][0] + str(point[5][floor - 14]),
+                            #                (point[0][0] + a, point[0][1] - 5), cv.FONT_HERSHEY_SIMPLEX, .4,
+                            #                (0, 0, 0))
                     for (side, see) in ((17, 79), (39, 81)):
                         if point[4][side + 3] != 'X':
                             if pointName not in checkNames:
@@ -214,9 +220,9 @@ while True:
                             else:
                                 point[5][see - 78] = 3
                             # if point[5][see - 78] >= 3:
-                            cv.putText(screenshot, point[5][see - 79][0] + str(point[5][see - 78]),
-                                       (point[0][0], point[0][1] + side // 2), cv.FONT_HERSHEY_SIMPLEX, .4,
-                                       (0, 0, 0))
+                            #     cv.putText(screenshot, point[5][see - 79][0] + str(point[5][see - 78]),
+                            #                (point[0][0], point[0][1] + side // 2), cv.FONT_HERSHEY_SIMPLEX, .4,
+                            #                (0, 0, 0))
             chance_points = []
             for position in range(1, 8, 2):
                 xy, name, _, rc, _, chances = max(points, key=lambda l: (l[5][position], l[3][1]))
@@ -226,7 +232,7 @@ while True:
                 # print(f' max_point {[xy, name, rc, direction, number]}')
             max_combo = max(chance_points, key=lambda l: (l[4], l[2][1]))
             # print(f' max_combo {max_combo}')
-            before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
+            # before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
         except IndexError or TypeError or ValueError:
             # cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
             #            screenshot)
