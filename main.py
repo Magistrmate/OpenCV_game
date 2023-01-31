@@ -76,12 +76,12 @@ while True:
                     for (y0, row) in zip(range(first_point_for_y - 10, last_point_for_y + 5, 51), range(1, 11)):
                         if y0 <= y <= (y0 + 50):
                             points[index].append((column, row))
-                            # cv.putText(screenshot, str(column) + " " + str(row), (x - 20, y - 20),
-                            #            cv.FONT_HERSHEY_SIMPLEX, .4, color)
-                            # cv.putText(screenshot, name, (x - 20, y - 10),
-                            #            cv.FONT_HERSHEY_SIMPLEX, .4, color)
-                            # cv.putText(screenshot, properties, (x - 20, y),
-                            #            cv.FONT_HERSHEY_SIMPLEX, .4, color)
+                            cv.putText(screenshot, str(column) + " " + str(row), (x - 20, y - 20),
+                                       cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
+                            cv.putText(screenshot, name, (x - 20, y - 10),
+                                       cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
+                            cv.putText(screenshot, properties, (x - 20, y),
+                                       cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
         try:
             for point in points:
                 # [4]           0
@@ -234,7 +234,7 @@ while True:
                 # print(f' max_point {[xy, name, rc, direction, number]}')
             max_combo = max(chance_points, key=lambda l: (l[4], l[2][1]))
             # print(f' max_combo {max_combo}')
-            before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
+            # before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
         except IndexError or TypeError or ValueError:
             # cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
             #            screenshot)

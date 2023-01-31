@@ -5,7 +5,7 @@ import numpy as np
 
 
 class Picture:
-    threshold = .885
+    threshold = .85
 
     def __init__(self, name, color, screenshot, points):
         self.name = name
