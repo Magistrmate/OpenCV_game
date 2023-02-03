@@ -5,14 +5,19 @@ import numpy as np
 
 
 class Picture:
-    threshold = .85
+    threshold = .76
 
-    def __init__(self, name, color, screenshot, points):
+    def __init__(self, name, color, space_hold, tape_hold, carpet_hold, ground_hold, screenshot, points):
         self.name = name
         self.color = color
         self.screenshot = screenshot
+        self.space_hold = space_hold
+        self.tape_hold = tape_hold
+        self.carpet_hold = carpet_hold
+        self.ground_hold = ground_hold
+        self.threshold = space_hold
         for tape in range(0, 3):
-            for carpet in range(0, 2):
+            for carpet in range(0, 5):
                 for ground in range(0, 2):
                     if os.path.exists(f'img/MatchThree/{name}_t{tape}c{carpet}g{ground}.jpg'):
                         img = cv.imread(f'img/MatchThree/{name}_t{tape}c{carpet}g{ground}.jpg', cv.IMREAD_UNCHANGED)
@@ -20,6 +25,10 @@ class Picture:
                         h = img.shape[0]
                         result = cv.matchTemplate(self.screenshot, img, cv.TM_CCOEFF_NORMED)
                         _, _, _, max_loc = cv.minMaxLoc(result)
+                        if tape != 0:
+                            self.threshold = tape_hold
+                        if carpet != 0:
+                            self.threshold = carpet_hold
                         yloc, xloc = np.where(result >= self.threshold)
                         rectangles = []
                         for (x, y) in zip(xloc, yloc):

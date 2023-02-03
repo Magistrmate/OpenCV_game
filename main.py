@@ -52,14 +52,14 @@ def before_bot_action(point_target, one, two):
 while True:
     screenshot = wincap.get_screenshot()
     points = []
-    namesColors = [('duck', (0, 191, 255)), ('chip', (0, 0, 255)), ('ball', (0, 255, 0)),
-                   ('backpack', (255, 0, 0)), ('backpack', (255, 0, 0)), ('spruce', (0, 128, 0)),
-                   ('egg', (255, 0, 139)), ('canister', (99, 103, 106)), ('h_rocket', (145, 101, 214)),
-                   ('v_rocket', (145, 101, 214)), ('cube', (57, 138, 250)), ('envelope', (103, 90, 231)),
-                   ('bomb', (169, 133, 247))]
-    # namesColors = [('chip', (0, 0, 255))]
-    for (name, color) in namesColors:
-        Picture(name, color, screenshot, points)
+    namesColors = [('ball', (0, 255, 0), .76, .85, .7, .76), ('backpack', (255, 0, 0), .76, .85, .7, .76),
+                   ('egg', (255, 0, 139), .76, .85, .7, .76), ('chip', (0, 0, 255), .78, .76, .74, .76),
+                   ('duck', (0, 191, 255), .76, .9, .7, .76), ('spruce', (0, 128, 0), .76, .85, .7, .76),
+                   ('h_rocket', (145, 101, 214), .76, .85, .7, .76), ('v_rocket', (145, 101, 214), .76, .85, .7, .76),
+                   ('envelope', (103, 90, 231), .76, .85, .7, .76)]
+    # namesColors = [('chip', (0, 0, 255), .7, .76, .76, .76)]
+    for (name, color, space_hold, tape_hold, carpet_hold, ground_hold) in namesColors:
+        Picture(name, color, space_hold, tape_hold, carpet_hold, ground_hold, screenshot, points)
     if len(points) > 0:
         (first_point_for_x, _), _, _ = min(points, key=lambda l: l[0][0])
         (last_point_for_x, _), _, _ = max(points, key=lambda l: l[0][0])
@@ -182,14 +182,14 @@ while True:
                                     point[5][floor - 14] = up_down + 1
                             else:
                                 point[5][floor - 14] = 3
-                            if point[5][floor - 14] >= 3:
-                                if floor == 19:
-                                    a = 5
-                                else:
-                                    a = -15
-                                cv.putText(screenshot, point[5][floor - 15][0] + str(point[5][floor - 14]),
-                                           (point[0][0] + a, point[0][1] - 5), cv.FONT_HERSHEY_SIMPLEX, .4,
-                                           (0, 0, 0))
+                            # if point[5][floor - 14] >= 3:
+                            #     if floor == 19:
+                            #         a = 5
+                            #     else:
+                            #         a = -15
+                            #     cv.putText(screenshot, point[5][floor - 15][0] + str(point[5][floor - 14]),
+                            #                (point[0][0] + a, point[0][1] - 5), cv.FONT_HERSHEY_SIMPLEX, .4,
+                            #                (0, 0, 0))
                     for (side, see) in ((17, 79), (39, 81)):
                         if point[4][side + 3] != 'X' and point[4][side + 3][2] == 0:
                             if pointName not in checkNames:
@@ -221,10 +221,10 @@ while True:
                                     point[5][see - 78] = left_right + 1
                             else:
                                 point[5][see - 78] = 3
-                            if point[5][see - 78] >= 3:
-                                cv.putText(screenshot, point[5][see - 79][0] + str(point[5][see - 78]),
-                                           (point[0][0], point[0][1] + side // 2), cv.FONT_HERSHEY_SIMPLEX, .4,
-                                           (0, 0, 0))
+                            # if point[5][see - 78] >= 3:
+                            #     cv.putText(screenshot, point[5][see - 79][0] + str(point[5][see - 78]),
+                            #                (point[0][0], point[0][1] + side // 2), cv.FONT_HERSHEY_SIMPLEX, .4,
+                            #                (0, 0, 0))
             chance_points = []
             for position in range(1, 8, 2):
                 xy, name, _, rc, _, chances = max(points, key=lambda l: (l[5][position], l[3][1]))
