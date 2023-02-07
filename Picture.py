@@ -17,7 +17,7 @@ class Picture:
         self.ground_hold = ground_hold
         self.threshold = space_hold
         for tape in range(0, 3):
-            for carpet in range(0, 5):
+            for carpet in range(0, 10):
                 for ground in range(0, 2):
                     if os.path.exists(f'img/MatchThree/{name}_t{tape}c{carpet}g{ground}.jpg'):
                         img = cv.imread(f'img/MatchThree/{name}_t{tape}c{carpet}g{ground}.jpg', cv.IMREAD_UNCHANGED)
@@ -41,4 +41,14 @@ class Picture:
                             # cv.rectangle(self.screenshot, (x, y), (x + w, y + h), color, 1)
                             center_x = x + int(w / 2)
                             center_y = y + int(h / 2)
-                            points.append([(center_x, center_y), (name, 't', tape, 'c', carpet, 'g', ground), color])
+                            # print(f'center_x {center_x}center_y {center_y}')
+                            # for find_x in range(center_x - 2, center_x + 2):
+                            #     for find_y in range(center_y - 2, center_y + 2):
+                            #         print(f'find_x{find_x}find_y{find_y}')
+                            #         if ([(find_x, find_y), (name, 't', tape, 'c', 0, 'g', ground), color]) in points:
+                            #             print([(center_x, center_y), (name, 't', tape, 'c', carpet, 'g', ground), color])
+                            #             print([(center_x, center_y), (name, 't', tape, 'c', 0, 'g', ground), color])
+                            #             break
+                            #         else:
+                            points.append([(center_x, center_y), (name, 't', tape, 'c', carpet, 'g', ground),
+                                           color])
