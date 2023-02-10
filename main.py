@@ -153,8 +153,8 @@ while True:
         # sleep(5)
         for point in points:
             pointName = point[1][0]
-            # [5]               0       1        2      3        4       5        6      7
-            point.append([('l', -1, 0), 0, ('r', 1, 0), 0, ('u', 0, -1), 0, ('d', 0, 1), 0])
+            # [5]               0          1           2         3           4          5           6         7
+            point.append([('l', -1, 0), (0, ''), ('r', 1, 0), (0, ''), ('u', 0, -1), (0, ''), ('d', 0, 1), (0, '')])
             property_tape0 = point[1][2]
             if pointName != 'canister' and property_tape0 == 0:
                 checkNames = ['cube', 'envelope', 'bomb', 'h_rocket', 'v_rocket']
@@ -167,7 +167,8 @@ while True:
                     pointUp_Down = point[4][startLeftUp_Down + 26]
                     if pointUp_Down != 'X':
                         property_carpet = pointUp_Down[4]
-                        directionUp_Down = point[5][startLeftUp_Down - 14]
+                        directionUp_Down = point[5][startLeftUp_Down - 14][0]
+                        carpetExistUp_Down = point[5][startLeftUp_Down - 14][1]
                         if pointName not in checkNames:
                             leftMatch = 0
                             rightMatch = 0
@@ -216,18 +217,20 @@ while True:
                                     else:
                                         break
                             if leftMatch + rightMatch >= up_downMatch:
-                                directionUp_Down = leftMatch + rightMatch + 1 + property_carpet
+                                directionUp_Down = leftMatch + rightMatch + 1
                             else:
-                                directionUp_Down = up_downMatch + 1 + property_carpet
+                                directionUp_Down = up_downMatch + 1
                         else:
-                            directionUp_Down = 3 + property_carpet
+                            directionUp_Down = 3
+                        if property_carpet == 1:
+                            carpetExistUp_Down = 'c'
                         if directionUp_Down >= 3:
                             if startLeftUp_Down == 19:
                                 aprox = 5
                             else:
                                 aprox = -15
                             directionLetter = point[5][startLeftUp_Down - 15][0]
-                            cv.putText(screenshot, directionLetter + str(directionUp_Down),
+                            cv.putText(screenshot, directionLetter + str(directionUp_Down) + carpetExistUp_Down,
                                        (point[0][0] + aprox, point[0][1] - 5), cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
                 pointStartLeft = 17
                 pointStartRight = 39
@@ -238,7 +241,8 @@ while True:
                     pointLeft_Right = point[4][startLeft_Right + 3]
                     if pointLeft_Right != 'X':
                         property_carpet = pointLeft_Right[4]
-                        directionLeft_Right = point[5][startLeft_RightUp2 - 78]
+                        directionLeft_Right = point[5][startLeft_RightUp2 - 78][0]
+                        carpetExistLeft_Right = point[5][startLeft_RightUp2 - 78][1]
                         if pointName not in checkNames:
                             upMatch = 0
                             downMatch = 0
@@ -271,7 +275,7 @@ while True:
                                         break
                             pointNameFind = point[4][startLeft_Right + 4][0]
                             if pointNameFind == pointName:
-                                down = 1
+                                downMatch = 1
                                 startLeft_RightDown2 = startLeft_RightUp2 + 34
                                 endLeft_RightDown2 = startLeft_RightUp2 + 3
                                 for (moveDown, order) in zip(range(startLeft_RightDown2, endLeft_RightDown2, -3),
@@ -281,26 +285,29 @@ while True:
                                         if property_carpet != 1:
                                             property_carpet = pointFind[4]
                                     pointNameFind = pointFind[0]
-                                    if pointNameFind == pointName and down == order - 1:
-                                        down = order
+                                    if pointNameFind == pointName and downMatch == order - 1:
+                                        downMatch = order
                                     else:
                                         break
                             if upMatch + downMatch >= left_rightMatch:
-                                directionLeft_Right = upMatch + downMatch + 1 + property_carpet
+                                directionLeft_Right = upMatch + downMatch + 1
                             else:
-                                directionLeft_Right = left_rightMatch + 1 + property_carpet
+                                directionLeft_Right = left_rightMatch + 1
                         else:
-                            directionLeft_Right = 3 + property_carpet
+                            directionLeft_Right = 3
+                        if property_carpet == 1:
+                            carpetExistLeft_Right = 'c'
                         if directionLeft_Right >= 3:
                             directionLetter = point[5][startLeft_RightUp2 - 79][0]
-                            cv.putText(screenshot, directionLetter + str(directionLeft_Right),
+                            cv.putText(screenshot, directionLetter + str(directionLeft_Right) + carpetExistLeft_Right,
                                        (point[0][0], point[0][1] + startLeft_Right // 2),
                                        cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
         chance_points = []
         for position in range(1, 8, 2):
+            print(points)
             xy, name, _, rc, _, chances = max(points, key=lambda l: (l[5][position], l[3][1]))
-            direction = chances[-1 + position]
-            number = chances[0 + position]
+            direction = chances[position - 1]
+            number = chances[position][0]
             chance_points.append([xy, name, rc, direction, number])
             # print(f' max_point {[xy, name, rc, direction, number]}')
         max_combo = max(chance_points, key=lambda l: (l[4], l[2][1]))
