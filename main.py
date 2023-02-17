@@ -158,9 +158,9 @@ while True:
                 pointStartLeftUp = 19
                 pointStartDown = 114
                 pointStartLeftDown = 21
-                carpetExistUp_Down = 0
                 for (startUp_Down, startLeftUp_Down) in ((pointStartUp, pointStartLeftUp), (pointStartDown,
                                                                                             pointStartLeftDown)):
+                    carpetExistUp_Down = 0
                     pointUp_Down = point[4][startLeftUp_Down + 26]
                     if pointUp_Down != 'X':
                         if pointUp_Down[4] == 1:
@@ -226,7 +226,7 @@ while True:
                         else:
                             directionUp_Down = up_downMatch + 1
                         point[5][startLeftUp_Down - 14][0] = directionUp_Down
-                        if directionUp_Down != carpetExistUp_Down:
+                        if directionUp_Down != carpetExistUp_Down and directionUp_Down >= 3:
                             point[5][startLeftUp_Down - 14][2] = carpetExistUp_Down
                         if directionUp_Down >= 3:
                             if startLeftUp_Down == 19:
@@ -312,7 +312,7 @@ while True:
                         else:
                             directionLeft_Right = left_rightMatch + 1
                         point[5][startLeft_RightUp2 - 78][0] = directionLeft_Right
-                        if directionLeft_Right != carpetExistLeft_Right:
+                        if directionLeft_Right != carpetExistLeft_Right and directionLeft_Right >= 3:
                             point[5][startLeft_RightUp2 - 78][2] = carpetExistLeft_Right
                         if directionLeft_Right >= 3:
                             directionLetter = point[5][startLeft_RightUp2 - 79][0]
@@ -324,13 +324,13 @@ while True:
         for position in range(1, 8, 2):
             # print(points)
             xy, name, _, rc, _, chances = max(points, key=lambda l: (l[5][position][2], l[5][position][0], l[3][1]))
-            print(f'xy, name, _, rc, _, chances {chances}')
+            print(f'xy, name, _, rc, _, chances {xy, name, _, rc, _, chances}')
             direction = chances[position - 1]
             numberMatch = chances[position][0]
             numberCarpet = chances[position][2]
             chance_points.append([xy, name, rc, direction, numberMatch, numberCarpet])
             print(f' max_point {[xy, name, rc, direction, numberMatch, numberCarpet]}')
-        max_combo = max(chance_points, key=lambda l: (l[4], l[5], l[2][1]))
+        max_combo = max(chance_points, key=lambda l: (l[5], l[4], l[2][1]))
         print(f' max_combo {max_combo}')
         # before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
         cv.putText(screenshot, max_combo[3][0], (max_combo[0]),
