@@ -7,7 +7,7 @@ import numpy as np
 class Picture:
     threshold = .76
 
-    def __init__(self, name, color, space_hold, tape_hold, carpet_hold, ground_hold, screenshot, points):
+    def __init__(self, name, color, space_hold, tape_hold, carpet_hold, ground_hold, pointPlus, screenshot, points):
         self.name = name
         self.color = color
         self.screenshot = screenshot
@@ -41,14 +41,5 @@ class Picture:
                             # cv.rectangle(self.screenshot, (x, y), (x + w, y + h), color, 1)
                             center_x = x + int(w / 2)
                             center_y = y + int(h / 2)
-                            # print(f'center_x {center_x}center_y {center_y}')
-                            # for find_x in range(center_x - 2, center_x + 2):
-                            #     for find_y in range(center_y - 2, center_y + 2):
-                            #         print(f'find_x{find_x}find_y{find_y}')
-                            #         if ([(find_x, find_y), (name, 't', tape, 'c', 0, 'g', ground), color]) in points:
-                            #             print([(center_x, center_y), (name, 't', tape, 'c', carpet, 'g', ground), color])
-                            #             print([(center_x, center_y), (name, 't', tape, 'c', 0, 'g', ground), color])
-                            #             break
-                            #         else:
-                            points.append([(center_x, center_y), (name, 't', tape, 'c', carpet, 'g', ground),
-                                           color])
+                            points.append([(center_x, center_y), (name, 't', tape, 'c', carpet, 'g', ground, 'p',
+                                                                  pointPlus), color])
