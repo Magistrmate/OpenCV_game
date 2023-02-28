@@ -40,8 +40,14 @@
 #         print('\n')
 #         for r in range(-1, 2, 1):
 #             print(f'{m} + {c} + {r} = {m + c + r} + {n} = {m + c + r + n}')
-for (m, d) in zip((1, -1), (0, 12)):
-    for (c, n) in zip(range(-12 * m, -1 * m, m), range(61 + d, 91 + d * 2, (3 - m))):
-        print('\n')
-        for r in range(-1, 2, 1):
-            print(f'{m} + {r} + {c} = {m + r + c} + {n} = {m + r + c + n}')
+# for (m, d) in zip((1, -1), (0, 12)):
+#     for (c, n) in zip(range(-12 * m, -1 * m, m), range(61 + d, 91 + d * 2, (3 - m))):
+#         print('\n')
+#         for r in range(-1, 2, 1):
+#             print(f'{m} + {r} + {c} = {m + r + c} + {n} = {m + r + c + n}')
+points = [[(38, 260), ('ball', 't', 0, 'c', 0, 'g', 0, 'p', False), (0, 255, 0), (1, 1)],
+          [(38, 311), ('ball', 't', 0, 'c', 0, 'g', 0, 'p', False), (0, 255, 0), (1, 2)]]
+subPoint = ('', 't', 0, 'c', 0, 'g', 0, 'p', False)
+for point in points:
+    point.append(['left', [['', 't', 0, 'c', 0, 'g', 0, 'p', False]] * 2])
+print(points)
