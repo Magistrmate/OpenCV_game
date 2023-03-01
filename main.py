@@ -182,7 +182,6 @@ while True:
             property_tape0 = point[1][2]
             property_plus0 = point[1][8]
             if pointName != 'canister' and property_tape0 == 0:
-                # pointsPlus = ['cube', 'envelope', 'bomb', 'h_rocket', 'v_rocket']
                 pointStartUp = 80
                 pointStartLeftUp = 19
                 pointStartDown = 114
@@ -192,7 +191,6 @@ while True:
                     carpetExistUp_Down = 0
                     pointUp_Down = point[4][startLeftUp_Down + 26]  # 45 or 47
                     if pointUp_Down[0] != '':
-                        # if pointUp_Down != 'X':
                         property_tape = pointUp_Down[2]
                         property_carpet = pointUp_Down[4]
                         property_plus = pointUp_Down[8]
@@ -209,7 +207,6 @@ while True:
                                 endUp_Down = startUp_Down - 31
                                 for (moveUp_Down, order) in zip(range(startUp_Down, endUp_Down, -3), range(1, 13)):
                                     pointFind = point[4][moveUp_Down]
-                                    # if pointFind != 'X':
                                     pointNameFind = pointFind[0]
                                     if pointNameFind == pointName and up_downMatch == order - 1:
                                         up_downMatch = order
@@ -217,49 +214,8 @@ while True:
                                             carpetExistUp_Down = carpetExistUp_Down + 1
                                     else:
                                         break
-                                    # else:
-                                    #     break
-                            # pointNameFind = point[4][startLeftUp_Down][0]  # 19 or 21
-                            # if pointNameFind == pointName:
-                            #     leftMatch = 1
-                            #     if point[4][startLeftUp_Down][4] == 1:
-                            #         carpetExistUp_Down = carpetExistUp_Down + 1
-                            #     endLeftUp_Down = startLeftUp_Down - 19
-                            #     for (moveLeft, order) in zip(range(startLeftUp_Down - 3, endLeftUp_Down, -3),
-                            #                                  range(2, 8)):
-                            #         pointFind = point[4][moveLeft]
-                            #         if pointFind != 'X':
-                            #             pointNameFind = pointFind[0]
-                            #             if pointNameFind == pointName and leftMatch == order - 1:
-                            #                 leftMatch = order
-                            #                 if pointFind[4] == 1:
-                            #                     carpetExistUp_Down = carpetExistUp_Down + 1
-                            #             else:
-                            #                 break
-                            #         else:
-                            #             break
-                            # pointNameFind = point[4][startLeftUp_Down + 22][0]  # 41 or 43
-                            # if pointNameFind == pointName:
-                            #     rightMatch = 1
-                            #     if point[4][startLeftUp_Down + 22][4] == 1:
-                            #         carpetExistUp_Down = carpetExistUp_Down + 1
-                            #     endUp_DownRight = startLeftUp_Down + 3
-                            #     for (moveRight, order) in zip(range(startLeftUp_Down + 19, endUp_DownRight, -3),
-                            #                                   range(2, 8)):
-                            #         pointFind = point[4][moveRight]
-                            #         if pointFind != 'X':
-                            #             pointNameFind = pointFind[0]
-                            #             if pointNameFind == pointName and rightMatch == order - 1:
-                            #                 rightMatch = order
-                            #                 if pointFind[4] == 1:
-                            #                     carpetExistUp_Down = carpetExistUp_Down + 1
-                            #             else:
-                            #                 break
-                            #         else:
-                            #             break
-                            # for (a, b, c) in zip((0, -19, -3), (22, 3, 19)):
                             for (a, b, c) in zip((0, 22), (-19, 3), (-3, 19)):
-                                left_rightMatch = 0
+                                # left_rightMatch = 0
                                 pointNameFind = point[4][startLeftUp_Down + a][0]  # (19 or 21) or (41 or 43)
                                 if pointNameFind == pointName:
                                     if a == 0:
@@ -272,7 +228,6 @@ while True:
                                     for (moveLeft, order) in zip(range(startLeftUp_Down + c, endLeftUp_Down, -3),
                                                                  range(2, 8)):
                                         pointFind = point[4][moveLeft]
-                                        # if pointFind != 'X':
                                         pointNameFind = pointFind[0]
                                         if pointNameFind == pointName:
                                             if leftMatch == order - 1:
@@ -283,8 +238,6 @@ while True:
                                                 carpetExistUp_Down = carpetExistUp_Down + 1
                                         else:
                                             break
-                                        # else:
-                                        #     break
                             if property_plus0 and property_plus0 != property_plus:
                                 directionUp_Down = 3
                             elif leftMatch + rightMatch >= up_downMatch:
@@ -316,7 +269,6 @@ while True:
                     carpetExistUp_Down = 0
                     pointLeft_Right = point[4][startLeft_Right + 3]
                     if pointLeft_Right[0] != '':
-                        # if pointLeft_Right != 'X':
                         property_tape = pointLeft_Right[2]
                         property_carpet = pointLeft_Right[4]
                         property_plus = pointLeft_Right[8]
@@ -334,7 +286,6 @@ while True:
                                 for (moveLeft_Right, order) in zip(range(startLeft_Right, endLeft_Right, -3),
                                                                    range(1, 8)):
                                     pointFind = point[4][moveLeft_Right]
-                                    # if pointFind != 'X':
                                     pointNameFind = pointFind[0]
                                     if pointNameFind == pointName and left_rightMatch == order - 1:
                                         left_rightMatch = order
@@ -342,47 +293,63 @@ while True:
                                             carpetExistLeft_Right = carpetExistLeft_Right + 1
                                     else:
                                         break
-                                    # else:
-                                    #     break
-                            pointNameFind = point[4][startLeft_Right + 2][0]
-                            if pointNameFind == pointName:
-                                upMatch = 1
-                                if point[4][startLeft_Right + 2][4] == 1:
-                                    carpetExistLeft_Right = carpetExistLeft_Right + 1
-                                endLeft_RightUp2 = startLeft_RightUp2 - 31
-                                for (moveUp, order) in zip(range(startLeft_RightUp2, endLeft_RightUp2, -3),
-                                                           range(2, 8)):
-                                    pointFind = point[4][moveUp]
-                                    # if pointFind != 'X':
-                                    pointNameFind = pointFind[0]
-                                    if pointNameFind == pointName and upMatch == order - 1:
-                                        upMatch = order
-                                        if pointFind[4] == 1:
-                                            carpetExistLeft_Right = carpetExistLeft_Right + 1
+                            # pointNameFind = point[4][startLeft_Right + 2][0]
+                            # if pointNameFind == pointName:
+                            #     upMatch = 1
+                            #     if point[4][startLeft_Right + 2][4] == 1:
+                            #         carpetExistLeft_Right = carpetExistLeft_Right + 1
+                            #     endLeft_RightUp2 = startLeft_RightUp2 - 31
+                            #     for (moveUp, order) in zip(range(startLeft_RightUp2, endLeft_RightUp2, -3),
+                            #                                range(2, 8)):
+                            #         pointFind = point[4][moveUp]
+                            #         pointNameFind = pointFind[0]
+                            #         if pointNameFind == pointName and upMatch == order - 1:
+                            #             upMatch = order
+                            #             if pointFind[4] == 1:
+                            #                 carpetExistLeft_Right = carpetExistLeft_Right + 1
+                            #         else:
+                            #             break
+                            # pointNameFind = point[4][startLeft_Right + 4][0]
+                            # if pointNameFind == pointName:
+                            #     downMatch = 1
+                            #     if point[4][startLeft_Right + 4][4] == 1:
+                            #         carpetExistLeft_Right = carpetExistLeft_Right + 1
+                            #     startLeft_RightDown2 = startLeft_RightUp2 + 34
+                            #     endLeft_RightDown2 = startLeft_RightUp2 + 3
+                            #     for (moveDown, order) in zip(range(startLeft_RightDown2, endLeft_RightDown2, -3),
+                            #                                  range(2, 8)):
+                            #         pointFind = point[4][moveDown]
+                            #         pointNameFind = pointFind[0]
+                            #         if pointNameFind == pointName and downMatch == order - 1:
+                            #             downMatch = order
+                            #             if pointFind[4] == 1:
+                            #                 carpetExistLeft_Right = carpetExistLeft_Right + 1
+                            #         else:
+                            #             break
+                            for (a, b, c) in zip((2, 4), (0, 34), (-31, 3)):
+                                pointNameFind = point[4][startLeft_Right + a][0]
+                                if pointNameFind == pointName:
+                                    if a == 2:
+                                        upMatch = 1
                                     else:
-                                        break
-                                    # else:
-                                    #     break
-                            pointNameFind = point[4][startLeft_Right + 4][0]
-                            if pointNameFind == pointName:
-                                downMatch = 1
-                                if point[4][startLeft_Right + 4][4] == 1:
-                                    carpetExistLeft_Right = carpetExistLeft_Right + 1
-                                startLeft_RightDown2 = startLeft_RightUp2 + 34
-                                endLeft_RightDown2 = startLeft_RightUp2 + 3
-                                for (moveDown, order) in zip(range(startLeft_RightDown2, endLeft_RightDown2, -3),
-                                                             range(2, 8)):
-                                    pointFind = point[4][moveDown]
-                                    # if pointFind != 'X':
-                                    pointNameFind = pointFind[0]
-                                    if pointNameFind == pointName and downMatch == order - 1:
-                                        downMatch = order
-                                        if pointFind[4] == 1:
-                                            carpetExistLeft_Right = carpetExistLeft_Right + 1
-                                    else:
-                                        break
-                                    # else:
-                                    #     break
+                                        downMatch = 1
+                                    if point[4][startLeft_Right + a][4] == 1:
+                                        carpetExistLeft_Right = carpetExistLeft_Right + 1
+                                    startLeft_RightDown2 = startLeft_RightUp2 + b
+                                    endLeft_RightDown2 = startLeft_RightUp2 + c
+                                    for (moveDown, order) in zip(range(startLeft_RightDown2, endLeft_RightDown2, -3),
+                                                                 range(2, 8)):
+                                        pointFind = point[4][moveDown]
+                                        pointNameFind = pointFind[0]
+                                        if pointNameFind == pointName:
+                                            if downMatch == order - 1:
+                                                downMatch = order
+                                            elif upMatch == order - 1:
+                                                upMatch = order
+                                            if pointFind[4] == 1:
+                                                carpetExistLeft_Right = carpetExistLeft_Right + 1
+                                        else:
+                                            break
                             if property_plus0 and property_plus0 != property_plus:
                                 directionLeft_Right = 3
                             elif upMatch + downMatch >= left_rightMatch:
@@ -398,7 +365,7 @@ while True:
                                 cv.putText(screenshot, directionLetter + str(directionLeft_Right) +
                                            point[5][startLeft_RightUp2 - 78][1] +
                                            str(point[5][startLeft_RightUp2 - 78][2]),
-                                           (point[0][0], point[0][1] + startLeft_Right // 2),
+                                           (point[0][0] - 3, point[0][1] + startLeft_Right // 2),
                                            cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
         chance_points = []
         try:
