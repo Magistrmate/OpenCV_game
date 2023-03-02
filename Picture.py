@@ -17,7 +17,7 @@ class Picture:
         self.ground_hold = ground_hold
         self.threshold = space_hold
         for tape in range(0, 3):
-            for carpet in range(0, 10):
+            for carpet in range(0, 2):
                 for ground in range(0, 2):
                     if os.path.exists(f'img/MatchThree/{name}_t{tape}c{carpet}g{ground}.jpg'):
                         img = cv.imread(f'img/MatchThree/{name}_t{tape}c{carpet}g{ground}.jpg', cv.IMREAD_UNCHANGED)
