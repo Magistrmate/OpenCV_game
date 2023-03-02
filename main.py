@@ -187,6 +187,7 @@ while True:
                     for (startUp_Down, startLeftUp_Down) in ((pointStartUp, pointStartLeftUp), (pointStartDown,
                                                                                                 pointStartLeftDown)):
                         carpetExistUp_Down = 0
+                        tapeExistUp_Down = 0
                         pointUp_Down = point[4][startLeftUp_Down + 26]  # 45 or 47
                         if pointUp_Down[0] != '':
                             property_tape = pointUp_Down[2]
@@ -205,39 +206,59 @@ while True:
                                     for (moveUp_Down, order) in zip(range(startUp_Down, endUp_Down, -3), range(1, 13)):
                                         pointFind = point[4][moveUp_Down]
                                         pointNameFind = pointFind[0]
+                                        pointTapeFind = pointFind[2]
+                                        pointCarpetFind = pointFind[4]
                                         if pointNameFind == pointName and up_downMatch == order - 1:
                                             up_downMatch = order
-                                            if pointFind[4] == 1 and carpetExistUp_Down == order - 1:
-                                                carpetExistUp_Down = carpetExistUp_Down + 1
+                                            if pointTapeFind != 0 and tapeExistUp_Down == order - 1:
+                                                tapeExistUp_Down = tapeExistUp_Down + pointTapeFind
+                                            if pointCarpetFind == 1 and carpetExistUp_Down == order - 1:
+                                                carpetExistUp_Down = carpetExistUp_Down + pointCarpetFind
                                         else:
                                             break
+                                tapeExistLeft_RightUp_Down = 0
                                 for (a, b, c) in zip((0, 22), (-19, 3), (-3, 19)):
                                     pointNameFind = point[4][startLeftUp_Down + a][0]  # (19 or 21) or (41 or 43)
+                                    pointTapeFind = point[4][startLeftUp_Down + a][2]
+                                    pointCarpetFind = point[4][startLeftUp_Down + a][4]
                                     if pointNameFind == pointName:
                                         if a == 0:
                                             leftMatch = 1
                                         else:
                                             rightMatch = 1
-                                        if point[4][startLeftUp_Down + a][4] == 1:
-                                            carpetExistUp_Down = carpetExistUp_Down + 1
+                                        if pointTapeFind != 0:
+                                            tapeExistLeft_RightUp_Down = tapeExistLeft_RightUp_Down + pointTapeFind
+                                        if pointCarpetFind == 1:
+                                            carpetExistUp_Down = carpetExistUp_Down + pointCarpetFind
                                         endLeftUp_Down = startLeftUp_Down + b
                                         for (moveLeft, order) in zip(range(startLeftUp_Down + c, endLeftUp_Down, -3),
                                                                      range(2, 8)):
                                             pointFind = point[4][moveLeft]
                                             pointNameFind = pointFind[0]
+                                            pointTapeFind = pointFind[2]
+                                            pointCarpetFind = pointFind[4]
                                             if pointNameFind == pointName:
                                                 if leftMatch == order - 1:
                                                     leftMatch = order
                                                 elif rightMatch == order - 1:
                                                     rightMatch = order
-                                                if pointFind[4] == 1:
-                                                    carpetExistUp_Down = carpetExistUp_Down + 1
+                                                if pointCarpetFind == 1:
+                                                    carpetExistUp_Down = carpetExistUp_Down + pointCarpetFind
+                                                if pointTapeFind != 0:
+                                                    tapeExistLeft_RightUp_Down = tapeExistLeft_RightUp_Down + \
+                                                                                 pointTapeFind
                                             else:
                                                 break
-                                if leftMatch + rightMatch >= up_downMatch:
+                                if property_plus0 and property_plus0 != property_plus:
+                                    directionUp_Down = 3
+                                elif leftMatch + rightMatch >= up_downMatch:
                                     directionUp_Down = leftMatch + rightMatch + 1
+                                    if directionUp_Down >= 3:
+                                        point[5][startLeftUp_Down - 14][2] = tapeExistLeft_RightUp_Down
                                 else:
                                     directionUp_Down = up_downMatch + 1
+                                    if directionUp_Down >= 3:
+                                        point[5][startLeftUp_Down - 14][2] = tapeExistUp_Down
                                 point[5][startLeftUp_Down - 14][0] = directionUp_Down
                                 if carpetExistUp_Down != 0 and carpetExistUp_Down < directionUp_Down and \
                                         directionUp_Down >= 3:
@@ -262,6 +283,7 @@ while True:
                     for (startLeft_Right, startLeft_RightUp2) in ((pointStartLeft, pointStartLeftUp2),
                                                                   (pointStartRight, pointStartRightUp2)):
                         carpetExistLeft_Right = 0
+                        tapeExistLeft_Right = 0
                         pointLeft_Right = point[4][startLeft_Right + 3]
                         if pointLeft_Right[0] != '':
                             property_tape = pointLeft_Right[2]
@@ -281,40 +303,60 @@ while True:
                                                                        range(1, 8)):
                                         pointFind = point[4][moveLeft_Right]
                                         pointNameFind = pointFind[0]
+                                        pointTapeFind = pointFind[2]
+                                        pointCarpetFind = pointFind[4]
                                         if pointNameFind == pointName and left_rightMatch == order - 1:
                                             left_rightMatch = order
-                                            if pointFind[4] == 1 and carpetExistLeft_Right == order - 1:
-                                                carpetExistLeft_Right = carpetExistLeft_Right + 1
+                                            if pointTapeFind != 0 and tapeExistLeft_Right == order - 1:
+                                                tapeExistLeft_Right = tapeExistLeft_Right + pointTapeFind
+                                            if pointCarpetFind == 1 and carpetExistLeft_Right == order - 1:
+                                                carpetExistLeft_Right = carpetExistLeft_Right + pointCarpetFind
                                         else:
                                             break
+                                tapeExistLeft_RightUp_Down = 0
                                 for (a, b, c) in zip((2, 4), (0, 34), (-31, 3)):
                                     pointNameFind = point[4][startLeft_Right + a][0]
+                                    pointTapeFind = point[4][startLeft_Right + a][2]
+                                    pointCarpetFind = point[4][startLeft_Right + a][4]
                                     if pointNameFind == pointName:
                                         if a == 2:
                                             upMatch = 1
                                         else:
                                             downMatch = 1
-                                        if point[4][startLeft_Right + a][4] == 1:
-                                            carpetExistLeft_Right = carpetExistLeft_Right + 1
+                                        if pointTapeFind != 0:
+                                            tapeExistLeft_RightUp_Down = tapeExistLeft_RightUp_Down + pointTapeFind
+                                        if pointCarpetFind == 1:
+                                            carpetExistLeft_Right = carpetExistLeft_Right + pointCarpetFind
                                         startLeft_RightDown2 = startLeft_RightUp2 + b
                                         endLeft_RightDown2 = startLeft_RightUp2 + c
                                         for (moveDown, order) in zip(range(startLeft_RightDown2, endLeft_RightDown2,
                                                                            -3), range(2, 8)):
                                             pointFind = point[4][moveDown]
                                             pointNameFind = pointFind[0]
+                                            pointTapeFind = pointFind[2]
+                                            pointCarpetFind = pointFind[4]
                                             if pointNameFind == pointName:
                                                 if downMatch == order - 1:
                                                     downMatch = order
                                                 elif upMatch == order - 1:
                                                     upMatch = order
-                                                if pointFind[4] == 1:
-                                                    carpetExistLeft_Right = carpetExistLeft_Right + 1
+                                                if pointCarpetFind == 1:
+                                                    carpetExistLeft_Right = carpetExistLeft_Right + pointCarpetFind
+                                                if pointTapeFind != 0:
+                                                    tapeExistLeft_RightUp_Down = tapeExistLeft_RightUp_Down + \
+                                                                                 pointTapeFind
                                             else:
                                                 break
-                                if upMatch + downMatch >= left_rightMatch:
+                                if property_plus0 and property_plus0 != property_plus:
+                                    directionLeft_Right = 3
+                                elif upMatch + downMatch >= left_rightMatch:
                                     directionLeft_Right = upMatch + downMatch + 1
+                                    if directionLeft_Right >= 3:
+                                        point[5][startLeft_RightUp2 - 78][2] = tapeExistLeft_RightUp_Down
                                 else:
                                     directionLeft_Right = left_rightMatch + 1
+                                    if directionLeft_Right >= 3:
+                                        point[5][startLeft_RightUp2 - 78][2] = tapeExistLeft_RightUp_Down
                                 point[5][startLeft_RightUp2 - 78][0] = directionLeft_Right
                                 if carpetExistLeft_Right != 0 and carpetExistLeft_Right < directionLeft_Right and \
                                         directionLeft_Right >= 3:
@@ -330,18 +372,17 @@ while True:
                                                cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
             chance_points = []
             for position in range(1, 8, 2):
-                xy, name, _, rc, _, chances = max(points, key=lambda l: (l[5][position][6], l[5][position][4],
-                                                                         l[5][position][0], l[3][1]))
-                # print(f 'xy, name, _, rc, _, chances {xy, name, _, rc, _, chances}')
+                xy, name, _, rc, _, chances = max(points, key=lambda l: (l[5][position][6], l[5][position][2],
+                                                                         l[5][position][4], l[5][position][0], l[3][1]))
                 direction = chances[position - 1]
                 numberMatch = chances[position][0]
+                numberTape = chances[position][2]
                 numberCarpet = chances[position][4]
                 numberPlus = chances[position][6]
-                chance_points.append([xy, name, rc, direction, numberMatch, numberCarpet, numberPlus])
-                # print(f' max_point {[xy, name, rc, direction, numberMatch, numberCarpet]}')
-            max_combo = max(chance_points, key=lambda l: (l[6], l[5], l[4], l[2][1]))
-            # print(f' max_combo {max_combo}')
-            # before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
+                #                      0    1    2     3          4             5            6           7
+                chance_points.append([xy, name, rc, direction, numberMatch, numberTape, numberCarpet, numberPlus])
+            max_combo = max(chance_points, key=lambda l: (l[7], l[5], l[6], l[4], l[2][1]))
+            before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
             cv.putText(screenshot, max_combo[3][0], (max_combo[0]),
                        cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
         except IndexError or TypeError or ValueError:
