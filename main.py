@@ -173,10 +173,11 @@ while True:
             # comment down
             for point in points:
                 pointName = point[1][0]
-                # [5]               0                    1                     2                   3
-                point.append([('l', -1, 0), [0, 't', 0, 'c', 0, 'p', 0], ('r', 1, 0), [0, 't', 0, 'c', 0, 'p', 0],
-                              #     4                    5                     6                     7
-                              ('u', 0, -1), [0, 't', 0, 'c', 0, 'p', 0], ('d', 0, 1), [0, 't', 0, 'c', 0, 'p', 0]])
+                point.append([('l', -1, 0), [0, 't', 0, 'c', 0, 'p', False],
+                              ('r', 1, 0), [0, 't', 0, 'c', 0, 'p', False],
+                              ('u', 0, -1), [0, 't', 0, 'c', 0, 'p', False],
+                              ('d', 0, 1), [0, 't', 0, 'c', 0, 'p', False],
+                              ('n', 0, 0), [0, 't', 0, 'c', 0, 'p', False]])
                 property_tape0 = point[1][2]
                 property_plus0 = point[1][8]
                 if pointName != 'canister' and property_tape0 == 0:
@@ -186,6 +187,7 @@ while True:
                     pointStartLeftDown = 21
                     for (startUp_Down, startLeftUp_Down) in ((pointStartUp, pointStartLeftUp), (pointStartDown,
                                                                                                 pointStartLeftDown)):
+                        envelopeChanceUp_Down = [0, 0, 0], ['t', ['l', 0], ['r', 0], 'c', ['l', 0], ['r', 0]], ['']
                         carpetExistUp_Down = 0
                         tapeExistUp_Down = 0
                         pointUp_Down = point[4][startLeftUp_Down + 26]  # 45 or 47
@@ -200,7 +202,7 @@ while True:
                                 rightMatch = 0
                                 up_downMatch = 0
                                 if property_plus0 and property_plus:
-                                    point[5][startLeftUp_Down - 14][6] = 1
+                                    point[5][startLeftUp_Down - 14][6] = True
                                 else:
                                     endUp_Down = startUp_Down - 31
                                     for (moveUp_Down, order) in zip(range(startUp_Down, endUp_Down, -3), range(1, 13)):
@@ -210,29 +212,40 @@ while True:
                                         pointCarpetFind = pointFind[4]
                                         if pointNameFind == pointName and up_downMatch == order - 1:
                                             up_downMatch = order
-                                            if pointTapeFind != 0 and tapeExistUp_Down == order - 1:
+                                            envelopeChanceUp_Down[0][0] = 1
+                                            if pointTapeFind != 0:
                                                 tapeExistUp_Down = tapeExistUp_Down + pointTapeFind
-                                            if pointCarpetFind == 1 and carpetExistUp_Down == order - 1:
+                                                envelopeChanceUp_Down[1][1][1] = envelopeChanceUp_Down[1][2][1] = \
+                                                    pointTapeFind
+                                            if pointCarpetFind == 1:
                                                 carpetExistUp_Down = carpetExistUp_Down + pointCarpetFind
+                                                envelopeChanceUp_Down[1][4][1] = envelopeChanceUp_Down[1][5][1] = 1
                                         else:
                                             break
                                 tapeExistLeft_RightUp_Down = 0
-                                for (a, b, c) in zip((0, 22), (-19, 3), (-3, 19)):
-                                    pointNameFind = point[4][startLeftUp_Down + a][0]  # (19 or 21) or (41 or 43)
+                                for (a, b, c, d, e) in zip((0, 22), (-19, 3), (-3, 19), (-1, 1), (1, 2)):
+                                    pointNameFind = point[4][startLeftUp_Down + a][0]  # (19 or 41) or (21 or 43)
                                     pointTapeFind = point[4][startLeftUp_Down + a][2]
                                     pointCarpetFind = point[4][startLeftUp_Down + a][4]
                                     if pointNameFind == pointName:
                                         if a == 0:
                                             leftMatch = 1
+                                            envelopeChanceUp_Down[2][0] = 'l'
                                         else:
                                             rightMatch = 1
+                                            envelopeChanceUp_Down[2][0] = 'r'
                                         if pointTapeFind != 0:
                                             tapeExistLeft_RightUp_Down = tapeExistLeft_RightUp_Down + pointTapeFind
+                                            envelopeChanceUp_Down[1][e][1] = \
+                                                envelopeChanceUp_Down[1][e][1] + pointTapeFind
                                         if pointCarpetFind == 1:
                                             carpetExistUp_Down = carpetExistUp_Down + pointCarpetFind
+                                            envelopeChanceUp_Down[1][e + 3][1] = envelopeChanceUp_Down[1][e + 3][1] + 1
+                                        envelopeChanceUp_Down[0][1] = 1
                                         endLeftUp_Down = startLeftUp_Down + b
                                         for (moveLeft, order) in zip(range(startLeftUp_Down + c, endLeftUp_Down, -3),
                                                                      range(2, 8)):
+                                            # (16 or 38) or (18 or 40)
                                             pointFind = point[4][moveLeft]
                                             pointNameFind = pointFind[0]
                                             pointTapeFind = pointFind[2]
@@ -249,8 +262,24 @@ while True:
                                                                                  pointTapeFind
                                             else:
                                                 break
+                                    #           80 or 114   -1 or 1
+                                    if point[4][startUp_Down + d][0] == pointName:
+                                        envelopeChanceUp_Down[0][2] = 1
+                                        if point[4][startUp_Down + d][2] != 0:
+                                            envelopeChanceUp_Down[1][e][1] = envelopeChanceUp_Down[1][e][1] + \
+                                                                             point[4][startUp_Down + d][2]
+                                        if point[4][startUp_Down + d][4] != 0:
+                                            envelopeChanceUp_Down[1][e + 3][1] = envelopeChanceUp_Down[1][e + 3][1] + 1
                                 if property_plus0 and property_plus0 != property_plus:
                                     directionUp_Down = 3
+                                elif sum(envelopeChanceUp_Down[0]) == 3:
+                                    directionUp_Down = 4
+                                    side = 0
+                                    if envelopeChanceUp_Down[2][0] == 'r':
+                                        side = 1
+                                    #              5 or 7
+                                    point[5][startLeftUp_Down - 14][2] = envelopeChanceUp_Down[1][1 + side][1]
+                                    point[5][startLeftUp_Down - 14][4] = envelopeChanceUp_Down[1][4 + side][1]
                                 elif leftMatch + rightMatch >= up_downMatch:
                                     directionUp_Down = leftMatch + rightMatch + 1
                                     if directionUp_Down >= 3:
@@ -284,6 +313,7 @@ while True:
                                                                   (pointStartRight, pointStartRightUp2)):
                         carpetExistLeft_Right = 0
                         tapeExistLeft_Right = 0
+                        envelopeChanceLeft_Right = [0, 0, 0], ['t', ['u', 0], ['d', 0], 'c', ['u', 0], ['d', 0]], ['']
                         pointLeft_Right = point[4][startLeft_Right + 3]
                         if pointLeft_Right[0] != '':
                             property_tape = pointLeft_Right[2]
@@ -295,8 +325,9 @@ while True:
                                 upMatch = 0
                                 downMatch = 0
                                 left_rightMatch = 0
+                                tapeExistLeft_RightUp_Down = 0
                                 if property_plus0 and property_plus:
-                                    point[5][startLeft_RightUp2 - 78][6] = 1
+                                    point[5][startLeft_RightUp2 - 78][6] = True
                                 else:
                                     endLeft_Right = startLeft_Right - 16
                                     for (moveLeft_Right, order) in zip(range(startLeft_Right, endLeft_Right, -3),
@@ -307,26 +338,37 @@ while True:
                                         pointCarpetFind = pointFind[4]
                                         if pointNameFind == pointName and left_rightMatch == order - 1:
                                             left_rightMatch = order
-                                            if pointTapeFind != 0 and tapeExistLeft_Right == order - 1:
-                                                tapeExistLeft_Right = tapeExistLeft_Right + pointTapeFind
-                                            if pointCarpetFind == 1 and carpetExistLeft_Right == order - 1:
+                                            envelopeChanceLeft_Right[0][0] = 1
+                                            if pointTapeFind != 0:
+                                                tapeExistLeft_RightUp_Down = tapeExistLeft_RightUp_Down + pointTapeFind
+                                                envelopeChanceLeft_Right[1][1][1] = \
+                                                    envelopeChanceLeft_Right[1][2][1] = pointTapeFind
+                                            if pointCarpetFind == 1:
                                                 carpetExistLeft_Right = carpetExistLeft_Right + pointCarpetFind
+                                                envelopeChanceLeft_Right[1][4][1] = envelopeChanceLeft_Right[1][5][1] \
+                                                    = 1
                                         else:
                                             break
-                                tapeExistLeft_RightUp_Down = 0
-                                for (a, b, c) in zip((2, 4), (0, 34), (-31, 3)):
+                                for (a, b, c, d, e) in zip((2, 4), (0, 34), (-31, 3),(-1, 1),(1, 2)):
                                     pointNameFind = point[4][startLeft_Right + a][0]
                                     pointTapeFind = point[4][startLeft_Right + a][2]
                                     pointCarpetFind = point[4][startLeft_Right + a][4]
                                     if pointNameFind == pointName:
                                         if a == 2:
                                             upMatch = 1
+                                            envelopeChanceLeft_Right[2][0] = 'u'
                                         else:
                                             downMatch = 1
+                                            envelopeChanceLeft_Right[2][0] = 'd'
                                         if pointTapeFind != 0:
                                             tapeExistLeft_RightUp_Down = tapeExistLeft_RightUp_Down + pointTapeFind
+                                            envelopeChanceLeft_Right[1][e][1] = \
+                                                envelopeChanceLeft_Right[1][e][1] + pointTapeFind
                                         if pointCarpetFind == 1:
                                             carpetExistLeft_Right = carpetExistLeft_Right + pointCarpetFind
+                                            envelopeChanceLeft_Right[1][e + 3][1] = \
+                                                envelopeChanceLeft_Right[1][e + 3][1] + 1
+                                        envelopeChanceLeft_Right[0][1] = 1
                                         startLeft_RightDown2 = startLeft_RightUp2 + b
                                         endLeft_RightDown2 = startLeft_RightUp2 + c
                                         for (moveDown, order) in zip(range(startLeft_RightDown2, endLeft_RightDown2,
@@ -347,8 +389,24 @@ while True:
                                                                                  pointTapeFind
                                             else:
                                                 break
+                                    #              17 or 39   -1 or 1
+                                    if point[4][startLeft_Right + d][0] == pointName:
+                                        envelopeChanceLeft_Right[0][2] = 1
+                                        if point[4][startLeft_Right + d][2] != 0:
+                                            envelopeChanceLeft_Right[1][e][1] = envelopeChanceLeft_Right[1][e][1] + \
+                                                                             point[4][startLeft_Right + d][2]
+                                        if point[4][startLeft_Right + d][4] != 0:
+                                            envelopeChanceLeft_Right[1][e + 3][1] = \
+                                                envelopeChanceLeft_Right[1][e + 3][1] + 1
                                 if property_plus0 and property_plus0 != property_plus:
                                     directionLeft_Right = 3
+                                elif sum(envelopeChanceLeft_Right[0]) == 3:
+                                    directionLeft_Right = 4
+                                    side = 0
+                                    if envelopeChanceLeft_Right[2][0] == 'd':
+                                        side = 1
+                                    point[5][startLeft_RightUp2 - 78][2] = envelopeChanceLeft_Right[1][1 + side][1]
+                                    point[5][startLeft_RightUp2 - 78][4] = envelopeChanceLeft_Right[1][4 + side][1]
                                 elif upMatch + downMatch >= left_rightMatch:
                                     directionLeft_Right = upMatch + downMatch + 1
                                     if directionLeft_Right >= 3:
@@ -382,7 +440,7 @@ while True:
                 #                      0    1    2     3          4             5            6           7
                 chance_points.append([xy, name, rc, direction, numberMatch, numberTape, numberCarpet, numberPlus])
             max_combo = max(chance_points, key=lambda l: (l[7], l[5], l[6], l[4], l[2][1]))
-            before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
+            # before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
             cv.putText(screenshot, max_combo[3][0], (max_combo[0]),
                        cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
         except IndexError or TypeError or ValueError:
