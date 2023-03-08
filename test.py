@@ -45,9 +45,14 @@
 #         print('\n')
 #         for r in range(-1, 2, 1):
 #             print(f'{m} + {r} + {c} = {m + r + c} + {n} = {m + r + c + n}')
-points = [[(38, 260), ('ball', 't', 0, 'c', 0, 'g', 0, 'p', False), (0, 255, 0), (1, 1)],
-          [(38, 311), ('ball', 't', 0, 'c', 0, 'g', 0, 'p', False), (0, 255, 0), (1, 2)]]
-subPoint = ('', 't', 0, 'c', 0, 'g', 0, 'p', False)
-for point in points:
-    point.append(['left', [['', 't', 0, 'c', 0, 'g', 0, 'p', False]] * 2])
-print(points)
+# points = [[(38, 260), ('ball', 't', 0, 'c', 0, 'g', 0, 'p', False), (0, 255, 0), (1, 1)],
+#           [(38, 311), ('ball', 't', 0, 'c', 0, 'g', 0, 'p', False), (0, 255, 0), (1, 2)]]
+# subPoint = ('', 't', 0, 'c', 0, 'g', 0, 'p', False)
+# for point in points:
+#     point.append(['left', [['', 't', 0, 'c', 0, 'g', 0, 'p', False]] * 2])
+# print(points)
+envelopeMatchUpDown = ['l', [0, 't', 0, 'c', 0], 'r', [0, 't', 0, 'c', 0]]
+envelopeMatchUpDown[1][0] = envelopeMatchUpDown[3][0] = 1
+envelopeMatchUpDown[1][2] = envelopeMatchUpDown[3][2] = 1
+envelopeMatchUpDown[1][0] = envelopeMatchUpDown[1][0] + 3
+print(envelopeMatchUpDown)
