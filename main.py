@@ -50,9 +50,10 @@ def before_bot_action(point_target, one, two):
 
 
 def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, pointAcrossRight, pointStartAcrossLeft,
-          pointStartAcrossRight, pointEndAcrossLeft, pointEndAcrossRight):
-    sideTape = 0
-    sideCarpet = 0
+          pointStartAcrossRight, pointEndAcrossLeft, pointEndAcrossRight, approxX, approxY, cornerEnvelope, sideTape=0,
+          sideCarpet=0, frontTape=0, tapeMatch=0, carpetMatch=0, leftMatch=0, rightMatch=0, frontMatch=0,
+          envelopeMatchLeft=0, envelopeMatchRight=0, envelopeTapeLeft=0, envelopeTapeRight=0, envelopeCarpetLeft=0,
+          envelopeCarpetRight=0):
     pointMove = point[4][pointMove]  # 45, 47, 20, 42
     pointMoveName = pointMove[0]
     if pointMoveName != '':
@@ -61,32 +62,12 @@ def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, point
         pointMovePlus = pointMove[8]
         if pointMoveTape == 0:
             frontCarpet = pointMoveCarpet
-            frontTape = 0
-            tapeMatch = 0
-            carpetMatch = 0
-            leftMatch = 0
-            rightMatch = 0
-            frontMatch = 0
-            envelopeMatchLeft = 0
-            envelopeMatchRight = 0
-            envelopeTapeLeft = 0
-            envelopeTapeRight = 0
-            envelopeCarpetLeft = 0
-            envelopeCarpetRight = 0
             if pointPlus and pointMovePlus:
                 #    5 or 7 or 1 or 3
                 point[5][passDirection][6] = True
             else:
                 for (pointMiddleNumber, order) in zip(range(pointStart, pointEnd - 1, -3), range(1, 10)):
                     pointMiddle = point[4][pointMiddleNumber]
-                    pointEnvelopeLeft = point[4][pointMiddleNumber - 1]  # 79 or 18 or 113 or 38
-                    pointEnvelopeNameLeft = pointEnvelopeLeft[0]
-                    pointEnvelopeTapeLeft = pointEnvelopeLeft[2]
-                    pointEnvelopeCarpetLeft = pointEnvelopeLeft[4]
-                    pointEnvelopeRight = point[4][pointMiddleNumber + 1]  # 81 or 16 or 115 or 40
-                    pointEnvelopeNameRight = pointEnvelopeRight[0]
-                    pointEnvelopeTapeRight = pointEnvelopeRight[2]
-                    pointEnvelopeCarpetRight = pointEnvelopeRight[4]
                     pointMiddleName = pointMiddle[0]
                     pointMiddleTape = pointMiddle[2]
                     pointMiddleCarpet = pointMiddle[4]
@@ -95,12 +76,21 @@ def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, point
                         frontTape = pointMiddleTape
                         frontCarpet = frontCarpet + pointMiddleCarpet
                         if order == 1:
+                            envelopeMatchLeft = envelopeMatchRight = 1
+                            pointEnvelopeLeft = point[4][pointMiddleNumber - cornerEnvelope]  # 79 or 18 or 113 or 38
+                            pointEnvelopeNameLeft = pointEnvelopeLeft[0]
+                            pointEnvelopeTapeLeft = pointEnvelopeLeft[2]
+                            pointEnvelopeCarpetLeft = pointEnvelopeLeft[4]
+                            pointEnvelopeRight = point[4][pointMiddleNumber + cornerEnvelope]  # 81 or 16 or 115 or 40
+                            pointEnvelopeNameRight = pointEnvelopeRight[0]
+                            pointEnvelopeTapeRight = pointEnvelopeRight[2]
+                            pointEnvelopeCarpetRight = pointEnvelopeRight[4]
                             if pointEnvelopeNameLeft == pointName:
-                                envelopeMatchLeft = 1
+                                envelopeMatchLeft = envelopeMatchLeft + 1
                                 envelopeTapeLeft = pointEnvelopeTapeLeft
                                 envelopeCarpetLeft = pointEnvelopeCarpetLeft
                             if pointEnvelopeNameRight == pointName:
-                                envelopeMatchRight = 1
+                                envelopeMatchRight = envelopeMatchRight + 1
                                 envelopeTapeRight = pointEnvelopeTapeRight
                                 envelopeCarpetRight = pointEnvelopeCarpetRight
                     else:
@@ -118,7 +108,7 @@ def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, point
                         envelopeMatchLeft = envelopeMatchLeft + 1
                         envelopeTapeLeft = envelopeTapeLeft + pointTapeAcross
                         envelopeCarpetLeft = envelopeCarpetLeft + pointCarpetAcross
-                    else:
+                    elif pointAcrossNumber == pointAcrossRight:
                         rightMatch = 1
                         envelopeMatchRight = envelopeMatchRight + 1
                         envelopeTapeRight = envelopeTapeRight + pointTapeAcross
@@ -142,9 +132,9 @@ def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, point
                             break
             if pointPlus and pointPlus != pointMovePlus and pointName != 'v_rocket':
                 directionFront = 3
-            elif (envelopeMatchLeft or envelopeMatchRight) == 3:
+            elif envelopeMatchLeft == 3 or envelopeMatchRight == 3:
                 directionFront = 4
-                if envelopeLeftMatch == 3:
+                if envelopeMatchLeft == 3:
                     envelopeTape = envelopeTapeLeft
                     envelopeCarpet = envelopeCarpetLeft
                 else:
@@ -169,14 +159,10 @@ def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, point
             point[5][passDirection][2] = tapeMatch
             point[5][passDirection][4] = carpetMatch
             if directionFront >= 3:
-                if pointAcrossNumber == pointAcrossLeft:
-                    aprox = 0
-                else:
-                    aprox = 10
                 directionLetter = point[5][passDirection - 1][0]
                 cv.putText(screenshot, directionLetter + str(directionFront) + point[5][passDirection][1] +
                            str(point[5][passDirection][2]) + point[5][passDirection][3] +
-                           str(point[5][passDirection][4]), (point[0][0] - 5, point[0][1] - 10 + aprox),
+                           str(point[5][passDirection][4]), (point[0][0] - approxX, point[0][1] - approxY),
                            cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
 
 
@@ -314,7 +300,6 @@ while True:
             if pointName != 'canister' and pointTape == 0:
                 pointStartUp = 80
                 pointStartDown = 114
-                pointStartLeftDown = 21
                 pointEndUp = 50
                 pointEndDown = 84
                 pointEndLeft = 2
@@ -323,16 +308,16 @@ while True:
                 pointUpRight = 41
                 pointDownLeft = 21
                 pointDownRight = 43
-                pointStartLeft = 17
-                pointStartRight = 39
-                match(45, 5, pointStartUp, pointEndUp, pointUpLeft, pointUpRight, pointStartLeft - 1,
-                      pointStartRight - 1, pointEndLeft - 1, pointEndRight - 1)
-                match(47, 7, pointStartDown, pointEndDown, pointDownLeft, pointDownRight, pointStartLeft + 1,
-                      pointStartRight + 1, pointEndLeft + 1, pointEndRight + 1)
-                match(20, 1, pointStartLeft, pointEndLeft, pointDownLeft, pointUpLeft, pointStartDown - 1,
-                      pointStartUp - 1, pointEndDown - 1, pointEndUp - 1)
-                match(42, 3, pointStartRight, pointEndRight, pointUpRight, pointDownRight, pointStartUp + 1,
-                      pointStartDown + 1, pointEndUp + 1, pointEndDown + 1)
+                pointStartLeft = 39
+                pointStartRight = 17
+                match(45, 5, pointStartUp, pointEndUp, pointUpLeft, pointUpRight, pointStartRight - 1,
+                      pointStartLeft - 1, pointEndLeft - 1, pointEndRight - 1, 20, 4, 1)
+                match(47, 7, pointStartDown, pointEndDown, pointDownRight, pointDownLeft, pointStartLeft + 1,
+                      pointStartRight + 1, pointEndRight + 1, pointEndLeft + 1, 20, 14, -1)
+                match(20, 1, pointStartRight, pointEndLeft, pointDownLeft, pointUpLeft, pointStartDown - 1,
+                      pointStartUp - 1, pointEndDown - 1, pointEndUp - 1, 16, -7, -1)
+                match(42, 3, pointStartLeft, pointEndRight, pointUpRight, pointDownRight, pointStartUp + 1,
+                      pointStartDown + 1, pointEndUp + 1, pointEndDown + 1, 18, -17, 1)
         chance_points = []
         for position in range(1, 8, 2):
             xy, name, _, rc, _, chances = max(points, key=lambda l: (l[5][position][6], l[5][position][2],
