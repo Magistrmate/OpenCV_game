@@ -50,8 +50,8 @@ def before_bot_action(point_target, one, two):
 
 
 def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, pointAcrossRight, pointStartAcrossLeft,
-          pointStartAcrossRight, pointEndAcrossLeft, pointEndAcrossRight, approxX, approxY, cornerEnvelope, sideTape=0,
-          sideCarpet=0, frontTape=0, tapeMatch=0, carpetMatch=0, leftMatch=0, rightMatch=0, frontMatch=0,
+          pointStartAcrossRight, pointEndAcrossLeft, pointEndAcrossRight, approxX, approxY, cornerEnvelope, rocketSide,
+          sideTape=0, sideCarpet=0, frontTape=0, tapeMatch=0, carpetMatch=0, leftMatch=0, rightMatch=0, frontMatch=0,
           envelopeMatchLeft=0, envelopeMatchRight=0, envelopeTapeLeft=0, envelopeTapeRight=0, envelopeCarpetLeft=0,
           envelopeCarpetRight=0):
     pointMove = point[4][pointMove]  # 45, 47, 20, 42
@@ -62,7 +62,7 @@ def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, point
         pointMovePlus = pointMove[8]
         if pointMoveTape == 0:
             frontCarpet = pointMoveCarpet
-            if pointPlus and pointMovePlus:
+            if pointPlus and pointMovePlus and pointName != pointMoveName:
                 #    5 or 7 or 1 or 3
                 point[5][passDirection][6] = True
             else:
@@ -130,10 +130,10 @@ def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, point
                             sideCarpet = sideCarpet + pointMiddleCarpet
                         else:
                             break
-            if pointPlus and pointPlus != pointMovePlus and pointName != 'v_rocket':
-                directionFront = 3
+            if pointPlus and pointPlus != pointMovePlus and pointName != rocketSide:
+                directionMatch = 5
             elif envelopeMatchLeft == 3 or envelopeMatchRight == 3:
-                directionFront = 4
+                directionMatch = 4
                 if envelopeMatchLeft == 3:
                     envelopeTape = envelopeTapeLeft
                     envelopeCarpet = envelopeCarpetLeft
@@ -143,24 +143,23 @@ def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, point
                 tapeMatch = envelopeTape
                 carpetMatch = envelopeCarpet
             elif leftMatch + rightMatch >= frontMatch:
-                directionFront = leftMatch + rightMatch + 1
-                if directionFront >= 3:
+                directionMatch = leftMatch + rightMatch + 1
+                if directionMatch >= 3:
                     tapeMatch = sideTape
                 carpetMatch = sideCarpet
             else:
-                directionFront = frontMatch + 1
-                if directionFront >= 3:
+                directionMatch = frontMatch + 1
+                if directionMatch >= 3:
                     tapeMatch = frontTape
                 carpetMatch = frontCarpet
-            directionMatch = directionFront
-            if carpetMatch != 0 and carpetMatch < directionFront and directionFront >= 3:
-                carpetMatch = directionFront - frontCarpet
+            if carpetMatch != 0 and carpetMatch < directionMatch and directionMatch >= 3:
+                carpetMatch = directionMatch - frontCarpet
             point[5][passDirection][0] = directionMatch
             point[5][passDirection][2] = tapeMatch
             point[5][passDirection][4] = carpetMatch
-            if directionFront >= 3:
+            if directionMatch >= 3:
                 directionLetter = point[5][passDirection - 1][0]
-                cv.putText(screenshot, directionLetter + str(directionFront) + point[5][passDirection][1] +
+                cv.putText(screenshot, directionLetter + str(directionMatch) + point[5][passDirection][1] +
                            str(point[5][passDirection][2]) + point[5][passDirection][3] +
                            str(point[5][passDirection][4]), (point[0][0] - approxX, point[0][1] - approxY),
                            cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
@@ -177,7 +176,7 @@ while True:
                    ('envelope', (103, 90, 231), .76, .85, .7, .76, True),
                    ('bomb', (169, 133, 247), .76, .85, .65, .76, True),
                    ('cube', (0, 0, 0), .85, .9, .85, .76, True),
-                   ('canister', (200, 200, 200), .85, .9, .65, .76, True)]
+                   ('canister', (200, 200, 200), .85, .9, .65, .76, False)]
     for (name, color, space_hold, tape_hold, carpet_hold, ground_hold, pointPlus) in namesColors:
         Picture(name, color, space_hold, tape_hold, carpet_hold, ground_hold, pointPlus, screenshot, points)
     if len(points) > 0:
@@ -311,13 +310,13 @@ while True:
                 pointStartLeft = 39
                 pointStartRight = 17
                 match(45, 5, pointStartUp, pointEndUp, pointUpLeft, pointUpRight, pointStartRight - 1,
-                      pointStartLeft - 1, pointEndLeft - 1, pointEndRight - 1, 20, 4, 1)
+                      pointStartLeft - 1, pointEndLeft - 1, pointEndRight - 1, 20, 12, 1, 'v_rocket')
                 match(47, 7, pointStartDown, pointEndDown, pointDownRight, pointDownLeft, pointStartLeft + 1,
-                      pointStartRight + 1, pointEndRight + 1, pointEndLeft + 1, 20, 14, -1)
+                      pointStartRight + 1, pointEndRight + 1, pointEndLeft + 1, 20, -18, -1, 'v_rocket')
                 match(20, 1, pointStartRight, pointEndLeft, pointDownLeft, pointUpLeft, pointStartDown - 1,
-                      pointStartUp - 1, pointEndDown - 1, pointEndUp - 1, 16, -7, -1)
+                      pointStartUp - 1, pointEndDown - 1, pointEndUp - 1, 16, -8, -1, 'h_rocket')
                 match(42, 3, pointStartLeft, pointEndRight, pointUpRight, pointDownRight, pointStartUp + 1,
-                      pointStartDown + 1, pointEndUp + 1, pointEndDown + 1, 18, -17, 1)
+                      pointStartDown + 1, pointEndUp + 1, pointEndDown + 1, 18, 2, 1, 'h_rocket')
         chance_points = []
         for position in range(1, 8, 2):
             xy, name, _, rc, _, chances = max(points, key=lambda l: (l[5][position][6], l[5][position][2],
@@ -330,7 +329,7 @@ while True:
             #                      0    1    2     3          4             5            6           7
             chance_points.append([xy, name, rc, direction, numberMatch, numberTape, numberCarpet, numberPlus])
         max_combo = max(chance_points, key=lambda l: (l[7], l[5], l[6], l[4], l[2][1]))
-        # before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
+        before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
         cv.putText(screenshot, max_combo[3][0], (max_combo[0]),
                    cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
         # except IndexError or TypeError or ValueError:
@@ -341,29 +340,3 @@ while True:
     if key == ord('q'):
         cv.destroyAllWindows()
         break
-        # print('FPS {}'.format(1 / (time() - loop_time)))
-        # loop_time = time()
-        # cv.imwrite('C:/Users/retro/PycharmProjects/pythonProject/Screenshots/{}.jpg'.format(loop_time),
-        #            screenshot)
-        # pointCheck = points[39]
-        # pointCheck = points[random.randint(0, len(points))]
-        # print(pointCheck)
-        # cv.putText(screenshot, pointCheck[1][0], (pointCheck[0][0], pointCheck[0][1]), cv.FONT_HERSHEY_DUPLEX,
-        #            .6, pointCheck[2])
-        # cv.putText(screenshot, pointCheck[4][45][0], (pointCheck[0][0], pointCheck[0][1] - 50),
-        #            cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-        # cv.putText(screenshot, pointCheck[4][47][0], (pointCheck[0][0], pointCheck[0][1] + 50),
-        #            cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-        # for (m, d) in zip((1, -1), (0, 10)):
-        #     for (c, n) in zip(range(-7 * m, 0, m), range(8 + d, 21 + d * 3, (3 - m))):
-        #         for r in range(-1, 2, 1):
-        #             cv.putText(screenshot, pointCheck[4][m + c + r + n][0], (pointCheck[0][0] + c * 50,
-        #                                                                      pointCheck[0][1] + r * 50),
-        #                        cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-        # for (m, d) in zip((1, -1), (0, 12)):
-        #     for (c, n) in zip(range(-12 * m, -1 * m, m), range(61 + d, 91 + d * 2, (3 - m))):
-        #         for r in range(-1, 2, 1):
-        #             cv.putText(screenshot, pointCheck[4][m + c + r + n][0], (pointCheck[0][0] + r * 50,
-        #                                                                      pointCheck[0][1] + c * 50),
-        #                        cv.FONT_HERSHEY_SIMPLEX, .4, pointCheck[2])
-        # sleep(5)

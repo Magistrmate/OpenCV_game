@@ -7,12 +7,12 @@ from windowcapture import WindowCapture
 wincap = WindowCapture('MI 9')
 pictures = ['barrier', 'cactus_big', 'cactus_small', 'cat', 'pit', 'rock', 'scooter', 'stick']
 for picture in pictures:
-    screenshot = cv.imread(f'jpg/{picture}.jpg', cv.IMREAD_UNCHANGED)
-    cactus = cv.imread('jpg/cactus.jpg', cv.IMREAD_UNCHANGED)
-    reload = cv.imread('jpg/reload.jpg', cv.IMREAD_UNCHANGED)
+    img = cv.imread(f'img/courier/{picture}.jpg', cv.IMREAD_UNCHANGED)
+    # cactus = cv.imread('jpg/cactus.jpg', cv.IMREAD_UNCHANGED)
+    # reload = cv.imread('jpg/reload.jpg', cv.IMREAD_UNCHANGED)
 
-    w = cactus.shape[1]
-    h = cactus.shape[0]
+    w = img.shape[1]
+    h = img.shape[0]
 
     threshold = .9
 
@@ -26,23 +26,23 @@ for picture in pictures:
     while True:
 
         screenshot = wincap.get_screenshot()
-        result_cactus = cv.matchTemplate(screenshot, cactus, cv.TM_CCOEFF_NORMED)
-        result_reload = cv.matchTemplate(screenshot, reload, cv.TM_CCOEFF_NORMED)
-        _, _, _, max_loc_chip = cv.minMaxLoc(result_cactus)
+        result = cv.matchTemplate(screenshot, img, cv.TM_CCOEFF_NORMED)
+        # result_reload = cv.matchTemplate(screenshot, reload, cv.TM_CCOEFF_NORMED)
+        _, _, _, max_loc_chip = cv.minMaxLoc(result)
 
-        yloc, xloc = np.where(result_cactus >= threshold)
+        yloc, xloc = np.where(result >= threshold)
 
         rectangles = []
-        # print(time() - jumpStart)
-        # if not fly and time() - jumpStart > 0.2:
-        #     pydirectinput.click()
-        #     jump = True
-        #     jumpStart = time()
-        #     print('Jump')
-        # elif jump and 0 < time() < 0.2:
-        #     fly = True
-        # else:
-        #     fly = False
+        print(time() - jumpStart)
+        if not fly and time() - jumpStart > 0.2:
+            pydirectinput.click()
+            jump = True
+            jumpStart = time()
+            print('Jump')
+        elif jump and 0 < time() < 0.2:
+            fly = True
+        else:
+            fly = False
 
         for (x, y) in zip(xloc, yloc):
             rectangles.append([int(x), int(y), int(w), int(h)])
