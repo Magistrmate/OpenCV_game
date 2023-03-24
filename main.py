@@ -49,11 +49,23 @@ def before_bot_action(point_target, one, two):
         t.start()
 
 
-def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, pointAcrossRight, pointStartAcrossLeft,
-          pointStartAcrossRight, pointEndAcrossLeft, pointEndAcrossRight, approxX, approxY, cornerEnvelope, rocketSide,
-          sideTape=0, sideCarpet=0, frontTape=0, tapeMatch=0, carpetMatch=0, leftMatch=0, rightMatch=0, frontMatch=0,
+def numberMatch(passDirection, directionMatch, tapeMatch, carpetMatch, approxX, approxY):
+    point[5][passDirection][0] = directionMatch
+    point[5][passDirection][2] = tapeMatch
+    point[5][passDirection][4] = carpetMatch
+    if directionMatch >= 3:
+        directionLetter = point[5][passDirection - 1][0]
+        cv.putText(screenshot, directionLetter + str(directionMatch) + point[5][passDirection][1] +
+                   str(point[5][passDirection][2]) + point[5][passDirection][3] +
+                   str(point[5][passDirection][4]), (point[0][0] - approxX, point[0][1] - approxY),
+                   cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
+
+#              1           2           3           4            5               6                     7                 8                      9                         10           11      12          13           14
+#         45,47,20,42|5,7,1,3       80,114,17,39|50,84,2,24|19,43,21,41    41,21,19,43       16,40,113,81          38,18,79,115           1,25,83,51          23,3,49,85           20,20,16,18|12,-18,-8,2|
+def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, pointAcrossRight, pointStartAcrossLeft, pointStartAcrossRight, pointEndAcrossLeft, pointEndAcrossRight, approxX, approxY, cornerEnvelope, rocketSide,
+          sideTape=0, sideCarpet=0, frontTape=0, tapeMatch=0, leftMatch=0, rightMatch=0, frontMatch=0,
           envelopeMatchLeft=0, envelopeMatchRight=0, envelopeTapeLeft=0, envelopeTapeRight=0, envelopeCarpetLeft=0,
-          envelopeCarpetRight=0):
+          envelopeCarpetRight=0, rocketTape=0, rocketCarpet=0):
     pointMove = point[4][pointMove]  # 45, 47, 20, 42
     pointMoveName = pointMove[0]
     if pointMoveName != '':
@@ -95,14 +107,16 @@ def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, point
                                 envelopeCarpetRight = pointEnvelopeCarpetRight
                     else:
                         break
+            #       19,43,21,41          16,40,113,81            1,25,83,51
+            #       41,21,19,43          38,18,79, 115           23,3,49,85
             for (pointAcrossNumber, pointStartAcrossNumber, pointEndAcrossNumber) in \
                     (pointAcrossLeft, pointStartAcrossLeft, pointEndAcrossLeft), \
                     (pointAcrossRight, pointStartAcrossRight, pointEndAcrossRight):
-                pointAcross = point[4][pointAcrossNumber]  # (19 or 41) or (21 or 43) or (21 or 19) or (41 or 43)
+                pointAcross = point[4][pointAcrossNumber]
                 pointNameAcross = pointAcross[0]
                 pointTapeAcross = pointAcross[2]
                 pointCarpetAcross = pointAcross[4]
-                if pointNameAcross == pointName:
+                if pointNameAcross == pointName or pointName == 'envelope':
                     if pointAcrossNumber == pointAcrossLeft:
                         leftMatch = 1
                         envelopeMatchLeft = envelopeMatchLeft + 1
@@ -115,6 +129,10 @@ def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, point
                         envelopeCarpetRight = envelopeCarpetRight + pointCarpetAcross
                     sideTape = sideTape + pointTapeAcross
                     sideCarpet = sideCarpet + pointCarpetAcross
+                    envelopeTape = sideTape + pointTapeAcross
+                    envelopeCarpet = sideCarpet + pointMiddleCarpet
+                    #                                          16,40,113,81            1,25,83,51
+                    #                                          38,18,79, 115          23,3, 49,85
                     for (pointMiddle, order) in zip(range(pointStartAcrossNumber, pointEndAcrossNumber - 1, -3),
                                                     range(2, 6)):
                         pointMiddle = point[4][pointMiddle]  # (16 or 38) or (18 or 40)
@@ -128,20 +146,22 @@ def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, point
                                 rightMatch = order
                             sideTape = sideTape + pointMiddleTape
                             sideCarpet = sideCarpet + pointMiddleCarpet
-                        else:
-                            break
+                        rocketTape = envelopeTape + pointMiddleTape
+                        rocketCarpet = envelopeCarpet + pointMiddleCarpet
             if pointPlus and pointPlus != pointMovePlus and pointName != rocketSide:
                 directionMatch = 5
+                tapeMatch = rocketTape
+                carpetMatch = rocketCarpet
             elif envelopeMatchLeft == 3 or envelopeMatchRight == 3:
                 directionMatch = 4
                 if envelopeMatchLeft == 3:
-                    envelopeTape = envelopeTapeLeft
-                    envelopeCarpet = envelopeCarpetLeft
+                    tapeMatch = envelopeTapeLeft
+                    carpetMatch = envelopeCarpetLeft
                 else:
-                    envelopeTape = envelopeTapeRight
-                    envelopeCarpet = envelopeCarpetRight
-                tapeMatch = envelopeTape
-                carpetMatch = envelopeCarpet
+                    tapeMatch = envelopeTapeRight
+                    carpetMatch = envelopeCarpetRight
+                # tapeMatch = envelopeTape
+                # carpetMatch = envelopeCarpet
             elif leftMatch + rightMatch >= frontMatch:
                 directionMatch = leftMatch + rightMatch + 1
                 if directionMatch >= 3:
@@ -152,7 +172,7 @@ def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, point
                 if directionMatch >= 3:
                     tapeMatch = frontTape
                 carpetMatch = frontCarpet
-            if carpetMatch != 0 and carpetMatch < directionMatch and directionMatch >= 3:
+            if carpetMatch != 0 and carpetMatch < directionMatch and directionMatch >= 3 and pointName != 'v_rocket':
                 carpetMatch = directionMatch - frontCarpet
             point[5][passDirection][0] = directionMatch
             point[5][passDirection][2] = tapeMatch
@@ -286,7 +306,6 @@ while True:
                                                                pointFind[1][4], 'g', pointFind[1][6], 'p',
                                                                pointFind[1][8])
                                     break
-        # comment down
         for point in points:
             pointName = point[1][0]
             point.append([('l', -1, 0), [0, 't', 0, 'c', 0, 'p', False],
@@ -307,16 +326,15 @@ while True:
                 pointUpRight = 41
                 pointDownLeft = 21
                 pointDownRight = 43
-                pointStartLeft = 39
-                pointStartRight = 17
-                match(45, 5, pointStartUp, pointEndUp, pointUpLeft, pointUpRight, pointStartRight - 1,
-                      pointStartLeft - 1, pointEndLeft - 1, pointEndRight - 1, 20, 12, 1, 'v_rocket')
-                match(47, 7, pointStartDown, pointEndDown, pointDownRight, pointDownLeft, pointStartLeft + 1,
-                      pointStartRight + 1, pointEndRight + 1, pointEndLeft + 1, 20, -18, -1, 'v_rocket')
-                match(20, 1, pointStartRight, pointEndLeft, pointDownLeft, pointUpLeft, pointStartDown - 1,
-                      pointStartUp - 1, pointEndDown - 1, pointEndUp - 1, 16, -8, -1, 'h_rocket')
-                match(42, 3, pointStartLeft, pointEndRight, pointUpRight, pointDownRight, pointStartUp + 1,
-                      pointStartDown + 1, pointEndUp + 1, pointEndDown + 1, 18, 2, 1, 'h_rocket')
+                pointStartLeft = 17
+                pointStartRight = 39
+                #      1  2       3               4              5               6                7                        8                 9                    10         11  12   13      14
+                match(45, 5, pointStartUp,    pointEndUp,    pointUpLeft,    pointUpRight,   pointStartLeft - 1, pointStartRight - 1,  pointEndLeft - 1,  pointEndRight - 1, 20, 12,  1,  'v_rocket')
+                match(47, 7, pointStartDown,  pointEndDown,  pointDownRight, pointDownLeft,  pointStartRight + 1,  pointStartLeft + 1, pointEndRight + 1, pointEndLeft + 1,  20, -18, -1, 'v_rocket')
+                match(20, 1, pointStartLeft,  pointEndLeft,  pointDownLeft,  pointUpLeft,    pointStartDown - 1,  pointStartUp - 1,    pointEndDown - 1,  pointEndUp - 1,    16, -8,  -1, 'h_rocket')
+                match(42, 3, pointStartRight, pointEndRight, pointUpRight,   pointDownRight, pointStartUp + 1,    pointStartDown + 1,  pointEndUp + 1,    pointEndDown + 1,  18,  2,  1,  'h_rocket')
+                # match(0, 9, pointStartLeft, pointEndRight, pointUpRight, pointDownRight, pointStartUp + 1,
+                #       pointStartDown + 1, pointEndUp + 1, pointEndDown + 1, 18, 2, 1, '')
         chance_points = []
         for position in range(1, 8, 2):
             xy, name, _, rc, _, chances = max(points, key=lambda l: (l[5][position][6], l[5][position][2],
@@ -329,7 +347,7 @@ while True:
             #                      0    1    2     3          4             5            6           7
             chance_points.append([xy, name, rc, direction, numberMatch, numberTape, numberCarpet, numberPlus])
         max_combo = max(chance_points, key=lambda l: (l[7], l[5], l[6], l[4], l[2][1]))
-        before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
+        # before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
         cv.putText(screenshot, max_combo[3][0], (max_combo[0]),
                    cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
         # except IndexError or TypeError or ValueError:
