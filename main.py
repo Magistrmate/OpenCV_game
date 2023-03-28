@@ -64,9 +64,9 @@ def numberMatch(passDirection, directionMatch, tapeMatch, carpetMatch, approxX, 
 def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, pointAcrossRight, pointStartAcrossLeft,
           pointStartAcrossRight, pointEndAcrossLeft, pointEndAcrossRight, approxX, approxY, cornerEnvelope, rocketSide,
           sideTape=0, sideCarpet=0, frontCarpet=0, frontTape=0, tapeMatch=0, carpetMatch=0, leftMatch=0, rightMatch=0,
-          frontMatch=0, envelopeMatchLeft=0, envelopeMatchRight=0, envelopeTapeLeft=0, envelopeTapeRight=0,
-          envelopeCarpetLeft=0, envelopeCarpetRight=0, rocketTape=0, rocketCarpet=0, canisterMatch=0, rocket=False,
-          border=3):
+          frontMatch=0, envelopeMatchLeft=0, envelopeMatchRight=0, envelopeTape=0, envelopeTapeLeft=0,
+          envelopeTapeRight=0, envelopeCarpet=0, envelopeCarpetLeft=0, envelopeCarpetRight=0, rocketTape=0,
+          rocketCarpet=0, canisterMatch=0, rocket=False, border_h=3, border_a=3, rocketNoCarpet=0):
     pointMove = point[4][pointMove]  # 45, 47, 20, 42
     pointMoveName = pointMove[0]
     if pointMoveName != '' and not (pointMoveName == 'canister' and pointName == 'cube'):
@@ -74,14 +74,19 @@ def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, point
         pointMoveCarpet = pointMove[4]
         pointMovePlus = pointMove[8]
         if pointMoveTape == 0:
-            if pointPlus and pointMovePlus and pointName != pointMoveName:
+            if pointPlus and pointMovePlus and not ('rocket' in (pointName and pointMoveName)):
                 #    5 or 7 or 1 or 3
                 point[5][passDirection][6] = True
             else:
                 if 'rocket' in pointName:
                     rocket = True
-                    border = 7
-                for (pointMiddleNumber, order) in zip(range(pointStart, pointEnd - 1, -3), range(1, border)):
+                    if rocketSide == 'h_rocket':
+                        border_h = 1
+                        border_a = 13
+                    else:
+                        border_h = 13
+                        border_a = 1
+                for (pointMiddleNumber, order) in zip(range(pointStart, pointEnd - 1, -3), range(1, border_h)):
                     pointMiddle = point[4][pointMiddleNumber]
                     pointMiddleName = pointMiddle[0]
                     pointMiddleTape = pointMiddle[2]
@@ -137,37 +142,41 @@ def match(pointMove, passDirection, pointStart, pointEnd, pointAcrossLeft, point
                     envelopeCarpet = sideCarpet + pointCarpetAcross
                     #                                          16,40,113,81            1,25,83,51
                     #                                          38,18,79, 115          23,3, 49,85
-                    for (pointMiddle, order) in zip(range(pointStartAcrossNumber, pointEndAcrossNumber - 1, -3),
-                                                    range(2, border)):
-                        pointMiddle = point[4][pointMiddle]  # (16 or 38) or (18 or 40)
+                    for (pointMiddleNumber, order) in zip(range(pointStartAcrossNumber, pointEndAcrossNumber - 1, -3),
+                                                          range(2, border_a)):
+                        pointMiddle = point[4][pointMiddleNumber]  # (16 or 38) or (18 or 40)
                         pointMiddleName = pointMiddle[0]
-                        pointMiddleTape = pointMiddle[2]
-                        pointMiddleCarpet = pointMiddle[4]
-                        if pointMiddleName == pointName:
-                            if leftMatch == order - 1:
-                                leftMatch = order
-                            elif rightMatch == order - 1:
-                                rightMatch = order
-                            sideTape = sideTape + pointMiddleTape
-                            sideCarpet = sideCarpet + pointMiddleCarpet
-                        rocketTape = envelopeTape + pointMiddleTape
-                        if pointMoveCarpet != 0:
-                            rocketCarpet = envelopeCarpet + pointMiddleCarpet
-                        if pointMiddleName == 'canister':
-                            canisterMatch = canisterMatch + 1
+                        if pointMiddleName != '':
+                            pointMiddleTape = pointMiddle[2]
+                            pointMiddleCarpet = pointMiddle[4]
+                            if pointMiddleName == pointName:
+                                if leftMatch == order - 1:
+                                    leftMatch = order
+                                elif rightMatch == order - 1:
+                                    rightMatch = order
+                                sideTape = sideTape + pointMiddleTape
+                                sideCarpet = sideCarpet + pointMiddleCarpet
+                            rocketTape = rocketTape + pointMiddleTape
+                            if pointMoveCarpet != 0 and pointMiddleCarpet == 0:
+                                rocketNoCarpet = rocketNoCarpet + 1
+                            if pointMiddleName == 'canister':
+                                canisterMatch = canisterMatch + 1
             if pointPlus and pointPlus != pointMovePlus and pointName != rocketSide:
                 directionMatch = 5
                 if rocket:
-                    directionMatch = directionMatch + canisterMatch
-                    tapeMatch = rocketTape
-                    carpetMatch = rocketCarpet
+                    if pointMoveCarpet == 0:
+                        directionMatch = directionMatch + canisterMatch
+                    # else:
+                        # directionMatch = abs(rocketNoCarpet - rocketCarpet + sideCarpet + pointMoveCarpet)
+                    tapeMatch = rocketTape + envelopeTape
+                    carpetMatch = rocketNoCarpet
             elif envelopeMatchLeft == 3 or envelopeMatchRight == 3:
                 directionMatch = 4
                 if envelopeMatchLeft == 3:
-                    tapeMatch = envelopeTapeLeft
+                    tapeMatch = envelopeTape
                     carpetMatch = envelopeCarpetLeft + frontCarpet + pointMoveCarpet
                 else:
-                    tapeMatch = envelopeTapeRight
+                    tapeMatch = envelopeTape
                     carpetMatch = envelopeCarpetRight + frontCarpet + pointMoveCarpet
             elif leftMatch + rightMatch >= frontMatch:
                 directionMatch = leftMatch + rightMatch + 1
