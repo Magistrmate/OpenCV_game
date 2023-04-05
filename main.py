@@ -19,8 +19,8 @@ for p in psutil.process_iter():
         flag = 0
         print('Find')
 if flag == 1:
-    subprocess.Popen([r'C:\Users\\retro\Downloads\scrcpy-win64-v1.24\scrcpy.exe', '-S', '-w', '--window-x=1485',
-                      '--window-y=90', '--tcpip=192.168.137.35'])
+    subprocess.Popen([r'C:\Users\\retro\Downloads\scrcpy-win64-v1.24\scrcpy.exe', '-S', '-w', '--window-x=1500',
+                      '--window-y=90', '--tcpip=192.168.137.207'])
     sleep(5)
 
 wincap = WindowCapture('22071212AG')
@@ -51,7 +51,43 @@ def before_bot_action(point_target, one, two):
         t = Thread(target=bot_action, args=(target_click, one, two))
         t.start()
 
-def matchRocket(tapeMatchRocket=0, carpetMatchRocket=0, directionMatchRocket=0, rocketNoCarpetRocket=0):
+
+def matchNull(pointStart, pointLeftEnd, pointRightStart, pointEnd, stepOne, stepTwo, tapeMatchNull=0, carpetMatchNull=0,
+              directionMatchNull=0, pointNoCarpet=0):
+    for (pointStart, pointEnd, step) in zip((pointStart, pointRightStart), (pointLeftEnd, pointEnd),
+                                            (stepOne, stepTwo)):
+        for pointMiddleNumber in range(pointStart, pointEnd, step):
+            pointMiddle = point[4][pointMiddleNumber]
+            pointMiddleName = pointMiddle[0]
+            pointMiddleTape = pointMiddle[2]
+            pointMiddleCarpet = pointMiddle[4]
+            if pointMiddleName != '':
+                tapeMatchNull = tapeMatchNull + pointMiddleTape
+                if pointMiddleCarpet == 0:
+                    pointNoCarpet = pointNoCarpet + 1
+                if pointCarpet == 1:
+                    carpetMatchNull = pointNoCarpet
+                directionMatchNull = directionMatchNull + 1
+    if pointName == 'v_rocket' or pointName == 'envelope':
+        for pointMoveUpDownNumber in moveUp, moveDown:
+            pointMiddle = point[4][pointMoveUpDownNumber]
+            pointMiddleName = pointMiddle[0]
+            pointMiddleTape = pointMiddle[2]
+            pointMiddleCarpet = pointMiddle[4]
+            if pointMiddleName != '':
+                tapeMatchNull = tapeMatchNull + pointMiddleTape
+                if pointMiddleCarpet == 0:
+                    pointNoCarpet = pointNoCarpet + 1
+                if pointCarpet == 1:
+                    carpetMatchNull = pointNoCarpet
+                directionMatchNull = directionMatchNull + 1
+    point[5][9][0] = directionMatchNull
+    point[5][9][2] = tapeMatchNull
+    point[5][9][4] = carpetMatchNull
+    directionLetter = point[5][8][0]
+    cv.putText(screenshot, directionLetter + str(directionMatchNull) + point[5][9][1] +
+               str(point[5][9][2]) + point[5][9][3] + str(point[5][9][4]),
+               (point[0][0] - 20, point[0][1] + 2), cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
 
 
 def match(pointMoveNumber, passDirection, pointStart, pointEnd, pointAcrossLeft, pointAcrossRight, pointStartAcrossLeft,
@@ -339,6 +375,12 @@ while True:
                 moveLeft = 20
                 moveRight = 42
                 noMove = 0
+                if pointName == 'h_rocket':
+                    matchNull(pointEndLeft, moveLeft + 1, moveRight, pointEndRight - 1, 3, -3)
+                elif pointName == 'v_rocket':
+                    matchNull(pointEndUp, pointStartUp + 1, pointStartDown, pointEndDown - 1, 3, -3)
+                elif pointName == 'envelope':
+                    matchNull(moveLeft, moveRight, moveLeft, moveRight, 22, 22)
                 match(moveUp, 5, pointStartUp, pointEndUp, pointUpLeft, pointUpRight, pointStartLeft - 1,
                       pointStartRight - 1, pointEndLeft - 1, pointEndRight - 1, 20, 18, 1, 'v_rocket')
                 match(moveDown, 7, pointStartDown, pointEndDown, pointDownRight, pointDownLeft, pointStartRight + 1,
@@ -347,73 +389,6 @@ while True:
                       pointStartUp - 1, pointEndDown - 1, pointEndUp - 1, 16, -12, -1, 'h_rocket')
                 match(moveRight, 3, pointStartRight, pointEndRight, pointUpRight, pointDownRight, pointStartUp + 1,
                       pointStartDown + 1, pointEndUp + 1, pointEndDown + 1, 18, 8, 1, 'h_rocket')
-                # match(noMove, 9, 42, pointEndRight + 1, pointUpLeft, pointUpRight, pointStartUp - 1, pointStartUp + 1,
-                #       73, 75, 0, 0, 1, '')
-                if pointName == 'h_rocket':
-                    matchRocket(tapeMatchRocket)
-                    tapeMatchH = 0
-                    carpetMatchH = 0
-                    directionMatchH = 0
-                    rocketNoCarpetH = 0
-                    for (pointStartH, pointEndH, m) in zip((pointEndLeft, moveRight), (moveLeft + 1,
-                                                                                       pointEndRight - 1), (1, -1)):
-                        for pointMiddleNumberH in range(pointStartH, pointEndH, m * 3):
-                            pointMiddleH = point[4][pointMiddleNumberH]
-                            pointMiddleNameH = pointMiddleH[0]
-                            pointMiddleTapeH = pointMiddleH[2]
-                            pointMiddleCarpetH = pointMiddleH[4]
-                            if pointMiddleNameH != '':
-                                tapeMatchH = tapeMatchH + pointMiddleTapeH
-                                if pointMiddleCarpetH == 0:
-                                    rocketNoCarpetH = rocketNoCarpetH + 1
-                                if pointCarpet == 1:
-                                    carpetMatchH = rocketNoCarpetH
-                                directionMatchH = directionMatchH + 1
-                    point[5][9][0] = directionMatchH
-                    point[5][9][2] = tapeMatchH
-                    point[5][9][4] = carpetMatchH
-                    directionLetterH = point[5][8][0]
-                    cv.putText(screenshot, directionLetterH + str(directionMatchH) + point[5][9][1] +
-                               str(point[5][9][2]) + point[5][9][3] + str(point[5][9][4]),
-                               (point[0][0] - 20, point[0][1] + 2), cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
-                if pointName == 'v_rocket':
-                    tapeMatchV = 0
-                    carpetMatchV = 0
-                    directionMatchV = 0
-                    rocketNoCarpetV = 0
-                    for (pointStartV, pointEndV, m) in zip((pointEndUp, pointStartDown),
-                                                           (pointStartUp + 1, pointEndDown - 1), (1, -1)):
-                        for pointMiddleNumberV in range(pointStartV, pointEndV, m * 3):
-                            pointMiddleV = point[4][pointMiddleNumberV]
-                            pointMiddleNameV = pointMiddleV[0]
-                            pointMiddleTapeV = pointMiddleV[2]
-                            pointMiddleCarpetV = pointMiddleV[4]
-                            if pointMiddleNameV != '':
-                                tapeMatchV = tapeMatchV + pointMiddleTapeV
-                                if pointMiddleCarpetV == 0:
-                                    rocketNoCarpetV = rocketNoCarpetV + 1
-                                if pointCarpet == 1:
-                                    carpetMatchV = rocketNoCarpetV
-                                directionMatchV = directionMatchV + 1
-                    for pointMoveUpDownNumber in moveUp, moveDown:
-                        pointMiddleV = point[4][pointMoveUpDownNumber]
-                        pointMiddleNameV = pointMiddleV[0]
-                        pointMiddleTapeV = pointMiddleV[2]
-                        pointMiddleCarpetV = pointMiddleV[4]
-                        if pointMiddleNameV != '':
-                            tapeMatchV = tapeMatchV + pointMiddleTapeV
-                            if pointMiddleCarpetV == 0:
-                                rocketNoCarpetV = rocketNoCarpetV + 1
-                            if pointCarpet == 1:
-                                carpetMatchV = rocketNoCarpetV
-                            directionMatchV = directionMatchV + 1
-                    point[5][9][0] = directionMatchV
-                    point[5][9][2] = tapeMatchV
-                    point[5][9][4] = carpetMatchV
-                    directionLetterV = point[5][8][0]
-                    cv.putText(screenshot, directionLetterV + str(directionMatchV) + point[5][9][1] +
-                               str(point[5][9][2]) + point[5][9][3] + str(point[5][9][4]),
-                               (point[0][0] - 20, point[0][1] + 2), cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
         chance_points = []
         for position in range(1, 10, 2):
             xy, name, _, rc, _, chances = max(points, key=lambda l: (l[5][position][6], l[5][position][2],
