@@ -228,6 +228,7 @@ def match(pointMoveNumber, passDirection, pointStart, pointEnd, pointAcrossLeft,
 
 while True:
     screenshot = wincap.get_screenshot()
+    cv.putText(screenshot, str(loop_time), (10, 10), cv.FONT_HERSHEY_SIMPLEX, .4, (255, 255, 255))
     cv.putText(screenshot, 'bot ' + botCapture, (175, 815), cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
     points = []
     namesColors = [('ball', (0, 255, 0), .85, .85, .7, .76, False), ('backpack', (255, 0, 0), .76, .85, .7, .76, False),
