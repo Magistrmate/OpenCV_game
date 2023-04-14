@@ -6,6 +6,8 @@ import numpy as np
 from Picture import Picture
 import cv2 as cv
 from time import time, sleep
+import time
+from datetime import datetime
 from windowcapture import WindowCapture
 from threading import Thread
 import pydirectinput
@@ -25,22 +27,52 @@ if flag == 1:
 
 wincap = WindowCapture('22071212AG')
 is_bot_in_action = False
+countdown_start = False
 bot = False
-loop_time = time()
+countdown_in_action = False
 botCapture = 'off'
+TIMER = int(10)
 
 
 def bot_action(target, one, two):
-    pydirectinput.moveTo(target[0], target[1])
-    if one == 0 and two == 0:
-        pydirectinput.doubleClick()
-    else:
-        pydirectinput.mouseDown()
-        pydirectinput.moveTo(target[0] + 50 * one, target[1] + 50 * two)
-        pydirectinput.mouseUp()
-    sleep(10)
+    global botCapture
+    if botCapture != 'off':
+        pydirectinput.moveTo(target[0], target[1])
+        if one == 0 and two == 0:
+            pydirectinput.doubleClick()
+        else:
+            pydirectinput.mouseDown()
+            pydirectinput.moveTo(target[0] + 50 * one, target[1] + 50 * two)
+            pydirectinput.mouseUp()
+    global TIMER
+    TIMER = 10
+    AxisX = AxisX0 = 530
+    AxisY = 1602
+    prev = time.time()
+    while TIMER >= 0:
+        if botCapture != 'off':
+            if botCapture == 'click now':
+                break
+            else:
+                cv.rectangle(screenshot, (263, 799), (317, 818), (0, 0, 0), 1)
+                cv.rectangle(screenshot, (AxisX0, AxisY), (AxisX, AxisY + 30), (255, 255, 255), cv.FILLED, cv.FILLED, 1)
+                cur = time.time()
+                if cur - prev >= 1:
+                    prev = cur
+                    TIMER = TIMER - 1
+                    AxisX = AxisX + 10
+        else:
+            break
     global is_bot_in_action
     is_bot_in_action = False
+
+
+# def countdown():
+#     global TIMER
+#     if TIMER == 0:
+#         TIMER = 10
+#     cv.putText(screenshot, str(TIMER), (260, 815), cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
+#     TIMER = TIMER - 1
 
 
 def before_bot_action(point_target, one, two):
@@ -228,8 +260,7 @@ def match(pointMoveNumber, passDirection, pointStart, pointEnd, pointAcrossLeft,
 
 while True:
     screenshot = wincap.get_screenshot()
-    cv.putText(screenshot, str(loop_time), (10, 10), cv.FONT_HERSHEY_SIMPLEX, .4, (255, 255, 255))
-    cv.putText(screenshot, 'bot ' + botCapture, (175, 815), cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
+    cv.putText(screenshot, 'bot ' + botCapture, (150, 815), cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
     points = []
     namesColors = [('ball', (0, 255, 0), .85, .85, .7, .76, False), ('backpack', (255, 0, 0), .76, .85, .7, .76, False),
                    ('egg', (255, 0, 139), .77, .85, .7, .76, False), ('chip', (0, 0, 255), .79, .85, .74, .76, False),
@@ -404,16 +435,23 @@ while True:
         max_combo = max(chance_points, key=lambda l: (l[7], l[5], l[6], l[4], l[2][1]))
         if bot:
             before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
-        cv.putText(screenshot, max_combo[3][0], (max_combo[0]),
-                   cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
+        cv.putText(screenshot, max_combo[3][0], (max_combo[0]), cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
+    if botCapture != 'off':
+        if TIMER <= 2:
+            botCapture = 'click'
+        else:
+            botCapture = 'wait'
     cv.imshow('Map', screenshot)
     key = cv.waitKey(1)
-    if key == ord('q'):
-        cv.destroyAllWindows()
-        break
-    if key == ord('n'):
-        bot = False
-        botCapture = 'off'
-    if key == ord('y'):
-        bot = True
-        botCapture = 'on'
+    if key != -1:
+        if key == ord('q'):
+            cv.destroyAllWindows()
+            break
+        if key == ord('n') or key == 242:
+            bot = False
+            botCapture = 'off'
+        if key == ord('y') or key == 237:
+            bot = True
+            botCapture = 'wait'
+        if key == 32:
+            botCapture = 'click now'
