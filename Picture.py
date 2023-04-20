@@ -15,6 +15,9 @@ class Picture:
         self.carpet_hold = carpet_hold
         self.ground_hold = ground_hold
         self.threshold = space_hold
+        properties = ['0', 'c', 't', 'g']
+        # for property_name in zip(properties, range(0, 4)):
+        #     print(f'img/MatchThree/{name}_{property_name}.jpg')
         for tape in range(0, 3):
             for carpet in range(0, 2):
                 for ground in range(0, 4):

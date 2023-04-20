@@ -81,7 +81,7 @@ def matchNull(pointStart, pointLeftEnd, pointRightStart, pointEnd, stepOne, step
     for (pointStart, pointEnd, step) in zip((pointStart, pointRightStart), (pointLeftEnd, pointEnd),
                                             (stepOne, stepTwo)):
         for pointMiddleNumber in range(pointStart, pointEnd, step):
-            pointMiddle = point[3][pointMiddleNumber]
+            pointMiddle = point[4][pointMiddleNumber]
             pointMiddleName = pointMiddle[0]
             pointMiddleTape = pointMiddle[2]
             pointMiddleCarpet = pointMiddle[4]
@@ -94,7 +94,7 @@ def matchNull(pointStart, pointLeftEnd, pointRightStart, pointEnd, stepOne, step
                 directionMatchNull = directionMatchNull + 1
     if pointName == 'v_rocket' or pointName == 'envelope':
         for pointMoveUpDownNumber in moveUp, moveDown:
-            pointMiddle = point[3][pointMoveUpDownNumber]
+            pointMiddle = point[4][pointMoveUpDownNumber]
             pointMiddleName = pointMiddle[0]
             pointMiddleTape = pointMiddle[2]
             pointMiddleCarpet = pointMiddle[4]
@@ -107,154 +107,160 @@ def matchNull(pointStart, pointLeftEnd, pointRightStart, pointEnd, stepOne, step
                 directionMatchNull = directionMatchNull + 1
     else:
         directionMatchNull = 5
-    point[4][9][0] = directionMatchNull
-    point[4][9][2] = tapeMatchNull
-    point[4][9][4] = carpetMatchNull
-    directionLetter = point[4][8][0]
-    cv.putText(screenshot, directionLetter + str(directionMatchNull) + point[4][9][1] +
-               str(point[4][9][2]) + point[4][9][3] + str(point[4][9][4]),
+    point[5][9][0] = directionMatchNull
+    point[5][9][2] = tapeMatchNull
+    point[5][9][4] = carpetMatchNull
+    directionLetter = point[5][8][0]
+    cv.putText(screenshot, directionLetter + str(directionMatchNull) + point[5][9][1] +
+               str(point[4][5][2]) + point[5][9][3] + str(point[5][9][4]),
                (point[0][0] - 20, point[0][1] + 2), cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
 
 
 def match(pointMoveNumber, passDirection, pointStart, pointEnd, pointAcrossLeft, pointAcrossRight, pointStartAcrossLeft,
           pointStartAcrossRight, pointEndAcrossLeft, pointEndAcrossRight, approxX, approxY, cornerEnvelope, rocketSide,
-          sideTape=0, sideCarpet=0, frontCarpet=0, frontTape=0, tapeMatch=0, carpetMatch=0, leftMatch=0, rightMatch=0,
-          frontMatch=0, envelopeMatchLeft=0, envelopeMatchRight=0, envelopeTape=0, envelopeTapeLeft=0,
-          envelopeTapeRight=0, envelopeCarpetLeft=0, envelopeCarpetRight=0, rocketTape=0, canisterMatch=0,
-          rocket=False, border_h=3, border_a=3, rocketNoCarpet=0,  pointsMatch=2, rocketCarpetPass=False,
-          rocketCarpet=0):
-    pointMove = point[3][pointMoveNumber]  # 45, 47, 20, 42
+          sideTape=0, sideCarpet=0, frontCarpet=0, frontTape=0, frontGroundA=0, tapeMatch=0, carpetMatch=0,
+          groundAMatch=0, leftMatch=0, rightMatch=0, frontMatch=0, envelopeMatchLeft=0, envelopeMatchRight=0,
+          envelopeTape=0, envelopeTapeLeft=0, envelopeTapeRight=0, envelopeCarpetLeft=0, envelopeCarpetRight=0,
+          rocketTape=0, canisterMatch=0, rocket=False, border_h=3, border_a=3, rocketNoCarpet=0, pointsMatch=2,
+          rocketCarpetPass=False, rocketCarpet=0):
+    pointMove = point[4][pointMoveNumber]  # 45, 47, 20, 42
     pointMoveName = pointMove[0]
-    if pointMoveName != '' and not (pointMoveName == 'canister' and pointName == 'cube'):
-        pointMoveTape = pointMove[2]
+    pointMoveGround = pointMove[6]
+    pointMoveTape = pointMove[2]
+    if pointMoveName != ('' and 'canister') and pointName != 'cube' and pointMoveTape == 0 and pointMoveGround == 0:
         pointMoveCarpet = pointMove[4]
+        pointMoveGroundA = pointMove[10]
         pointMovePlus = pointMove[8]
-        if pointMoveTape == 0:
-            if pointPlus and pointMovePlus and not ('rocket' in (pointName and pointMoveName)):
-                #    5 or 7 or 1 or 3
-                point[4][passDirection][6] = True
-            else:
-                if 'rocket' in pointName:
-                    rocket = True
-                    border_h = 1
-                    border_a = 13
-                for (pointMiddleNumber, order) in zip(range(pointStart, pointEnd - 1, -3), range(1, border_h)):
-                    pointMiddle = point[3][pointMiddleNumber]
-                    pointMiddleName = pointMiddle[0]
-                    pointMiddleTape = pointMiddle[2]
-                    pointMiddleCarpet = pointMiddle[4]
-                    if pointMiddleName == pointName and frontMatch == order - 1:
-                        frontMatch = order
-                        frontTape = pointMiddleTape
-                        frontCarpet = frontCarpet + pointMiddleCarpet
-                        if order == 1:
-                            envelopeMatchLeft = envelopeMatchRight = 1
-                            pointEnvelopeLeft = point[3][pointMiddleNumber - cornerEnvelope]  # 79 or 18 or 113 or 38
-                            pointEnvelopeNameLeft = pointEnvelopeLeft[0]
-                            pointEnvelopeTapeLeft = pointEnvelopeLeft[2]
-                            pointEnvelopeCarpetLeft = pointEnvelopeLeft[4]
-                            pointEnvelopeRight = point[3][pointMiddleNumber + cornerEnvelope]  # 81 or 16 or 115 or 40
-                            pointEnvelopeNameRight = pointEnvelopeRight[0]
-                            pointEnvelopeTapeRight = pointEnvelopeRight[2]
-                            pointEnvelopeCarpetRight = pointEnvelopeRight[4]
-                            if pointEnvelopeNameLeft == pointName:
-                                envelopeMatchLeft = envelopeMatchLeft + 1
-                                envelopeTapeLeft = pointEnvelopeTapeLeft
-                                envelopeCarpetLeft = pointEnvelopeCarpetLeft
-                            if pointEnvelopeNameRight == pointName:
-                                envelopeMatchRight = envelopeMatchRight + 1
-                                envelopeTapeRight = pointEnvelopeTapeRight
-                                envelopeCarpetRight = pointEnvelopeCarpetRight
-                    else:
-                        break
-            #       19,43,21,41          16,40,113,81            1,25,83,51
-            #       41,21,19,43          38,18,79, 115           23,3,49,85
-            for (pointAcrossNumber, pointStartAcrossNumber, pointEndAcrossNumber) in \
-                    (pointAcrossLeft, pointStartAcrossLeft, pointEndAcrossLeft), \
-                    (pointAcrossRight, pointStartAcrossRight, pointEndAcrossRight):
-                pointAcross = point[3][pointAcrossNumber]
-                pointNameAcross = pointAcross[0]
-                pointTapeAcross = pointAcross[2]
-                pointCarpetAcross = pointAcross[4]
-                if pointCarpetAcross == 0 and pointMoveCarpet == 1:
-                    rocketNoCarpet = 1
-                if pointNameAcross == pointName or pointName == 'envelope' or rocket:
-                    if rocket is False:
-                        if pointAcrossNumber == pointAcrossLeft:
-                            leftMatch = 1
+        if pointPlus and pointMovePlus and not ('rocket' in (pointName and pointMoveName)):
+            #    5 or 7 or 1 or 3
+            point[5][passDirection][6] = True
+        else:
+            if 'rocket' in pointName:
+                rocket = True
+                border_h = 1
+                border_a = 13
+            for (pointMiddleNumber, order) in zip(range(pointStart, pointEnd - 1, -3), range(1, border_h)):
+                pointMiddle = point[4][pointMiddleNumber]
+                pointMiddleName = pointMiddle[0]
+                pointMiddleTape = pointMiddle[2]
+                pointMiddleCarpet = pointMiddle[4]
+                pointMiddleGroundA = pointMiddle[10]
+                if pointMiddleName == pointName and frontMatch == order - 1:
+                    frontMatch = order
+                    frontTape = pointMiddleTape
+                    frontCarpet = frontCarpet + pointMiddleCarpet
+                    frontGroundA = frontGroundA + pointMiddleGroundA
+                    if order == 1:
+                        envelopeMatchLeft = envelopeMatchRight = 1
+                        pointEnvelopeLeft = point[4][pointMiddleNumber - cornerEnvelope]  # 79 or 18 or 113 or 38
+                        pointEnvelopeNameLeft = pointEnvelopeLeft[0]
+                        pointEnvelopeTapeLeft = pointEnvelopeLeft[2]
+                        pointEnvelopeCarpetLeft = pointEnvelopeLeft[4]
+                        pointEnvelopeRight = point[4][pointMiddleNumber + cornerEnvelope]  # 81 or 16 or 115 or 40
+                        pointEnvelopeNameRight = pointEnvelopeRight[0]
+                        pointEnvelopeTapeRight = pointEnvelopeRight[2]
+                        pointEnvelopeCarpetRight = pointEnvelopeRight[4]
+                        if pointEnvelopeNameLeft == pointName:
                             envelopeMatchLeft = envelopeMatchLeft + 1
-                            envelopeTapeLeft = envelopeTapeLeft + pointTapeAcross
-                            envelopeCarpetLeft = envelopeCarpetLeft + pointCarpetAcross
-                        elif pointAcrossNumber == pointAcrossRight:
-                            rightMatch = 1
+                            envelopeTapeLeft = pointEnvelopeTapeLeft
+                            envelopeCarpetLeft = pointEnvelopeCarpetLeft
+                        if pointEnvelopeNameRight == pointName:
                             envelopeMatchRight = envelopeMatchRight + 1
-                            envelopeTapeRight = envelopeTapeRight + pointTapeAcross
-                            envelopeCarpetRight = envelopeCarpetRight + pointCarpetAcross
-                    sideTape = sideTape + pointTapeAcross
-                    sideCarpet = sideCarpet + pointCarpetAcross
-                    envelopeTape = sideTape + pointTapeAcross
-                    #                                          16,40,113,81            1,25,83,51
-                    #                                          38,18,79, 115          23,3, 49,85
-                    for (pointMiddleNumber, order) in zip(range(pointStartAcrossNumber, pointEndAcrossNumber - 1, -3),
-                                                          range(2, border_a)):
-                        pointMiddle = point[3][pointMiddleNumber]
-                        pointMiddleName = pointMiddle[0]
-                        if pointMiddleName != '':
-                            pointMiddleTape = pointMiddle[2]
-                            pointMiddleCarpet = pointMiddle[4]
-                            if pointMiddleName == pointName:
-                                if leftMatch == order - 1:
-                                    leftMatch = order
-                                elif rightMatch == order - 1:
-                                    rightMatch = order
-                                sideTape = sideTape + pointMiddleTape
-                                sideCarpet = sideCarpet + pointMiddleCarpet
-                            rocketTape = rocketTape + pointMiddleTape
-                            if rocketCarpetPass and pointMiddleTape == 0:
-                                rocketCarpet = rocketCarpet + 1
-                            if pointMiddleCarpet != 0 and rocketCarpetPass is False:
-                                rocketCarpetPass = True
-                            pointsMatch = pointsMatch + 1
-                            if pointMoveCarpet != 0 and pointMiddleCarpet == 0:
-                                rocketNoCarpet = rocketNoCarpet + 1
-                            if pointMiddleName == 'canister':
-                                canisterMatch = canisterMatch + 1
-            if pointPlus and pointName != rocketSide:
-                directionMatch = 5
-                if rocket:
-                    if pointMoveCarpet == 0:
-                        directionMatch = pointsMatch + canisterMatch
-                    tapeMatch = rocketTape + sideTape
-                    carpetMatch = rocketCarpet
-            elif envelopeMatchLeft == 3 or envelopeMatchRight == 3:
-                directionMatch = 4
-                if envelopeMatchLeft == 3:
-                    tapeMatch = envelopeTape
-                    carpetMatch = envelopeCarpetLeft + frontCarpet + pointMoveCarpet
+                            envelopeTapeRight = pointEnvelopeTapeRight
+                            envelopeCarpetRight = pointEnvelopeCarpetRight
                 else:
-                    tapeMatch = envelopeTape
-                    carpetMatch = envelopeCarpetRight + frontCarpet + pointMoveCarpet
-            elif leftMatch + rightMatch >= frontMatch:
-                directionMatch = leftMatch + rightMatch + 1
-                if directionMatch >= 3:
-                    tapeMatch = sideTape
-                    carpetMatch = sideCarpet + pointMoveCarpet
+                    break
+        #       19,43,21,41          16,40,113,81            1,25,83,51
+        #       41,21,19,43          38,18,79, 115           23,3,49,85
+        for (pointAcrossNumber, pointStartAcrossNumber, pointEndAcrossNumber) in \
+                (pointAcrossLeft, pointStartAcrossLeft, pointEndAcrossLeft), \
+                (pointAcrossRight, pointStartAcrossRight, pointEndAcrossRight):
+            pointAcross = point[4][pointAcrossNumber]
+            pointNameAcross = pointAcross[0]
+            pointTapeAcross = pointAcross[2]
+            pointCarpetAcross = pointAcross[4]
+            if pointCarpetAcross == 0 and pointMoveCarpet == 1:
+                rocketNoCarpet = 1
+            if pointNameAcross == pointName or pointName == 'envelope' or rocket:
+                if rocket is False:
+                    if pointAcrossNumber == pointAcrossLeft:
+                        leftMatch = 1
+                        envelopeMatchLeft = envelopeMatchLeft + 1
+                        envelopeTapeLeft = envelopeTapeLeft + pointTapeAcross
+                        envelopeCarpetLeft = envelopeCarpetLeft + pointCarpetAcross
+                    elif pointAcrossNumber == pointAcrossRight:
+                        rightMatch = 1
+                        envelopeMatchRight = envelopeMatchRight + 1
+                        envelopeTapeRight = envelopeTapeRight + pointTapeAcross
+                        envelopeCarpetRight = envelopeCarpetRight + pointCarpetAcross
+                sideTape = sideTape + pointTapeAcross
+                sideCarpet = sideCarpet + pointCarpetAcross
+                envelopeTape = sideTape + pointTapeAcross
+                #                                          16,40,113,81            1,25,83,51
+                #                                          38,18,79, 115          23,3, 49,85
+                for (pointMiddleNumber, order) in zip(range(pointStartAcrossNumber, pointEndAcrossNumber - 1, -3),
+                                                      range(2, border_a)):
+                    pointMiddle = point[4][pointMiddleNumber]
+                    pointMiddleName = pointMiddle[0]
+                    if pointMiddleName != '':
+                        pointMiddleTape = pointMiddle[2]
+                        pointMiddleCarpet = pointMiddle[4]
+                        if pointMiddleName == pointName:
+                            if leftMatch == order - 1:
+                                leftMatch = order
+                            elif rightMatch == order - 1:
+                                rightMatch = order
+                            sideTape = sideTape + pointMiddleTape
+                            sideCarpet = sideCarpet + pointMiddleCarpet
+                        rocketTape = rocketTape + pointMiddleTape
+                        if rocketCarpetPass and pointMiddleTape == 0:
+                            rocketCarpet = rocketCarpet + 1
+                        if pointMiddleCarpet != 0 and rocketCarpetPass is False:
+                            rocketCarpetPass = True
+                        pointsMatch = pointsMatch + 1
+                        if pointMoveCarpet != 0 and pointMiddleCarpet == 0:
+                            rocketNoCarpet = rocketNoCarpet + 1
+                        if pointMiddleName == 'canister':
+                            canisterMatch = canisterMatch + 1
+        if pointPlus and pointName != rocketSide:
+            directionMatch = 5
+            if rocket:
+                if pointMoveCarpet == 0:
+                    directionMatch = pointsMatch + canisterMatch
+                tapeMatch = rocketTape + sideTape
+                carpetMatch = rocketCarpet
+        elif envelopeMatchLeft == 3 or envelopeMatchRight == 3:
+            directionMatch = 4
+            if envelopeMatchLeft == 3:
+                tapeMatch = envelopeTape
+                carpetMatch = envelopeCarpetLeft + frontCarpet + pointMoveCarpet
             else:
-                directionMatch = frontMatch + 1
-                if directionMatch >= 3:
-                    tapeMatch = frontTape
-                    carpetMatch = frontCarpet + pointMoveCarpet
-            if carpetMatch != 0 and carpetMatch <= directionMatch and directionMatch >= 3 and 'rocket' not in pointName:
-                carpetMatch = directionMatch - carpetMatch
-            point[4][passDirection][0] = directionMatch
-            point[4][passDirection][2] = tapeMatch
-            point[4][passDirection][4] = carpetMatch
-            # if directionMatch >= 3:
-            #     directionLetter = point[4][passDirection - 1][0]
-            #     cv.putText(screenshot, directionLetter + str(directionMatch) + point[4][passDirection][1] +
-            #                str(point[4][passDirection][2]) + point[4][passDirection][3] +
-            #                str(point[4][passDirection][4]), (point[0][0] - approxX, point[0][1] - approxY),
-            #                cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
+                tapeMatch = envelopeTape
+                carpetMatch = envelopeCarpetRight + frontCarpet + pointMoveCarpet
+        elif leftMatch + rightMatch >= frontMatch:
+            directionMatch = leftMatch + rightMatch + 1
+            if directionMatch >= 3:
+                tapeMatch = sideTape
+                carpetMatch = sideCarpet + pointMoveCarpet
+        else:
+            directionMatch = frontMatch + 1
+            if directionMatch >= 3:
+                tapeMatch = frontTape
+                carpetMatch = frontCarpet + pointMoveCarpet
+                groundAMatch = frontGroundA + pointMoveGroundA
+        if carpetMatch != 0 and carpetMatch <= directionMatch and directionMatch >= 3 and 'rocket' not in pointName:
+            carpetMatch = directionMatch - carpetMatch
+        point[5][passDirection][0] = directionMatch
+        point[5][passDirection][2] = tapeMatch
+        point[5][passDirection][4] = carpetMatch
+        point[5][passDirection][6] = groundAMatch
+        if directionMatch >= 3:
+            directionLetter = point[5][passDirection - 1][0]
+            cv.putText(screenshot, directionLetter + str(directionMatch) + point[5][passDirection][1] +
+                       str(point[5][passDirection][2]) + point[5][passDirection][3] +
+                       str(point[5][passDirection][4]) + point[5][passDirection][5] +
+                       str(point[5][passDirection][6]), (point[0][0] - approxX, point[0][1] - approxY),
+                       cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
 
 
 while True:
@@ -267,7 +273,7 @@ while True:
                    ('h_rocket', .76, .85, .7, .76, True), ('v_rocket', .76, .85, .7, .76, True),
                    ('envelope', .76, .85, .7, .76, True), ('bomb', .76, .85, .65, .76, True),
                    ('cube', .85, .9, .85, .76, True), ('canister', .85, .9, .65, .76, False),
-                   ('ground', .8, .9, .65, .85, False)]
+                   ('ground', .8, .9, .65, .8, False)]
     for (name, space_hold, tape_hold, carpet_hold, ground_hold, pointPlus) in namesColors:
         Picture(name, space_hold, tape_hold, carpet_hold, ground_hold, pointPlus, screenshot, points)
     if len(points) > 0:
@@ -285,67 +291,137 @@ while True:
                     for (y0, row) in zip(range(first_point_for_y - 10, last_point_for_y + 5, 51), range(1, 11)):
                         if y0 <= y <= (y0 + 50):
                             points[index].append((column, row))
-                            for (text, ya) in zip((f'{column} {row}', name, properties), (range(20, -1, -10))):
-                                cv.putText(screenshot, text, (x - 20, y - ya), cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
+                            # for (text, ya) in zip((f'{column} {row}', name, properties), (range(20, -1, -10))):
+                            #     cv.putText(screenshot, text, (x - 20, y - ya), cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
         for point in points:
-            # [3]           0
-            point.append(['left', ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          'right', ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False), 'up0',
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), 'down0',
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), 'up', ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          'down', ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False), ('', 't', 0, 'c', 0, 'g', 0, 'p', False)])
+            point.append(['g_a', 0])
+            pointColumn = point[2][0]
+            pointRow = point[2][1]
+            try:
+                for pointFind in points:
+                    pointColumnFind = pointFind[2][0]
+                    pointRowFind = pointFind[2][1]
+                    pointGroundFind = pointFind[1][6]
+                    x = pointColumnFind - pointColumn
+                    y = pointRowFind - pointRow
+                    if ((x == 0 and (y == 1 or y == -1)) or ((x == -1 or x == 1) and y == 0)) and pointGroundFind != 0:
+                        point[3][1] = point[3][1] + pointGroundFind
+                # cv.putText(screenshot, (str(point[3][0]) + str(point[3][1])), (point[0][0] - 20, point[0][1] + 10),
+                #            cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
+            except IndexError or TypeError:
+                continue
+        for point in points:
+            # [4]           0
+            point.append(['left', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          'right', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          'up0', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          'down0', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          'up', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          'down', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0)])
             pointColumn = point[2][0]
             pointRow = point[2][1]
             pointName = point[1][0]
@@ -354,41 +430,47 @@ while True:
                     pointColumnFind = pointFind[2][0]
                     pointRowFind = pointFind[2][1]
                     pointNameFind = pointFind[1][0]
+                    pointTapeFind = pointFind[1][2]
+                    pointCarpetFind = pointFind[1][4]
+                    pointGroundFind = pointFind[1][6]
+                    pointPlusFind = pointFind[1][8]
+                    pointGroundAFind = pointFind[3][1]
                     x = pointColumnFind - pointColumn
                     y = pointRowFind - pointRow
                     if -7 <= x <= 7 and -12 <= y <= 12:
                         if x == 0 and (y == 1 or y == -1):
-                            point[3][46 + y] = (pointNameFind, 't', pointFind[1][2], 'c', pointFind[1][4], 'g',
-                                                pointFind[1][6], 'p', pointFind[1][8])
+                            point[4][46 + y] = (pointNameFind, 't', pointTapeFind, 'c', pointCarpetFind, 'g',
+                                                pointGroundFind, 'p', pointPlusFind, 'g_a', pointGroundAFind)
                         if (-7 <= x <= -1 or 1 <= x <= 7) and -1 <= y <= 1:
                             for (m, d) in zip((1, -1), (0, 10)):
                                 for (c, n) in zip(range(-7 * m, 0, m), range(8 + d, 21 + d * 3, (3 - m))):
                                     if c == x:
-                                        point[3][m + x + y + n] = (pointNameFind, 't', pointFind[1][2], 'c',
-                                                                   pointFind[1][4], 'g', pointFind[1][6], 'p',
-                                                                   pointFind[1][8])
+                                        point[4][m + x + y + n] = (pointNameFind, 't', pointTapeFind, 'c',
+                                                                   pointCarpetFind, 'g', pointGroundFind, 'p',
+                                                                   pointPlusFind, 'g_a', pointGroundAFind)
                                         break
                         if -1 <= x <= 1 and (-12 <= y <= -2 or 2 <= y <= 12):
                             for (m, d) in zip((1, -1), (0, 12)):
                                 for (r, n) in zip(range(-12 * m, -1 * m, m), range(61 + d, 91 + d * 2, (3 - m))):
                                     if r == y:
-                                        point[3][m + x + y + n] = (pointNameFind, 't', pointFind[1][2], 'c',
-                                                                   pointFind[1][4], 'g', pointFind[1][6], 'p',
-                                                                   pointFind[1][8])
+                                        point[4][m + x + y + n] = (pointNameFind, 't', pointTapeFind, 'c',
+                                                                   pointCarpetFind, 'g', pointGroundFind, 'p',
+                                                                   pointPlusFind, 'g_a', pointGroundAFind)
                                         break
             except IndexError or TypeError:
                 continue
         for point in points:
             pointName = point[1][0]
-            point.append([('l', -1, 0), [0, 't', 0, 'c', 0, 'p', False],
-                          ('r', 1, 0), [0, 't', 0, 'c', 0, 'p', False],
-                          ('u', 0, -1), [0, 't', 0, 'c', 0, 'p', False],
-                          ('d', 0, 1), [0, 't', 0, 'c', 0, 'p', False],
-                          ('n', 0, 0), [0, 't', 0, 'c', 0, 'p', False]])
+            point.append([('l', -1, 0), [0, 't', 0, 'c', 0, 'g', 0, 'p', False],
+                          ('r', 1, 0), [0, 't', 0, 'c', 0, 'g', 0, 'p', False],
+                          ('u', 0, -1), [0, 't', 0, 'c', 0, 'g', 0, 'p', False],
+                          ('d', 0, 1), [0, 't', 0, 'c', 0, 'g', 0, 'p', False],
+                          ('n', 0, 0), [0, 't', 0, 'c', 0, 'g', 0, 'p', False]])
             pointTape = point[1][2]
             pointCarpet = point[1][4]
+            pointGround = point[1][6]
             pointPlus = point[1][8]
-            if pointName != 'canister' and pointTape == 0:
+            if pointName != 'canister' and pointTape == 0 and pointGround == 0:
                 pointStartUp = 80
                 pointStartDown = 114
                 pointEndUp = 50
@@ -413,17 +495,17 @@ while True:
                 elif pointName == 'envelope' or pointName == 'bomb' or pointName == 'cube':
                     matchNull(moveLeft, moveRight, moveLeft, moveRight, 22, 22)
                 match(moveUp, 5, pointStartUp, pointEndUp, pointUpLeft, pointUpRight, pointStartLeft - 1,
-                      pointStartRight - 1, pointEndLeft - 1, pointEndRight - 1, 20, 18, 1, 'v_rocket')
+                      pointStartRight - 1, pointEndLeft - 1, pointEndRight - 1, 30, 18, 1, 'v_rocket')
                 match(moveDown, 7, pointStartDown, pointEndDown, pointDownRight, pointDownLeft, pointStartRight + 1,
-                      pointStartLeft + 1, pointEndRight + 1, pointEndLeft + 1, 20, -22, -1, 'v_rocket')
+                      pointStartLeft + 1, pointEndRight + 1, pointEndLeft + 1, 30, -22, -1, 'v_rocket')
                 match(moveLeft, 1, pointStartLeft, pointEndLeft, pointDownLeft, pointUpLeft, pointStartDown - 1,
-                      pointStartUp - 1, pointEndDown - 1, pointEndUp - 1, 16, -12, -1, 'h_rocket')
+                      pointStartUp - 1, pointEndDown - 1, pointEndUp - 1, 26, -12, -1, 'h_rocket')
                 match(moveRight, 3, pointStartRight, pointEndRight, pointUpRight, pointDownRight, pointStartUp + 1,
-                      pointStartDown + 1, pointEndUp + 1, pointEndDown + 1, 18, 8, 1, 'h_rocket')
+                      pointStartDown + 1, pointEndUp + 1, pointEndDown + 1, 28, 8, 1, 'h_rocket')
         chance_points = []
         for position in range(1, 10, 2):
-            xy, name, rc, _, chances = max(points, key=lambda l: (l[4][position][6], l[4][position][4],
-                                                                  l[4][position][2], l[4][position][0], l[2][1]))
+            xy, name, rc, _, _, chances = max(points, key=lambda l: (l[5][position][6], l[5][position][4],
+                                                                     l[5][position][2], l[5][position][0], l[2][1]))
             direction = chances[position - 1]
             numberMatch = chances[position][0]
             numberTape = chances[position][2]
@@ -434,7 +516,7 @@ while True:
         max_combo = max(chance_points, key=lambda l: (l[7], l[6], l[5], l[4], l[2][1]))
         if bot:
             before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
-        # cv.putText(screenshot, max_combo[3][0], (max_combo[0]), cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
+        cv.putText(screenshot, max_combo[3][0], (max_combo[0]), cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
     if botCapture != 'off':
         if TIMER <= 2:
             botCapture = 'click'
