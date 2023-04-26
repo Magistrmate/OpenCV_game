@@ -32,6 +32,7 @@ bot = False
 countdown_in_action = False
 botCapture = 'off'
 TIMER = int(10)
+textShow = 'direction'
 
 
 def bot_action(target, one, two):
@@ -111,9 +112,10 @@ def matchNull(pointStart, pointLeftEnd, pointRightStart, pointEnd, stepOne, step
     point[5][9][2] = tapeMatchNull
     point[5][9][4] = carpetMatchNull
     directionLetter = point[5][8][0]
-    cv.putText(screenshot, directionLetter + str(directionMatchNull) + point[5][9][1] +
-               str(point[4][5][2]) + point[5][9][3] + str(point[5][9][4]),
-               (point[0][0] - 20, point[0][1] + 2), cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
+    if textShow == 'direction':
+        cv.putText(screenshot, directionLetter + str(directionMatchNull) + point[5][9][1] +
+                   str(point[4][5][2]) + point[5][9][3] + str(point[5][9][4]),
+                   (point[0][0] - 20, point[0][1] + 2), cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
 
 
 def match(pointMoveNumber, passDirection, pointStart, pointEnd, pointAcrossLeft, pointAcrossRight, pointStartAcrossLeft,
@@ -144,8 +146,9 @@ def match(pointMoveNumber, passDirection, pointStart, pointEnd, pointAcrossLeft,
                 pointMiddleName = pointMiddle[0]
                 pointMiddleTape = pointMiddle[2]
                 pointMiddleCarpet = pointMiddle[4]
+                pointMiddleGround = pointMiddle[6]
                 pointMiddleGroundA = pointMiddle[10]
-                if pointMiddleName == pointName and frontMatch == order - 1:
+                if pointMiddleName == pointName and frontMatch == order - 1 and pointMiddleGround == 0:
                     frontMatch = order
                     frontTape = pointMiddleTape
                     frontCarpet = frontCarpet + pointMiddleCarpet
@@ -265,9 +268,10 @@ def match(pointMoveNumber, passDirection, pointStart, pointEnd, pointAcrossLeft,
         point[5][passDirection][6] = groundAMatch
         if directionMatch >= 3:
             directionLetter = point[5][passDirection - 1][0]
-            cv.putText(screenshot, directionLetter + str(directionMatch) + str(point[5][passDirection][2]) +
-                       str(point[5][passDirection][4]) + str(point[5][passDirection][6]),
-                       (point[0][0] - approxX, point[0][1] - approxY), cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
+            if textShow == 'direction':
+                cv.putText(screenshot, directionLetter + str(directionMatch) + str(point[5][passDirection][2]) +
+                           str(point[5][passDirection][4]) + str(point[5][passDirection][6]),
+                           (point[0][0] - approxX, point[0][1] - approxY), cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
 
 
 while True:
@@ -275,7 +279,7 @@ while True:
     cv.putText(screenshot, 'bot ' + botCapture, (150, 815), cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
     points = []
     namesColors = [('ball', .85, .85, .7, .89, False), ('backpack', .76, .85, .7, .85, False),
-                   ('egg', .77, .85, .7, .85, False), ('chip', .79, .85, .74, .8, False),
+                   ('egg', .77, .85, .7, .85, False), ('chip', .79, .85, .76, .8, False),
                    ('duck', .85, .9, .65, .85, False), ('spruce', .76, .85, .7, .8, False),
                    ('h_rocket', .76, .85, .7, .76, True), ('v_rocket', .76, .85, .7, .76, True),
                    ('envelope', .76, .85, .7, .76, True), ('bomb', .76, .85, .65, .76, True),
@@ -298,13 +302,15 @@ while True:
                     for (y0, row) in zip(range(first_point_for_y - 10, last_point_for_y + 5, 51), range(1, 11)):
                         if y0 <= y <= (y0 + 50):
                             points[index].append((column, row))
-                            # for (text, ya) in zip((f'{column} {row}', name, properties), (range(20, -1, -10))):
-                            #     cv.putText(screenshot, text, (x - 20, y - ya), cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
-        for point in points:
-            point.append(['g_a', 0])
-            pointColumn = point[2][0]
-            pointRow = point[2][1]
-            try:
+                            if textShow == 'properties':
+                                for (text, ya) in zip((f'{column} {row}', name, properties), (range(20, -1, -10))):
+                                    cv.putText(screenshot, text, (x - 20, y - ya), cv.FONT_HERSHEY_SIMPLEX, .4,
+                                               (0, 0, 0))
+        try:
+            for point in points:
+                point.append(['g_a', 0])
+                pointColumn = point[2][0]
+                pointRow = point[2][1]
                 for pointFind in points:
                     pointColumnFind = pointFind[2][0]
                     pointRowFind = pointFind[2][1]
@@ -313,126 +319,124 @@ while True:
                     y = pointRowFind - pointRow
                     if ((x == 0 and (y == 1 or y == -1)) or ((x == -1 or x == 1) and y == 0)) and pointGroundFind != 0:
                         point[3][1] = point[3][1] + pointGroundFind
-                # cv.putText(screenshot, (str(point[3][0]) + str(point[3][1])), (point[0][0] - 20, point[0][1] + 10),
-                #            cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
-            except IndexError or TypeError:
-                continue
-        for point in points:
-            # [4]           0
-            point.append(['left', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          'right', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          'up0', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          'down0', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          'up', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          'down', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
-                          ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0)])
-            pointColumn = point[2][0]
-            pointRow = point[2][1]
-            pointName = point[1][0]
-            try:
+                if textShow == 'properties':
+                    cv.putText(screenshot, (str(point[3][0]) + str(point[3][1])), (point[0][0] - 20, point[0][1] + 10),
+                               cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
+            for point in points:
+                # [4]           0
+                point.append(['left', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              'right', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              'up0', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              'down0', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              'up', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              'down', ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0),
+                              ('', 't', 0, 'c', 0, 'g', 0, 'p', False, 'g_a', 0)])
+                pointColumn = point[2][0]
+                pointRow = point[2][1]
+                pointName = point[1][0]
                 for pointFind in points:
                     pointColumnFind = pointFind[2][0]
                     pointRowFind = pointFind[2][1]
@@ -464,8 +468,8 @@ while True:
                                                                    pointCarpetFind, 'g', pointGroundFind, 'p',
                                                                    pointPlusFind, 'g_a', pointGroundAFind)
                                         break
-            except IndexError or TypeError:
-                continue
+        except IndexError or TypeError:
+            continue
         for point in points:
             pointName = point[1][0]
             point.append([('l', -1, 0), [0, 't', 0, 'c', 0, 'g', 0, 'p', False],
@@ -525,7 +529,8 @@ while True:
         max_combo = max(chance_points, key=lambda l: (l[7], l[8], l[6], l[5], l[4], l[2][1]))
         if bot:
             before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
-        cv.putText(screenshot, max_combo[3][0], (max_combo[0]), cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
+        if textShow == 'direction':
+            cv.putText(screenshot, max_combo[3][0], (max_combo[0]), cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
     if botCapture != 'off':
         if TIMER <= 2:
             botCapture = 'click'
@@ -545,3 +550,8 @@ while True:
             botCapture = 'wait'
         if key == 32:
             botCapture = 'click now'
+        if key == ord('a') or key == 244:
+            if textShow == 'direction':
+                textShow = 'properties'
+            else:
+                textShow = 'direction'
