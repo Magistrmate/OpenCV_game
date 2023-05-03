@@ -27,6 +27,7 @@ if flag == 1:
 
 wincap = WindowCapture('22071212AG')
 is_bot_in_action = False
+chancesPointInAction = False
 countdown_start = False
 bot = False
 countdown_in_action = False
@@ -48,7 +49,7 @@ def bot_action(target, one, two):
             pydirectinput.mouseUp()
     global TIMER
     if Fast:
-        TIMER = 0
+        TIMER = 4
     else:
         TIMER = 10
     AxisX = AxisX0 = 530
@@ -81,8 +82,34 @@ def before_bot_action(point_target, one, two):
         t.start()
 
 
+# def chancesPoint(pointsThread):
+#     chance_points = []
+#     for position in range(1, 10, 2):
+#         xy, nameP, rc, _, _, chances = max(pointsThread, key=lambda l: (l[5][position][8], l[5][position][6],
+#                                                                        l[5][position][4], l[5][position][2],
+#                                                                        l[5][position][0], l[2][1]))
+#         direction = chances[position - 1]
+#         numberMatch = chances[position][0]
+#         numberTape = chances[position][2]
+#         numberCarpet = chances[position][4]
+#         numberGroundA = chances[position][6]
+#         numberPlus = chances[position][8]
+#         #                      0    1    2     3          4             5            6           7
+#         chance_points.append([xy, nameP, rc, direction, numberMatch, numberTape, numberCarpet, numberPlus,
+#                               numberGroundA])
+#     max_combo = max(chance_points, key=lambda l: (l[7], l[8], l[6], l[5], l[4], l[2][1]))
+#     if textShow == 'direction':
+#         cv.putText(screenshot, max_combo[3][0], (max_combo[0]), cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
+#     global chancesPointInAction
+#     chancesPointInAction = False
+
+
 def matchNull(pointStart, pointLeftEnd, pointRightStart, pointEnd, stepOne, stepTwo, tapeMatchNull=0, carpetMatchNull=0,
-              directionMatchNull=0, pointNoCarpet=0):
+              directionMatchNull=0, pointNoCarpet=0, envelope=False, rocket=False):
+    if pointName == 'envelope':
+        envelope = True
+    elif 'rocket' in pointName:
+        rocket = True
     for (pointStart, pointEnd, step) in zip((pointStart, pointRightStart), (pointLeftEnd, pointEnd),
                                             (stepOne, stepTwo)):
         for pointMiddleNumber in range(pointStart, pointEnd, step):
@@ -97,9 +124,9 @@ def matchNull(pointStart, pointLeftEnd, pointRightStart, pointEnd, stepOne, step
                 if pointCarpet == 1:
                     carpetMatchNull = pointNoCarpet
                 directionMatchNull = directionMatchNull + 1
-        if pointName == 'envelope':
+        if envelope:
             break
-    if pointName == 'envelope':
+    if envelope:
         for pointMoveUpDownNumber in moveUp, moveDown:
             pointMiddle = point[4][pointMoveUpDownNumber]
             pointMiddleName = pointMiddle[0]
@@ -112,12 +139,12 @@ def matchNull(pointStart, pointLeftEnd, pointRightStart, pointEnd, stepOne, step
                 if pointCarpet == 1:
                     carpetMatchNull = pointNoCarpet
                 directionMatchNull = directionMatchNull + 1
-    elif 'rocket' not in pointName:
+    elif rocket is False:
         directionMatchNull = 5
     point[5][9][0] = directionMatchNull
     point[5][9][2] = tapeMatchNull
     point[5][9][4] = carpetMatchNull
-    point[5][9][6] = 0
+    # point[5][9][6] = 0
     directionLetter = point[5][8][0]
     if textShow == 'direction':
         cv.putText(screenshot, directionLetter + str(directionMatchNull) + str(point[4][5][2]) + str(point[5][9][4]) +
@@ -126,12 +153,14 @@ def matchNull(pointStart, pointLeftEnd, pointRightStart, pointEnd, stepOne, step
 
 def match(pointMoveNumber, passDirection, pointStart, pointEnd, pointAcrossLeft, pointAcrossRight, pointStartAcrossLeft,
           pointStartAcrossRight, pointEndAcrossLeft, pointEndAcrossRight, approxX, approxY, cornerEnvelope, rocketSide,
-          sideTape=0, sideCarpet=0, sideGroundA=0, frontCarpet=0, frontTape=0, frontGroundA=0,
-          tapeMatch=0, carpetMatch=0, groundAMatch=0, leftMatch=0, rightMatch=0, frontMatch=0, envelopeMatchLeft=0,
+          sideTape=0, sideCarpet=0, sideGroundA=0, frontCarpet=0, frontTape=0, frontGroundA=0, tapeMatch=0,
+          carpetMatch=0, groundAMatch=0, leftMatch=0, rightMatch=0, frontMatch=0, envelopeMatchLeft=0,
           envelopeMatchRight=0, envelopeTape=0, envelopeTapeLeft=0, envelopeTapeRight=0, envelopeCarpetLeft=0,
           envelopeGroundALeft=0, envelopeCarpetRight=0, envelopeGroundARight=0, rocketTape=0, canisterMatch=0,
-          rocket=False, border_h=3, border_a=3, rocketNoCarpet=0, pointsMatch=2, rocketCarpetPass=False,
-          rocketCarpet=0):
+          rocket=False, envelope=False, border_h=3, border_a=3, rocketNoCarpet=0, pointsMatch=2, rocketCarpetPass=False,
+          rocketCarpet=0, createPlus=False):
+    if pointName == 'envelope':
+        envelope = True
     pointMove = point[4][pointMoveNumber]  # 45, 47, 20, 42
     pointMoveName = pointMove[0]
     pointMoveGround = pointMove[6]
@@ -141,8 +170,7 @@ def match(pointMoveNumber, passDirection, pointStart, pointEnd, pointAcrossLeft,
         pointMoveGroundA = pointMove[10]
         pointMovePlus = pointMove[8]
         if pointPlus and pointMovePlus and not ('rocket' in (pointName and pointMoveName)):
-            #    5 or 7 or 1 or 3
-            point[5][passDirection][8] = True
+            createPlus = True
         else:
             if 'rocket' in pointName:
                 rocket = True
@@ -156,15 +184,15 @@ def match(pointMoveNumber, passDirection, pointStart, pointEnd, pointAcrossLeft,
                 pointMiddleGround = pointMiddle[6]
                 pointMiddleGroundA = pointMiddle[10]
                 if pointMiddleName == pointName and frontMatch == order - 1 and pointMiddleGround == 0 or \
-                        pointName == 'envelope':
-                    if pointName == 'envelope' and pointMiddleName != '':
+                        envelope:
+                    if envelope and pointMiddleName != '':
                         frontMatch = 1
                     else:
                         frontMatch = order
                     frontTape = pointMiddleTape
                     frontCarpet = frontCarpet + pointMiddleCarpet
                     frontGroundA = frontGroundA + pointMiddleGroundA
-                    if order == 1 and pointName != 'envelope':
+                    if order == 1 and envelope is False:
                         envelopeMatchLeft = envelopeMatchRight = 1
                         pointEnvelopeLeft = point[4][pointMiddleNumber - cornerEnvelope]  # 79 or 18 or 113 or 38
                         pointEnvelopeNameLeft = pointEnvelopeLeft[0]
@@ -205,7 +233,7 @@ def match(pointMoveNumber, passDirection, pointStart, pointEnd, pointAcrossLeft,
             pointGroundAAcross = pointAcross[10]
             if pointCarpetAcross == 0 and pointMoveCarpet == 1:
                 rocketNoCarpet = 1
-            if (pointNameAcross == pointName or pointName == 'envelope' or rocket) and pointGroundAcross == 0 and \
+            if (pointNameAcross == pointName or envelope or rocket) and pointGroundAcross == 0 and \
                     pointNameAcross != '':
                 if rocket is False:
                     if pointAcrossNumber == pointAcrossLeft:
@@ -231,7 +259,7 @@ def match(pointMoveNumber, passDirection, pointStart, pointEnd, pointAcrossLeft,
                     pointMiddle = point[4][pointMiddleNumber]
                     pointMiddleName = pointMiddle[0]
                     pointMiddleGround = pointMiddle[6]
-                    if pointMiddleName != '' and pointMiddleGround == 0 and pointName != 'envelope':
+                    if pointMiddleName != '' and pointMiddleGround == 0 and envelope is False:
                         pointMiddleTape = pointMiddle[2]
                         pointMiddleCarpet = pointMiddle[4]
                         pointMiddleGroundA = pointMiddle[10]
@@ -253,22 +281,23 @@ def match(pointMoveNumber, passDirection, pointStart, pointEnd, pointAcrossLeft,
                             rocketNoCarpet = rocketNoCarpet + 1
                         if pointMiddleName == 'canister':
                             canisterMatch = canisterMatch + 1
-        if pointPlus and pointName != rocketSide and pointName != 'envelope':
+        if pointPlus and pointName != rocketSide and envelope is False:
             directionMatch = 5
             if rocket:
                 if pointMoveCarpet == 0:
                     directionMatch = pointsMatch + canisterMatch
                 tapeMatch = rocketTape + sideTape
                 carpetMatch = rocketCarpet
-        elif pointName == 'envelope':
+        elif envelope:
             directionMatch = frontMatch + leftMatch + rightMatch + 1
             tapeMatch = frontTape + sideTape
             carpetMatch = frontCarpet + sideCarpet
             groundAMatch = pointMoveGroundA
-        elif 'rocket' in pointName and pointMoveCarpet != 0:
+        elif rocket and pointMoveCarpet != 0:
             directionMatch = carpetMatch = point[5][9][0]
         elif envelopeMatchLeft == 3 or envelopeMatchRight == 3:
             directionMatch = 4
+            createPlus = True
             if envelopeMatchLeft == 3:
                 tapeMatch = envelopeTape
                 carpetMatch = envelopeCarpetLeft + frontCarpet + pointMoveCarpet
@@ -289,13 +318,25 @@ def match(pointMoveNumber, passDirection, pointStart, pointEnd, pointAcrossLeft,
                 tapeMatch = frontTape
                 carpetMatch = frontCarpet + pointMoveCarpet
                 groundAMatch = frontGroundA + pointMoveGroundA
-        if carpetMatch != 0 and carpetMatch <= directionMatch and directionMatch >= 3 and 'rocket' not in pointName \
-                and pointName != 'envelope':
+        if leftMatch + frontMatch >= 4 or rightMatch + frontMatch >= 4:
+            if leftMatch + frontMatch >= 4:
+                directionMatch = leftMatch + frontMatch + 1
+            else:
+                directionMatch = rightMatch + frontMatch + 1
+            tapeMatch = frontTape + sideTape
+            carpetMatch = frontCarpet + sideCarpet + pointMoveCarpet
+            groundAMatch = frontGroundA + sideGroundA + pointMoveGroundA
+            createPlus = True
+        if leftMatch + rightMatch == 4:
+            createPlus = True
+        if carpetMatch != 0 and carpetMatch <= directionMatch and directionMatch >= 3 and rocket is False and \
+                envelope is False:
             carpetMatch = directionMatch - carpetMatch
         point[5][passDirection][0] = directionMatch
         point[5][passDirection][2] = tapeMatch
         point[5][passDirection][4] = carpetMatch
         point[5][passDirection][6] = groundAMatch
+        point[5][passDirection][8] = createPlus
         if directionMatch >= 3:
             directionLetter = point[5][passDirection - 1][0]
             if textShow == 'direction':
@@ -304,7 +345,24 @@ def match(pointMoveNumber, passDirection, pointStart, pointEnd, pointAcrossLeft,
                            (point[0][0] - approxX, point[0][1] - approxY), cv.FONT_HERSHEY_SIMPLEX, .4, (0, 0, 0))
 
 
+pointStartUp = 80
+pointStartDown = 114
+pointEndUp = 50
+pointEndDown = 84
+pointEndLeft = 2
+pointEndRight = 24
+pointUpLeft = 19
+pointUpRight = 41
+pointDownLeft = 21
+pointDownRight = 43
+pointStartLeft = 17
+pointStartRight = 39
+moveUp = 45
+moveDown = 47
+moveLeft = 20
+moveRight = 42
 while True:
+    prev1 = time.time()
     screenshot = wincap.get_screenshot()
     cv.putText(screenshot, 'bot ' + botCapture, (150, 815), cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
     points = []
@@ -512,23 +570,6 @@ while True:
             pointGround = point[1][6]
             pointPlus = point[1][8]
             if pointName != 'canister' and pointTape == 0 and pointGround == 0:
-                pointStartUp = 80
-                pointStartDown = 114
-                pointEndUp = 50
-                pointEndDown = 84
-                pointEndLeft = 2
-                pointEndRight = 24
-                pointUpLeft = 19
-                pointUpRight = 41
-                pointDownLeft = 21
-                pointDownRight = 43
-                pointStartLeft = 17
-                pointStartRight = 39
-                moveUp = 45
-                moveDown = 47
-                moveLeft = 20
-                moveRight = 42
-                noMove = 0
                 if pointName == 'h_rocket':
                     matchNull(pointEndLeft, moveLeft + 1, moveRight, pointEndRight - 1, 3, -3)
                 elif pointName == 'v_rocket':
@@ -543,6 +584,10 @@ while True:
                       pointStartUp - 1, pointEndDown - 1, pointEndUp - 1, 18, -12, -1, 'h_rocket')
                 match(moveRight, 3, pointStartRight, pointEndRight, pointUpRight, pointDownRight, pointStartUp + 1,
                       pointStartDown + 1, pointEndUp + 1, pointEndDown + 1, 20, 8, 1, 'h_rocket')
+        # if not chancesPointInAction:
+        #     chancesPointInAction = True
+        #     q = Thread(target=chancesPoint, args=points)
+        #     q.start()
         chance_points = []
         for position in range(1, 10, 2):
             xy, name, rc, _, _, chances = max(points, key=lambda l: (l[5][position][8], l[5][position][6],
@@ -562,14 +607,16 @@ while True:
             before_bot_action(max_combo, max_combo[3][1], max_combo[3][2])
         if textShow == 'direction':
             cv.putText(screenshot, max_combo[3][0], (max_combo[0]), cv.FONT_HERSHEY_SIMPLEX, .8, (255, 255, 255))
+    cv.imshow('Map', screenshot)
     if botCapture != 'off':
         if TIMER <= 2:
             botCapture = 'click'
         else:
             botCapture = 'wait'
-    cv.imshow('Map', screenshot)
     key = cv.waitKey(1)
     # print(key)
+    cur1 = time.time()
+    print(cur1 - prev1)
     if key != -1:
         if key == ord('q'):
             cv.destroyAllWindows()
@@ -592,3 +639,4 @@ while True:
                 Fast = True
             else:
                 Fast = False
+    # 2.6
